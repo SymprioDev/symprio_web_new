@@ -161,7 +161,7 @@ export default function ServicesLanding() {
             margin: '0 0 15px 0',
             lineHeight: '1.3',
             textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-            color: '#ffffff',
+            color: '#000000',
             animation: showBannerAnimation ? 'bannerSlideIn 1.2s cubic-bezier(0.13, 0.53, 0.13, 0.96) 0s both' : 'none'
           }}
           ref={bannerTitleRef}>

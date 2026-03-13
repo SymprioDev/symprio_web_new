@@ -36,7 +36,7 @@ export default function SymprioNavbar() {
         background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
         padding: '20px 60px',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         borderBottom: '3px solid #ffffff',
         zIndex: 10001,

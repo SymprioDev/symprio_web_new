@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [jobApplications, setJobApplications] = useState([]);
   const [showEventForm, setShowEventForm] = useState(false);
   const [showTrainingForm, setShowTrainingForm] = useState(false);
   const [showJobForm, setShowJobForm] = useState(false);
@@ -63,6 +64,7 @@ const AdminDashboard = () => {
     fetchJobs();
     fetchEnquiries();
     fetchLocations();
+    fetchJobApplications();
   }, []);
 
   const fetchEvents = async () => {
@@ -126,6 +128,39 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error('Failed to fetch locations:', error);
+    }
+  };
+
+  const fetchJobApplications = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/job-applications', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJobApplications(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch job applications:', error);
+    }
+  };
+
+  const handleDeleteJobApplication = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this application?')) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/job-applications/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        fetchJobApplications();
+      }
+    } catch (error) {
+      console.error('Failed to delete job application:', error);
     }
   };
 
@@ -452,6 +487,20 @@ const AdminDashboard = () => {
             }}
           >
             Post Jobs
+          </button>
+          <button
+            onClick={() => setActiveTab('jobApplications')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'jobApplications' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'jobApplications' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Posted Jobs ({jobApplications.length})
           </button>
           <button
             onClick={() => setActiveTab('locations')}
@@ -1037,6 +1086,81 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'jobApplications' && (
+          <div>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1f2937' }}>
+              Job Applications ({jobApplications.length})
+            </h2>
+            
+            {jobApplications.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                No job applications yet.
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
+                  <thead>
+                    <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>First Name</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Last Name</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Mobile</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Job Title</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Cover Letter</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>CV</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Submitted</th>
+                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {jobApplications.map((app) => (
+                      <tr key={app.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.firstName}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.lastName}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.mobileNumber}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.jobTitle || '-'}</td>
+                        <td style={{ padding: '16px', color: '#374151', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {app.coverLetter || '-'}
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          {app.cvFilePath ? (
+                            <a 
+                              href={app.cvFilePath} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              style={{ color: '#00d4ff', textDecoration: 'none', fontWeight: '600' }}
+                            >
+                              Download CV
+                            </a>
+                          ) : '-'}
+                        </td>
+                        <td style={{ padding: '16px', color: '#374151' }}>
+                          {app.submittedDate ? new Date(app.submittedDate).toLocaleDateString() : '-'}
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => handleDeleteJobApplication(app.id)}
+                            style={{
+                              background: '#fee2e2',
+                              color: '#dc2626',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '600'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 

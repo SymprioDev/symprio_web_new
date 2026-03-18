@@ -184,6 +184,25 @@ function initializeDatabase() {
       console.log('Locations table ready');
     }
   });
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS job_applications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      firstName TEXT NOT NULL,
+      lastName TEXT NOT NULL,
+      mobileNumber TEXT NOT NULL,
+      coverLetter TEXT,
+      cvFilePath TEXT,
+      jobTitle TEXT,
+      submittedDate DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `, (err) => {
+    if (err) {
+      console.error('Error creating job_applications table:', err);
+    } else {
+      console.log('Job applications table ready');
+    }
+  });
 }
 
 // Register endpoint
@@ -646,6 +665,111 @@ app.delete('/api/locations/:id', verifyJWT, (req, res) => {
         return res.status(500).json({ error: 'Failed to delete location' });
       }
       res.json({ success: true, message: 'Location deleted' });
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Job Applications API
+
+// Create uploads directory for CVs
+const cvUploadsDir = path.join(__dirname, 'public', 'uploads', 'cv');
+fs.mkdirSync(cvUploadsDir, { recursive: true });
+
+const cvStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, cvUploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    const safeExt = ext && ext.length <= 5 ? ext : '.pdf';
+    cb(null, `cv-${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
+  }
+});
+
+const cvUpload = multer({ 
+  storage: cvStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'), false);
+    }
+  }
+});
+
+// POST job application
+app.post('/api/job-applications', cvUpload.single('cv'), (req, res) => {
+  try {
+    const { firstName, lastName, mobileNumber, coverLetter, jobTitle } = req.body;
+
+    if (!firstName || !lastName || !mobileNumber) {
+      return res.status(400).json({ error: 'First name, last name, and mobile number are required' });
+    }
+
+    const cvFilePath = req.file ? `/uploads/cv/${req.file.filename}` : null;
+
+    db.run(
+      'INSERT INTO job_applications (firstName, lastName, mobileNumber, coverLetter, cvFilePath, jobTitle) VALUES (?, ?, ?, ?, ?, ?)',
+      [firstName, lastName, mobileNumber, coverLetter || '', cvFilePath, jobTitle || ''],
+      function(err) {
+        if (err) {
+          console.error('Error inserting job application:', err);
+          return res.status(500).json({ error: 'Failed to submit application' });
+        }
+        res.status(201).json({ 
+          success: true, 
+          message: 'Application submitted successfully',
+          id: this.lastID 
+        });
+      }
+    );
+  } catch (error) {
+    console.error('Job application error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET all job applications (admin)
+app.get('/api/job-applications', verifyJWT, (req, res) => {
+  try {
+    db.all('SELECT * FROM job_applications ORDER BY submittedDate DESC', [], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to fetch job applications' });
+      }
+      res.json(rows);
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE job application (admin)
+app.delete('/api/job-applications/:id', verifyJWT, (req, res) => {
+  try {
+    // First get the application to delete the file
+    db.get('SELECT cvFilePath FROM job_applications WHERE id = ?', [req.params.id], (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to delete application' });
+      }
+      
+      // Delete the file if exists
+      if (row && row.cvFilePath) {
+        const filePath = path.join(__dirname, 'public', row.cvFilePath);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      
+      // Delete from database
+      db.run('DELETE FROM job_applications WHERE id = ?', [req.params.id], function(err) {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to delete application' });
+        }
+        res.json({ success: true, message: 'Application deleted' });
+      });
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

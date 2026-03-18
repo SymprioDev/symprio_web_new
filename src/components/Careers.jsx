@@ -6,6 +6,17 @@ import ReadyToStartCTA from './ReadyToStartCTA';
 export default function Careers() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [openPositions, setOpenPositions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [applicationData, setApplicationData] = useState({
+    firstName: '',
+    lastName: '',
+    mobileNumber: '',
+    coverLetter: ''
+  });
+  const [cvFile, setCvFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     AOS.init({
@@ -95,6 +106,95 @@ export default function Careers() {
       'Consulting': '#3b82f6'
     };
     return colors[department] || '#3b82f6';
+  };
+
+  const handleApplyNow = (job) => {
+    setSelectedRole(job);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedRole(null);
+    setApplicationData({
+      firstName: '',
+      lastName: '',
+      mobileNumber: '',
+      coverLetter: ''
+    });
+    setCvFile(null);
+    setSubmitSuccess(false);
+    setSubmitError('');
+  };
+
+  const handleApplicationChange = (e) => {
+    const { name, value } = e.target;
+    // For mobile number, only allow numbers
+    if (name === 'mobileNumber') {
+      const filtered = value.replace(/[^0-9]/g, '');
+      setApplicationData(prev => ({ ...prev, [name]: filtered }));
+    } else {
+      setApplicationData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check file type (PDF only)
+      if (file.type !== 'application/pdf') {
+        setSubmitError('Only PDF files are allowed');
+        return;
+      }
+      // Check file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setSubmitError('File size must be less than 5MB');
+        return;
+      }
+      setCvFile(file);
+      setSubmitError('');
+    }
+  };
+
+  const handleApplicationSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('firstName', applicationData.firstName);
+      formDataToSend.append('lastName', applicationData.lastName);
+      formDataToSend.append('mobileNumber', applicationData.mobileNumber);
+      formDataToSend.append('coverLetter', applicationData.coverLetter);
+      formDataToSend.append('jobTitle', selectedRole?.title || '');
+      formDataToSend.append('cv', cvFile);
+
+      const response = await fetch('http://localhost:5000/api/job-applications', {
+        method: 'POST',
+        body: formDataToSend
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit application');
+      }
+
+      setSubmitSuccess(true);
+      // Reset form after success
+      setApplicationData({
+        firstName: '',
+        lastName: '',
+        mobileNumber: '',
+        coverLetter: ''
+      });
+      setCvFile(null);
+    } catch (err) {
+      setSubmitError(err.message || 'Failed to submit application. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const defaultOpenPositions = [];
@@ -585,6 +685,7 @@ export default function Careers() {
                         e.currentTarget.style.background = `${deptColor}15`;
                         e.currentTarget.style.color = deptColor;
                       }}
+                      onClick={() => handleApplyNow(job)}
                     >
                       Apply Now
                     </button>
@@ -1003,6 +1104,306 @@ export default function Careers() {
 
       {/* CTA Section */}
       <ReadyToStartCTA />
+
+      {/* Job Application Modal */}
+      {showModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: '20px'
+        }} onClick={handleCloseModal}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '16px',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            padding: '40px',
+            position: 'relative',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          }} onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button
+              onClick={handleCloseModal}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'none',
+                border: 'none',
+                fontSize: '28px',
+                cursor: 'pointer',
+                color: '#6b7280',
+                lineHeight: 1
+              }}
+            >
+              ×
+            </button>
+
+            {/* Header */}
+            <div style={{ marginBottom: '30px' }}>
+              <h2 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#1f2937',
+                margin: '0 0 8px 0'
+              }}>
+                Apply for Position
+              </h2>
+              {selectedRole && (
+                <p style={{
+                  fontSize: '16px',
+                  color: '#3b82f6',
+                  margin: 0,
+                  fontWeight: '600'
+                }}>
+                  {selectedRole.title}
+                </p>
+              )}
+            </div>
+
+            {/* Success Message */}
+            {submitSuccess ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px 20px'
+              }}>
+                <div style={{
+                  fontSize: '60px',
+                  marginBottom: '20px'
+                }}>✅</div>
+                <h3 style={{
+                  fontSize: '24px',
+                  color: '#1f2937',
+                  marginBottom: '10px'
+                }}>
+                  Application Submitted!
+                </h3>
+                <p style={{
+                  fontSize: '16px',
+                  color: '#6b7280',
+                  marginBottom: '30px'
+                }}>
+                  Thank you for applying. We'll review your application and get back to you soon.
+                </p>
+                <button
+                  onClick={handleCloseModal}
+                  style={{
+                    background: '#3b82f6',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '12px 30px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleApplicationSubmit}>
+                {/* Error Message */}
+                {submitError && (
+                  <div style={{
+                    background: '#fee2e2',
+                    color: '#dc2626',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    marginBottom: '20px',
+                    fontSize: '14px'
+                  }}>
+                    {submitError}
+                  </div>
+                )}
+
+                {/* First Name */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={applicationData.firstName}
+                    onChange={handleApplicationChange}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    Last Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={applicationData.lastName}
+                    onChange={handleApplicationChange}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* Mobile Number */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    Mobile Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="mobileNumber"
+                    value={applicationData.mobileNumber}
+                    onChange={handleApplicationChange}
+                    required
+                    pattern="[0-9]*"
+                    inputMode="numeric"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* CV Upload */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    Upload CV (PDF only, max 5MB) *
+                  </label>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  {cvFile && (
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#10b981',
+                      marginTop: '8px'
+                    }}>
+                      Selected: {cvFile.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Cover Letter */}
+                <div style={{ marginBottom: '30px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    Cover Letter *
+                  </label>
+                  <textarea
+                    name="coverLetter"
+                    value={applicationData.coverLetter}
+                    onChange={handleApplicationChange}
+                    required
+                    rows={5}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      resize: 'vertical',
+                      fontFamily: 'inherit'
+                    }}
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    background: submitting ? '#9ca3af' : 'linear-gradient(135deg, #3b82f6 0%, #0891b2 100%)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: submitting ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Application'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

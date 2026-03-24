@@ -1547,11 +1547,8 @@ const AdminDashboard = () => {
                       <thead>
                         <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
                           <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>First Name</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Last Name</th>
                           <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Mobile</th>
                           <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Job Title</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Cover Letter</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>CV</th>
                           <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Submitted</th>
                           <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Status</th>
                           <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
@@ -1561,24 +1558,8 @@ const AdminDashboard = () => {
                         {filteredApplications.map((app) => (
                       <tr key={app.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                         <td style={{ padding: '16px', color: '#374151' }}>{app.firstName}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>{app.lastName}</td>
                         <td style={{ padding: '16px', color: '#374151' }}>{app.mobileNumber}</td>
                         <td style={{ padding: '16px', color: '#374151' }}>{app.jobTitle || '-'}</td>
-                        <td style={{ padding: '16px', color: '#374151', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {app.coverLetter || '-'}
-                        </td>
-                        <td style={{ padding: '16px' }}>
-                          {app.cvFilePath ? (
-                            <a 
-                              href={app.cvFilePath} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              style={{ color: '#00d4ff', textDecoration: 'none', fontWeight: '600' }}
-                            >
-                              Download CV
-                            </a>
-                          ) : '-'}
-                        </td>
                         <td style={{ padding: '16px', color: '#374151' }}>
                           {app.submittedDate ? new Date(app.submittedDate).toLocaleDateString() : '-'}
                         </td>

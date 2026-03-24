@@ -11,6 +11,7 @@ export default function Careers() {
     firstName: '',
     lastName: '',
     mobileNumber: '',
+    email: '',
     coverLetter: ''
   });
   const [cvFile, setCvFile] = useState(null);
@@ -120,6 +121,7 @@ export default function Careers() {
       firstName: '',
       lastName: '',
       mobileNumber: '',
+      email: '',
       coverLetter: ''
     });
     setCvFile(null);
@@ -166,6 +168,7 @@ export default function Careers() {
       formDataToSend.append('firstName', applicationData.firstName);
       formDataToSend.append('lastName', applicationData.lastName);
       formDataToSend.append('mobileNumber', applicationData.mobileNumber);
+      formDataToSend.append('email', applicationData.email);
       formDataToSend.append('coverLetter', applicationData.coverLetter);
       formDataToSend.append('jobTitle', selectedRole?.title || '');
       formDataToSend.append('cv', cvFile);
@@ -685,7 +688,7 @@ export default function Careers() {
                         e.currentTarget.style.background = `${deptColor}15`;
                         e.currentTarget.style.color = deptColor;
                       }}
-                      onClick={() => handleApplyNow(job)}
+                      onClick={() => handleApplyNow(position)}
                     >
                       Apply Now
                     </button>
@@ -827,6 +830,7 @@ export default function Careers() {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
               }}
+              onClick={() => handleApplyNow({ title: 'Graduate Program' })}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = '0 12px 24px rgba(59, 130, 246, 0.3)';
@@ -965,6 +969,7 @@ export default function Careers() {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
               }}
+              onClick={() => handleApplyNow({ title: 'Internship Program' })}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = '0 12px 24px rgba(139, 92, 246, 0.3)';
@@ -1302,6 +1307,34 @@ export default function Careers() {
                     required
                     pattern="[0-9]*"
                     inputMode="numeric"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* Email */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '8px'
+                  }}>
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={applicationData.email}
+                    onChange={handleApplicationChange}
+                    required
                     style={{
                       width: '100%',
                       padding: '12px 16px',

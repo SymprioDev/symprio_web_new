@@ -147,7 +147,6 @@ const TeamMembers = () => {
         <p data-aos="fade-up" data-aos-delay="150" data-aos-duration="800" data-aos-offset="50" style={{
           fontSize: '16px',
           color: '#cbd5e1',
-          margin: '0',
           maxWidth: '500px',
           margin: '0 auto'
         }}>

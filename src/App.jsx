@@ -30,6 +30,8 @@ import ServicesLanding from './components/ServicesLanding';
 import AgenticAI from './components/AgenticAI';
 import Careers from './components/Careers';
 import Enquiry from './components/Enquiry';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import SupportSubscription from './components/SupportSubscription';
 import CurvedDivider from './components/CurvedDivider';
 
 const HomePage = () => {
@@ -182,6 +184,8 @@ function App() {
       <Route path="/clients" element={<Clients />} />
       <Route path="/careers" element={<ServicePage component={Careers} />} />
       <Route path="/enquiry" element={<ServicePage component={Enquiry} />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/support-subscription" element={<ServicePage component={SupportSubscription} />} />
       <Route 
         path="/admin" 
         element={

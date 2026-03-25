@@ -20,6 +20,48 @@ const paFaqs = [
   }
 ];
 
+/* SVG Icon Components */
+const SearchIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+  </svg>
+);
+
+const DollarIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  </svg>
+);
+
+const MapIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+  </svg>
+);
+
+const TrophyIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+    <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+  </svg>
+);
+
+const TrendUpIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+
+const stepIcons = [<SearchIcon />, <ChartIcon />, <DollarIcon />, <MapIcon />];
+
 export default function ProcessAssessment() {
   const navigate = useNavigate();
 
@@ -31,22 +73,18 @@ export default function ProcessAssessment() {
     {
       title: 'Discovery & Mapping',
       description: 'We interview stakeholders and document your current "as-is" processes in detail.',
-      icon: '\uD83D\uDD0D'
     },
     {
       title: 'Bottleneck Analysis',
       description: 'Identifying manual handoffs, repetitive tasks, and operational inefficiencies.',
-      icon: '\uD83D\uDCCA'
     },
     {
       title: 'ROI Estimation',
       description: 'We calculate the potential cost savings and efficiency gains for each automation opportunity.',
-      icon: '\uD83D\uDCB0'
     },
     {
       title: 'Roadmap Design',
       description: 'Prioritized list of automation projects with clear timelines and resource requirements.',
-      icon: '\uD83D\uDDFA\uFE0F'
     }
   ];
 
@@ -90,7 +128,7 @@ export default function ProcessAssessment() {
       </section>
 
       {/* Main intro section */}
-      <section style={{ padding: '100px 0' }}>
+      <section style={{ padding: '100px 20px' }}>
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div data-aos="fade-right">
@@ -116,14 +154,26 @@ export default function ProcessAssessment() {
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#185ADB';
                   e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#DCDCDC';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}>
-                  <div style={{ fontSize: '28px' }}>{'\uD83C\uDFC6'}</div>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: '#EFF6FF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#185ADB',
+                    flexShrink: 0
+                  }}>
+                    <TrophyIcon />
+                  </div>
                   <div>
                     <h4 style={{ fontWeight: '700', color: '#010B1D', fontSize: '18px', marginBottom: '4px' }}>Strategic Alignment</h4>
                     <p style={{ color: '#444444', fontSize: '16px', margin: 0, lineHeight: '1.6' }}>Ensuring automation goals match your long-term business objectives.</p>
@@ -141,14 +191,26 @@ export default function ProcessAssessment() {
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#185ADB';
                   e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#DCDCDC';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}>
-                  <div style={{ fontSize: '28px' }}>{'\uD83D\uDCC8'}</div>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: '#EFF6FF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#185ADB',
+                    flexShrink: 0
+                  }}>
+                    <TrendUpIcon />
+                  </div>
                   <div>
                     <h4 style={{ fontWeight: '700', color: '#010B1D', fontSize: '18px', marginBottom: '4px' }}>Data-Driven Decisions</h4>
                     <p style={{ color: '#444444', fontSize: '16px', margin: 0, lineHeight: '1.6' }}>Moving beyond intuition with clear process metrics and ROI analysis.</p>
@@ -175,7 +237,7 @@ export default function ProcessAssessment() {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = '#185ADB';
                     e.currentTarget.style.transform = 'translateY(-5px)';
-                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = '#DCDCDC';
@@ -187,14 +249,14 @@ export default function ProcessAssessment() {
                     width: '60px',
                     height: '60px',
                     borderRadius: '16px',
-                    background: '#185ADB',
+                    background: '#EFF6FF',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '28px',
+                    color: '#185ADB',
                     flexShrink: 0
                   }}>
-                    {step.icon}
+                    {stepIcons[i]}
                   </div>
                   <div>
                     <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#010B1D', marginBottom: '4px' }}>{step.title}</h3>
@@ -210,7 +272,7 @@ export default function ProcessAssessment() {
       {/* Center of Excellence section */}
       <section style={{
         background: 'linear-gradient(135deg, #010B1D 0%, #185ADB 100%)',
-        padding: '100px 0',
+        padding: '100px 20px',
         color: '#fff',
         position: 'relative'
       }}>

@@ -6,6 +6,74 @@ import ReadyToStartCTA from './ReadyToStartCTA';
 import FAQSection from './FAQSection';
 import ConsultationForm from './ConsultationForm';
 
+/* ── SVG Icon helpers ── */
+const SvgSearch = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+const SvgClipboard = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/>
+  </svg>
+);
+const SvgRocket = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+  </svg>
+);
+const SvgGlobe = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+const SvgHeart = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+);
+const SvgShuffle = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
+  </svg>
+);
+const SvgBarChart = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+  </svg>
+);
+const SvgSmile = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+  </svg>
+);
+const SvgLightbulb = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>
+  </svg>
+);
+const SvgCpu = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+  </svg>
+);
+const SvgUsers = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+const coverageIcons = [
+  <SvgGlobe />,
+  <SvgHeart />,
+  <SvgShuffle />,
+  <SvgBarChart />,
+  <SvgSmile />,
+  <SvgLightbulb />,
+  <SvgCpu />,
+  <SvgUsers />
+];
+
 // Zigzag Features Component
 const ZigzagFeatures = () => {
   const features = [
@@ -99,12 +167,11 @@ const ZigzagFeatures = () => {
           <div
             key={idx}
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              display: 'flex',
+              flexDirection: feature.imagePosition === 'left' ? 'row' : 'row-reverse',
               gap: '50px',
               alignItems: 'center',
-              marginBottom: '60px',
-              gridAutoFlow: feature.imagePosition === 'right' ? 'dense' : 'initial'
+              marginBottom: '60px'
             }}
           >
             {/* Image Container */}
@@ -113,10 +180,10 @@ const ZigzagFeatures = () => {
               data-aos-duration="900"
               data-aos-offset="50"
               style={{
-                order: feature.imagePosition === 'right' ? 2 : 1,
+                flex: '1',
                 display: 'flex',
                 alignItems: 'flex-start',
-                justifyContent: feature.imagePosition === 'left' ? 'flex-start' : 'flex-end',
+                justifyContent: 'center',
                 minHeight: 'auto',
                 backgroundColor: '#ffffff',
                 overflow: 'visible',
@@ -142,9 +209,7 @@ const ZigzagFeatures = () => {
               data-aos-delay="100"
               data-aos-duration="900"
               data-aos-offset="50"
-              style={{
-                order: feature.imagePosition === 'right' ? 1 : 2
-              }}
+              style={{ flex: '1' }}
             >
               <h3 style={{
                 fontSize: '28px',
@@ -196,6 +261,35 @@ export default function DigitalTransformation() {
     window.scrollTo(0, 0);
     AOS.init({ duration: 800, easing: 'ease-out', once: false });
   }, []);
+
+  const phaseCards = [
+    {
+      phase: 'Assess',
+      description: 'Evaluate current state, capabilities, and digital maturity across organization',
+      icon: <SvgSearch />
+    },
+    {
+      phase: 'Plan',
+      description: 'Develop comprehensive strategy with clear milestones and technology roadmap',
+      icon: <SvgClipboard />
+    },
+    {
+      phase: 'Transform',
+      description: 'Execute transformation with continuous optimization and stakeholder alignment',
+      icon: <SvgRocket />
+    }
+  ];
+
+  const coverageAreas = [
+    { title: 'Ecosystem', description: 'Build integrated systems and strategic partnerships to create a connected digital ecosystem' },
+    { title: 'Organization Culture', description: 'Foster innovation-driven culture and organizational readiness for digital initiatives' },
+    { title: 'Change Management', description: 'Navigate organizational transformation with structured change management frameworks' },
+    { title: 'Data & Insights', description: 'Leverage data-driven decision making and advanced analytics for business intelligence' },
+    { title: 'Customer Experience', description: 'Deliver exceptional omnichannel experiences and personalized customer journeys' },
+    { title: 'Innovation', description: 'Drive continuous innovation and explore emerging technologies for competitive advantage' },
+    { title: 'Technology', description: 'Implement scalable technology platforms and modern infrastructure solutions' },
+    { title: 'People & Skillset', description: 'Develop workforce capabilities and build digital-first talent strategies' }
+  ];
 
   return (
     <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
@@ -361,23 +455,7 @@ export default function DigitalTransformation() {
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '30px'
           }}>
-            {[
-              {
-                phase: 'Assess',
-                description: 'Evaluate current state, capabilities, and digital maturity across organization',
-                icon: '\uD83D\uDD0D'
-              },
-              {
-                phase: 'Plan',
-                description: 'Develop comprehensive strategy with clear milestones and technology roadmap',
-                icon: '\uD83D\uDCCB'
-              },
-              {
-                phase: 'Transform',
-                description: 'Execute transformation with continuous optimization and stakeholder alignment',
-                icon: '\uD83D\uDE80'
-              }
-            ].map((item, idx) => (
+            {phaseCards.map((item, idx) => (
               <div
                 key={idx}
                 data-aos="fade-up"
@@ -388,7 +466,7 @@ export default function DigitalTransformation() {
                   background: '#ffffff',
                   border: '1px solid #DCDCDC',
                   borderRadius: '20px',
-                  padding: '32px 24px',
+                  padding: '36px',
                   textAlign: 'center',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
@@ -405,9 +483,17 @@ export default function DigitalTransformation() {
                   e.currentTarget.style.borderColor = '#DCDCDC';
                 }}
               >
+                {/* SVG Icon */}
                 <div style={{
-                  fontSize: '48px',
-                  marginBottom: '16px'
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '16px',
+                  background: '#F1F7F3',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#185ADB',
+                  margin: '0 auto 20px'
                 }}>
                   {item.icon}
                 </div>
@@ -428,20 +514,24 @@ export default function DigitalTransformation() {
                   {item.description}
                 </p>
 
-                {/* Arrow indicator between cards */}
-                {idx < 2 && (
-                  <div style={{
-                    position: 'absolute',
-                    right: '-45px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    fontSize: '24px',
-                    color: '#185ADB',
-                    fontWeight: '300'
-                  }}>
-                    {'\u2192'}
-                  </div>
-                )}
+                {/* Step number indicator */}
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: '#185ADB',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontWeight: '700',
+                  fontSize: '12px'
+                }}>
+                  {idx + 1}
+                </div>
               </div>
             ))}
           </div>
@@ -452,9 +542,16 @@ export default function DigitalTransformation() {
       <ZigzagFeatures />
 
       {/* Rest of Content */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px 80px 20px' }}>
+      <div style={{
+        width: '100%',
+        padding: '100px 20px',
+        background: '#F1F7F3'
+      }}>
         {/* Areas of Coverage Section */}
-        <section id="coverage-section" style={{ marginBottom: '80px' }}>
+        <section id="coverage-section" style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
           <div
             data-aos="fade-up"
             data-aos-duration="800"
@@ -493,16 +590,7 @@ export default function DigitalTransformation() {
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
-            {[
-              { title: 'Ecosystem', description: 'Build integrated systems and strategic partnerships to create a connected digital ecosystem' },
-              { title: 'Organization Culture', description: 'Foster innovation-driven culture and organizational readiness for digital initiatives' },
-              { title: 'Change Management', description: 'Navigate organizational transformation with structured change management frameworks' },
-              { title: 'Data & Insights', description: 'Leverage data-driven decision making and advanced analytics for business intelligence' },
-              { title: 'Customer Experience', description: 'Deliver exceptional omnichannel experiences and personalized customer journeys' },
-              { title: 'Innovation', description: 'Drive continuous innovation and explore emerging technologies for competitive advantage' },
-              { title: 'Technology', description: 'Implement scalable technology platforms and modern infrastructure solutions' },
-              { title: 'People & Skillset', description: 'Develop workforce capabilities and build digital-first talent strategies' }
-            ].map((area, idx) => (
+            {coverageAreas.map((area, idx) => (
               <div
                 key={idx}
                 data-aos="fade-up"
@@ -513,7 +601,7 @@ export default function DigitalTransformation() {
                   background: '#ffffff',
                   border: '1px solid #DCDCDC',
                   borderRadius: '20px',
-                  padding: '32px 24px',
+                  padding: '36px',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   position: 'relative',
@@ -530,13 +618,13 @@ export default function DigitalTransformation() {
                   e.currentTarget.style.borderColor = '#DCDCDC';
                 }}
               >
-                {/* Number Badge */}
+                {/* Number Badge - small circle */}
                 <div style={{
                   position: 'absolute',
                   top: '16px',
                   right: '16px',
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
                   background: '#185ADB',
                   display: 'flex',
@@ -544,20 +632,25 @@ export default function DigitalTransformation() {
                   justifyContent: 'center',
                   color: '#fff',
                   fontWeight: '700',
-                  fontSize: '14px',
-                  opacity: 0.15
+                  fontSize: '13px'
                 }}>
                   {String(idx + 1).padStart(2, '0')}
                 </div>
 
-                {/* Color Accent Line */}
+                {/* SVG Icon */}
                 <div style={{
-                  width: '4px',
-                  height: '40px',
-                  background: '#185ADB',
-                  borderRadius: '2px',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: '#F1F7F3',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#185ADB',
                   marginBottom: '20px'
-                }} />
+                }}>
+                  {coverageIcons[idx]}
+                </div>
 
                 <h3 style={{
                   fontSize: '20px',

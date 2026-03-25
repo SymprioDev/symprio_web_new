@@ -6,6 +6,74 @@ import ReadyToStartCTA from './ReadyToStartCTA';
 import FAQSection from './FAQSection';
 import ConsultationForm from './ConsultationForm';
 
+/* ── SVG Icon helpers ── */
+const SvgBrain = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a5 5 0 0 1 4.55 2.91A4.5 4.5 0 0 1 20 9.5a4.5 4.5 0 0 1-2.1 3.81A5 5 0 0 1 12 22a5 5 0 0 1-5.9-8.69A4.5 4.5 0 0 1 4 9.5a4.5 4.5 0 0 1 3.45-4.59A5 5 0 0 1 12 2z"/>
+    <path d="M12 2v20"/>
+  </svg>
+);
+const SvgBolt = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+  </svg>
+);
+const SvgRefresh = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+  </svg>
+);
+const SvgPhone = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.68 2.35a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.75.32 1.54.55 2.35.68A2 2 0 0 1 22 16.92z"/>
+  </svg>
+);
+const SvgBriefcase = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+  </svg>
+);
+const SvgBox = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/>
+  </svg>
+);
+const SvgDollar = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  </svg>
+);
+const SvgUsers = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+const SvgSearch = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+const SvgMap = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+  </svg>
+);
+const SvgTool = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+  </svg>
+);
+const SvgFlask = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 3h6v7l5 8a2 2 0 0 1-1.7 3H5.7a2 2 0 0 1-1.7-3l5-8V3z"/><line x1="9" y1="3" x2="15" y2="3"/>
+  </svg>
+);
+const SvgRocket = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+  </svg>
+);
+
 const agenticFaqs = [
   {
     q: 'How does Agentic AI differ from traditional RPA?',
@@ -23,17 +91,17 @@ const agenticFaqs = [
 
 const whyMatters = [
   {
-    icon: '🧠',
+    icon: <SvgBrain />,
     title: 'Autonomous Decision-Making',
     description: 'Agents reason through complex scenarios, weighing options and making informed decisions without waiting for human input at every step.'
   },
   {
-    icon: '⚡',
+    icon: <SvgBolt />,
     title: 'End-to-End Task Execution',
     description: 'Unlike chatbots that only suggest, agentic AI completes entire workflows—from data gathering to action—autonomously and reliably.'
   },
   {
-    icon: '🔄',
+    icon: <SvgRefresh />,
     title: 'Continuous Learning',
     description: 'Agents improve over time by learning from outcomes, adapting strategies, and becoming more effective with every interaction.'
   }
@@ -44,31 +112,36 @@ const useCases = [
     number: '01',
     title: 'Intelligent Customer Service',
     overview: 'AI agents that handle complex customer queries, escalate intelligently, and resolve issues end-to-end.',
-    benefits: ['80% reduction in response time', 'Seamless handoff to human agents', '24/7 multi-channel support']
+    benefits: ['80% reduction in response time', 'Seamless handoff to human agents', '24/7 multi-channel support'],
+    icon: <SvgPhone />
   },
   {
     number: '02',
     title: 'Procurement Automation',
     overview: 'Agents that manage vendor selection, negotiate contracts, and process purchase orders autonomously.',
-    benefits: ['40% cost savings on procurement', 'Automated compliance checks', 'Real-time spend analytics']
+    benefits: ['40% cost savings on procurement', 'Automated compliance checks', 'Real-time spend analytics'],
+    icon: <SvgBriefcase />
   },
   {
     number: '03',
     title: 'Supply Chain Orchestration',
     overview: 'Intelligent agents monitoring inventory, predicting demand, and coordinating logistics in real time.',
-    benefits: ['30% reduction in stockouts', 'Predictive demand planning', 'Automated supplier coordination']
+    benefits: ['30% reduction in stockouts', 'Predictive demand planning', 'Automated supplier coordination'],
+    icon: <SvgBox />
   },
   {
     number: '04',
     title: 'Financial Operations',
     overview: 'Agents that reconcile accounts, detect anomalies, and generate regulatory reports without manual intervention.',
-    benefits: ['99.5% reconciliation accuracy', 'Real-time fraud detection', 'Automated regulatory filing']
+    benefits: ['99.5% reconciliation accuracy', 'Real-time fraud detection', 'Automated regulatory filing'],
+    icon: <SvgDollar />
   },
   {
     number: '05',
     title: 'HR & Talent Management',
     overview: 'AI-driven screening, onboarding, and employee engagement workflows that run autonomously.',
-    benefits: ['5x faster candidate screening', 'Personalized onboarding journeys', 'Proactive retention insights']
+    benefits: ['5x faster candidate screening', 'Personalized onboarding journeys', 'Proactive retention insights'],
+    icon: <SvgUsers />
   }
 ];
 
@@ -89,34 +162,46 @@ export default function AgenticAI() {
   const implementationSteps = [
     {
       step: '01',
-      title: 'AI Assessment',
-      icon: '🔍',
-      description: 'Audit of your current data landscape and automation potential.'
+      title: 'Assessment & Readiness',
+      timeline: 'Week 1-2',
+      label: 'ASSESSMENT',
+      description: 'Evaluate current automation maturity, data quality and AI readiness. Understand your organization\'s digital infrastructure and capability gaps.'
     },
     {
       step: '02',
-      title: 'Strategy Design',
-      icon: '🗺️',
-      description: 'Defining agent roles, toolsets, and human-in-the-loop protocols.'
+      title: 'Use Case Prioritisation',
+      timeline: 'Week 2-3',
+      label: 'PRIORITISATION',
+      description: 'Identify high-impact processes and define success metrics. Prioritize use cases based on business value and implementation feasibility.'
     },
     {
       step: '03',
-      title: 'Agent Building',
-      icon: '🛠️',
-      description: 'Developing autonomous agents with reasoning capabilities.'
+      title: 'Pilot & Validation',
+      timeline: 'Week 4-6',
+      label: 'PILOT',
+      description: 'Develop proof of concept, validate ROI and ensure ethical & regulatory compliance. Test agent performance in controlled environment.'
     },
     {
       step: '04',
-      title: 'Pilot Deployment',
-      icon: '🧪',
-      description: 'Live testing in a sandboxed environment with real-world scenarios.'
+      title: 'Deployment & Scaling',
+      timeline: 'Week 7-10',
+      label: 'DEPLOYMENT',
+      description: 'Integrate agents into production systems with secure access controls. Deploy with proper monitoring and rollback capabilities.'
     },
     {
       step: '05',
-      title: 'Enterprise Scale',
-      icon: '🚀',
-      description: 'Full rollout across departments with continuous learning.'
+      title: 'Monitoring & Improvement',
+      timeline: 'Ongoing',
+      label: 'MONITOR',
+      description: 'Monitor agent performance, gather user feedback and continuously iterate. Optimize processes based on real-world data and outcomes.'
     }
+  ];
+
+  /* ── Comparison data ── */
+  const comparisonRows = [
+    { category: 'Autonomy', gen: 'Requires human prompts & limited independent action', agent: 'Self-directed execution with minimal intervention' },
+    { category: 'Decision Making', gen: 'Suggests options for human approval', agent: 'Makes autonomous decisions & executes' },
+    { category: 'Control', gen: 'User-driven operations & manual control', agent: 'Goal-oriented with continuous learning' }
   ];
 
   return (
@@ -226,29 +311,6 @@ export default function AgenticAI() {
           </div>
         </section>
       </div>
-
-      <style>{`
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-60px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(60px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
 
       {/* What is Agentic AI Container - Overlapping Banner */}
       <div
@@ -405,203 +467,145 @@ export default function AgenticAI() {
             data-aos-delay="100">
               <div style={{
                 textAlign: 'center',
-                color: '#ffffff',
-                fontSize: '48px'
+                color: '#ffffff'
               }}>
-                🧠
+                <SvgBrain />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Comparison Table */}
+      {/* Comparison Section - CSS Grid (no HTML table) */}
       <div id="comparison-section" style={{
-            marginTop: '20px',
-            padding: '100px 20px',
-            position: 'relative',
-            background: '#ffffff'
+        marginTop: '20px',
+        padding: '100px 20px',
+        position: 'relative',
+        background: '#ffffff'
+      }}>
+        {/* Title */}
+        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>COMPARISON</div>
+          <h2 style={{
+            fontSize: '42px',
+            fontWeight: '400',
+            color: '#010B1D',
+            margin: '0 0 15px 0',
+            lineHeight: '1.3'
+          }} data-aos="fade-up">
+            <strong>Generative AI</strong> vs <strong>Agentic AI</strong>
+          </h2>
+          <div style={{
+            width: '80px',
+            height: '4px',
+            background: '#185ADB',
+            margin: '20px auto 30px',
+            borderRadius: '3px'
+          }} data-aos="fade-up" data-aos-delay="100" />
+          <p style={{
+            fontSize: '16px',
+            color: '#444444',
+            maxWidth: '700px',
+            margin: '0 auto',
+            lineHeight: '1.7'
+          }} data-aos="fade-up" data-aos-delay="200">
+            Understand the key differences between Generative AI and Agentic AI to make informed decisions about implementing the right solution for your business needs.
+          </p>
+        </div>
+
+        {/* 3-column CSS Grid Comparison */}
+        <div style={{ maxWidth: '900px', margin: '0 auto' }} data-aos="fade-up" data-aos-delay="300">
+          {/* Header Row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '0',
+            background: '#F1F7F3',
+            borderRadius: '20px 20px 0 0',
+            border: '1px solid #DCDCDC',
+            borderBottom: 'none'
           }}>
-            {/* Animated Title Section */}
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '60px'
-            }}>
-              <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>COMPARISON</div>
-              <h2 style={{
-                fontSize: '42px',
-                fontWeight: '400',
+            {['Category', 'Generative AI', 'Agentic AI'].map((label, i) => (
+              <div key={i} style={{
+                padding: '18px 24px',
+                fontWeight: '600',
                 color: '#010B1D',
-                margin: '0 0 15px 0',
-                lineHeight: '1.3'
-              }}
-              data-aos="fade-up">
-                <strong>Generative AI</strong> vs <strong>Agentic AI</strong>
-              </h2>
-              <div style={{
-                width: '80px',
-                height: '4px',
-                background: '#185ADB',
-                margin: '20px auto 30px',
-                borderRadius: '3px'
-              }}
-              data-aos="fade-up"
-              data-aos-delay="100" />
-              <p style={{
                 fontSize: '16px',
-                color: '#444444',
-                maxWidth: '700px',
-                margin: '0 auto',
-                lineHeight: '1.7'
-              }}
-              data-aos="fade-up"
-              data-aos-delay="200">
-                Understand the key differences between Generative AI and Agentic AI to make informed decisions about implementing the right solution for your business needs.
-              </p>
-            </div>
-
-            {/* Comparison Table */}
-            <div style={{
-              maxWidth: '900px',
-              margin: '0 auto',
-              overflow: 'auto'
-            }}
-            data-aos="fade-up"
-            data-aos-delay="300">
-              <table style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                fontSize: '15px',
-                textAlign: 'left',
-                border: '1px solid #DCDCDC',
-                borderRadius: '20px',
-                overflow: 'hidden'
+                textAlign: 'center',
+                borderRight: i < 2 ? '1px solid #DCDCDC' : 'none'
               }}>
-                <thead>
-                  <tr style={{
-                    background: '#f8f9fa',
-                    borderBottom: '1px solid #DCDCDC'
-                  }}>
-                    <th style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      fontSize: '16px',
-                      borderBottom: '1px solid #DCDCDC'
-                    }}>Category</th>
-                    <th style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      fontSize: '16px',
-                      borderBottom: '1px solid #DCDCDC'
-                    }}>Generative AI</th>
-                    <th style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      fontSize: '16px',
-                      borderBottom: '1px solid #DCDCDC'
-                    }}>Agentic AI</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{
-                    borderBottom: '1px solid #DCDCDC',
-                    background: '#ffffff'
-                  }}>
-                    <td style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      background: '#f8f9fa',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>Autonomy</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>Requires human prompts & limited independent action</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center'
-                    }}>Self-directed execution with minimal intervention</td>
-                  </tr>
-                  <tr style={{
-                    borderBottom: '1px solid #DCDCDC',
-                    background: '#f8f9fa'
-                  }}>
-                    <td style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      background: '#f8f9fa',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>Decision Making</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>Suggests options for human approval</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center'
-                    }}>Makes autonomous decisions & executes</td>
-                  </tr>
-                  <tr style={{
-                    borderBottom: '1px solid #DCDCDC',
-                    background: '#ffffff'
-                  }}>
-                    <td style={{
-                      padding: '16px',
-                      fontWeight: '600',
-                      color: '#010B1D',
-                      textAlign: 'center',
-                      background: '#f8f9fa',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>Control</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center',
-                      borderRight: '1px solid #DCDCDC'
-                    }}>User-driven operations & manual control</td>
-                    <td style={{
-                      padding: '16px',
-                      color: '#444444',
-                      textAlign: 'center'
-                    }}>Goal-oriented with continuous learning</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Info Line Below Table */}
-            <div style={{
-              maxWidth: '900px',
-              margin: '30px auto 0',
-              padding: '20px',
-              textAlign: 'center'
-            }}>
-              <p style={{
-                fontSize: '16px',
-                color: '#444444',
-                lineHeight: '1.7',
-                margin: '0'
-              }}>
-                <span style={{ fontWeight: '600', color: '#010B1D' }}>Generative AI</span> focuses on content creation and suggestions, requiring human guidance for every action. <span style={{ fontWeight: '600', color: '#010B1D' }}>Agentic AI</span> independently executes tasks and makes decisions with minimal human oversight, delivering faster results and higher efficiency.
-              </p>
-            </div>
+                {label}
+              </div>
+            ))}
           </div>
+
+          {/* Data Rows */}
+          {comparisonRows.map((row, idx) => (
+            <div key={idx} style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '0',
+              background: idx % 2 === 0 ? '#ffffff' : '#F1F7F3',
+              border: '1px solid #DCDCDC',
+              borderBottom: idx === comparisonRows.length - 1 ? '1px solid #DCDCDC' : 'none',
+              borderRadius: idx === comparisonRows.length - 1 ? '0 0 20px 20px' : '0'
+            }}>
+              <div style={{
+                padding: '18px 24px',
+                fontWeight: '600',
+                color: '#010B1D',
+                textAlign: 'center',
+                borderRight: '1px solid #DCDCDC',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {row.category}
+              </div>
+              <div style={{
+                padding: '18px 24px',
+                color: '#444444',
+                textAlign: 'center',
+                borderRight: '1px solid #DCDCDC',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '15px'
+              }}>
+                {row.gen}
+              </div>
+              <div style={{
+                padding: '18px 24px',
+                color: '#444444',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '15px'
+              }}>
+                {row.agent}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Info Line Below */}
+        <div style={{
+          maxWidth: '900px',
+          margin: '30px auto 0',
+          padding: '20px',
+          textAlign: 'center'
+        }}>
+          <p style={{
+            fontSize: '16px',
+            color: '#444444',
+            lineHeight: '1.7',
+            margin: '0'
+          }}>
+            <span style={{ fontWeight: '600', color: '#010B1D' }}>Generative AI</span> focuses on content creation and suggestions, requiring human guidance for every action. <span style={{ fontWeight: '600', color: '#010B1D' }}>Agentic AI</span> independently executes tasks and makes decisions with minimal human oversight, delivering faster results and higher efficiency.
+          </p>
+        </div>
+      </div>
       </div>
 
       {/* Introduction Section - Hidden */}
@@ -620,7 +624,7 @@ export default function AgenticAI() {
         margin: '0',
         padding: '100px 20px',
         position: 'relative',
-        background: '#f8f9fa',
+        background: '#F1F7F3',
         overflow: 'hidden'
       }}>
         <div style={{
@@ -661,7 +665,7 @@ export default function AgenticAI() {
                 data-aos="fade-up"
                 data-aos-delay={idx * 100}
                 style={{
-                  padding: '40px',
+                  padding: '36px',
                   background: '#ffffff',
                   border: '1px solid #DCDCDC',
                   borderRadius: '20px',
@@ -682,7 +686,14 @@ export default function AgenticAI() {
                 }}
               >
                 <div style={{
-                  fontSize: '48px',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: '#F1F7F3',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#185ADB',
                   marginBottom: '20px'
                 }}>
                   {item.icon}
@@ -709,7 +720,7 @@ export default function AgenticAI() {
         </div>
       </section>
 
-      {/* Enterprise Use Cases - Detailed Scenarios */}
+      {/* Enterprise Use Cases */}
       <section style={{
         width: '100%',
         padding: '100px 20px',
@@ -743,26 +754,19 @@ export default function AgenticAI() {
           gap: '30px'
         }}>
           {useCases.map((useCase, idx) => {
-            const colors = [
-              { color: '#185ADB', bgColor: '#f8f9fa', icon: '📞' },
-              { color: '#0D9488', bgColor: '#f8f9fa', icon: '💼' },
-              { color: '#185ADB', bgColor: '#f8f9fa', icon: '📦' },
-              { color: '#0D9488', bgColor: '#f8f9fa', icon: '💰' },
-              { color: '#185ADB', bgColor: '#f8f9fa', icon: '👥' }
-            ];
-            const colorScheme = colors[idx];
+            const accentColor = idx % 2 === 0 ? '#185ADB' : '#0D9488';
 
             return (
               <div
                 key={idx}
-                data-aos={idx % 2 === 0 ? 'fade-right' : 'fade-left'}
-                data-aos-delay={idx * 100}
+                data-aos="fade-up"
+                data-aos-delay={idx * 80}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '40px',
-                  alignItems: 'center',
-                  padding: '40px',
+                  gridTemplateColumns: '80px 1fr',
+                  gap: '30px',
+                  alignItems: 'start',
+                  padding: '36px',
                   background: '#ffffff',
                   border: '1px solid #DCDCDC',
                   borderRadius: '20px',
@@ -779,179 +783,73 @@ export default function AgenticAI() {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                {idx % 2 === 0 ? (
-                  <>
-                    <div>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '15px',
-                        marginBottom: '20px'
-                      }}>
-                        <div style={{
-                          fontSize: '40px',
-                          fontWeight: '800',
-                          color: colorScheme.color
-                        }}>
-                          {useCase.number}
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '24px' }}>{colorScheme.icon}</div>
-                        </div>
-                      </div>
-                      <h3 style={{
-                        fontSize: '24px',
-                        fontWeight: '700',
-                        color: '#010B1D',
-                        margin: '0 0 12px 0'
-                      }}>
-                        {useCase.title}
-                      </h3>
-                      <p style={{
-                        fontSize: '16px',
-                        color: '#444444',
-                        margin: '0 0 20px 0',
-                        lineHeight: '1.7',
-                        fontWeight: '500'
-                      }}>
-                        {useCase.overview}
-                      </p>
-                      <div>
-                        <p style={{
-                          fontSize: '12px',
-                          fontWeight: '700',
-                          color: colorScheme.color,
-                          margin: '0 0 12px 0',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}>
-                          Key Benefits
-                        </p>
-                        <ul style={{
-                          margin: 0,
-                          paddingLeft: '20px',
-                          fontSize: '14px',
-                          color: '#444444',
-                          lineHeight: '1.8'
-                        }}>
-                          {useCase.benefits.map((benefit, i) => (
-                            <li key={i}>{benefit}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <div style={{
-                      padding: '30px',
-                      background: '#f8f9fa',
-                      borderRadius: '16px',
-                      border: '1px solid #DCDCDC',
-                      textAlign: 'center'
+                {/* Left: icon + number */}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '16px',
+                    background: '#F1F7F3',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: accentColor,
+                    margin: '0 auto 8px'
+                  }}>
+                    {useCase.icon}
+                  </div>
+                  <div style={{
+                    fontSize: '28px',
+                    fontWeight: '800',
+                    color: accentColor
+                  }}>
+                    {useCase.number}
+                  </div>
+                </div>
+
+                {/* Right: text content */}
+                <div>
+                  <h3 style={{
+                    fontSize: '24px',
+                    fontWeight: '700',
+                    color: '#010B1D',
+                    margin: '0 0 12px 0'
+                  }}>
+                    {useCase.title}
+                  </h3>
+                  <p style={{
+                    fontSize: '16px',
+                    color: '#444444',
+                    margin: '0 0 20px 0',
+                    lineHeight: '1.7',
+                    fontWeight: '500'
+                  }}>
+                    {useCase.overview}
+                  </p>
+                  <div>
+                    <p style={{
+                      fontSize: '12px',
+                      fontWeight: '700',
+                      color: accentColor,
+                      margin: '0 0 12px 0',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
-                      <div style={{
-                        fontSize: '56px',
-                        fontWeight: '800',
-                        color: colorScheme.color,
-                        marginBottom: '10px'
-                      }}>
-                        {colorScheme.icon}
-                      </div>
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#444444',
-                        fontWeight: '500',
-                        margin: 0
-                      }}>
-                        {useCase.overview}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{
-                      padding: '30px',
-                      background: '#f8f9fa',
-                      borderRadius: '16px',
-                      border: '1px solid #DCDCDC',
-                      textAlign: 'center'
+                      Key Benefits
+                    </p>
+                    <ul style={{
+                      margin: 0,
+                      paddingLeft: '20px',
+                      fontSize: '14px',
+                      color: '#444444',
+                      lineHeight: '1.8'
                     }}>
-                      <div style={{
-                        fontSize: '56px',
-                        fontWeight: '800',
-                        color: colorScheme.color,
-                        marginBottom: '10px'
-                      }}>
-                        {colorScheme.icon}
-                      </div>
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#444444',
-                        fontWeight: '500',
-                        margin: 0
-                      }}>
-                        {useCase.overview}
-                      </p>
-                    </div>
-                    <div>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '15px',
-                        marginBottom: '20px'
-                      }}>
-                        <div style={{
-                          fontSize: '40px',
-                          fontWeight: '800',
-                          color: colorScheme.color
-                        }}>
-                          {useCase.number}
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '24px' }}>{colorScheme.icon}</div>
-                        </div>
-                      </div>
-                      <h3 style={{
-                        fontSize: '24px',
-                        fontWeight: '700',
-                        color: '#010B1D',
-                        margin: '0 0 12px 0'
-                      }}>
-                        {useCase.title}
-                      </h3>
-                      <p style={{
-                        fontSize: '16px',
-                        color: '#444444',
-                        margin: '0 0 20px 0',
-                        lineHeight: '1.7',
-                        fontWeight: '500'
-                      }}>
-                        {useCase.overview}
-                      </p>
-                      <div>
-                        <p style={{
-                          fontSize: '12px',
-                          fontWeight: '700',
-                          color: colorScheme.color,
-                          margin: '0 0 12px 0',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}>
-                          Key Benefits
-                        </p>
-                        <ul style={{
-                          margin: 0,
-                          paddingLeft: '20px',
-                          fontSize: '14px',
-                          color: '#444444',
-                          lineHeight: '1.8'
-                        }}>
-                          {useCase.benefits.map((benefit, i) => (
-                            <li key={i}>{benefit}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </>
-                )}
+                      {useCase.benefits.map((benefit, i) => (
+                        <li key={i}>{benefit}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -962,7 +860,8 @@ export default function AgenticAI() {
       <section style={{
         maxWidth: '1100px',
         margin: '0 auto',
-        padding: '100px 20px'
+        padding: '100px 20px',
+        background: '#F1F7F3'
       }}>
         <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TECHNOLOGY</div>
         <h2 style={{
@@ -982,7 +881,7 @@ export default function AgenticAI() {
           gap: '40px'
         }}>
           <div style={{
-            padding: '40px',
+            padding: '36px',
             background: '#ffffff',
             borderRadius: '20px',
             border: '1px solid #DCDCDC',
@@ -1019,7 +918,7 @@ export default function AgenticAI() {
           </div>
 
           <div style={{
-            padding: '40px',
+            padding: '36px',
             background: '#ffffff',
             borderRadius: '20px',
             border: '1px solid #DCDCDC',
@@ -1057,11 +956,11 @@ export default function AgenticAI() {
         </div>
       </section>
 
-      {/* Implementation Approach Section */}
+      {/* Implementation Approach - Vertical Timeline */}
       <section style={{
         width: '100%',
         padding: '100px 20px',
-        backgroundColor: '#f8f9fa'
+        backgroundColor: '#ffffff'
       }}>
         <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>IMPLEMENTATION</div>
         <h2 style={{
@@ -1076,185 +975,98 @@ export default function AgenticAI() {
         </h2>
 
         <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto'
+          maxWidth: '800px',
+          margin: '0 auto',
+          position: 'relative',
+          paddingLeft: '60px'
         }}>
-          {/* Step 1 */}
+          {/* Thin vertical line */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <div data-aos="fade-right" data-aos-delay="0">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
-                Week 1-2
+            position: 'absolute',
+            left: '19px',
+            top: '0',
+            bottom: '0',
+            width: '2px',
+            background: '#DCDCDC'
+          }} />
+
+          {implementationSteps.map((step, idx) => (
+            <div
+              key={idx}
+              data-aos="fade-up"
+              data-aos-delay={idx * 80}
+              style={{
+                position: 'relative',
+                marginBottom: idx < implementationSteps.length - 1 ? '50px' : '0'
+              }}
+            >
+              {/* Numbered circle */}
+              <div style={{
+                position: 'absolute',
+                left: '-60px',
+                top: '0',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: '#185ADB',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: '700',
+                fontSize: '14px',
+                zIndex: 2
+              }}>
+                {step.step}
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
-                Assessment & Readiness
-              </h3>
-              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
-                Evaluate current automation maturity, data quality and AI readiness. Understand your organization's digital infrastructure and capability gaps.
-              </p>
-            </div>
-            <div data-aos="zoom-in" data-aos-delay="100" style={{
-              background: '#ffffff',
-              padding: '30px',
-              borderRadius: '20px',
-              border: '1px solid #DCDCDC',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>01</div>
-              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>ASSESSMENT</div>
-            </div>
-          </div>
 
-          {/* Connector Line */}
-          <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="150">
-            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
-          </div>
-
-          {/* Step 2 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <div data-aos="zoom-in" data-aos-delay="200" style={{
-              background: '#ffffff',
-              padding: '30px',
-              borderRadius: '20px',
-              border: '1px solid #DCDCDC',
-              textAlign: 'center',
-              order: -1
-            }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>02</div>
-              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>PRIORITISATION</div>
-            </div>
-            <div data-aos="fade-left" data-aos-delay="250">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
-                Week 2-3
+              {/* Content */}
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #DCDCDC',
+                borderRadius: '20px',
+                padding: '36px',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#185ADB';
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#DCDCDC';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}>
+                <div style={{
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  color: '#185ADB',
+                  marginBottom: '6px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}>
+                  {step.timeline} — {step.label}
+                </div>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '700',
+                  color: '#010B1D',
+                  margin: '0 0 12px 0'
+                }}>
+                  {step.title}
+                </h3>
+                <p style={{
+                  fontSize: '16px',
+                  color: '#444444',
+                  lineHeight: '1.7',
+                  margin: '0'
+                }}>
+                  {step.description}
+                </p>
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
-                Use Case Prioritisation
-              </h3>
-              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
-                Identify high-impact processes and define success metrics. Prioritize use cases based on business value and implementation feasibility.
-              </p>
             </div>
-          </div>
-
-          {/* Connector Line */}
-          <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="300">
-            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
-          </div>
-
-          {/* Step 3 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <div data-aos="fade-right" data-aos-delay="350">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
-                Week 4-6
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
-                Pilot & Validation
-              </h3>
-              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
-                Develop proof of concept, validate ROI and ensure ethical & regulatory compliance. Test agent performance in controlled environment.
-              </p>
-            </div>
-            <div data-aos="zoom-in" data-aos-delay="400" style={{
-              background: '#ffffff',
-              padding: '30px',
-              borderRadius: '20px',
-              border: '1px solid #DCDCDC',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>03</div>
-              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>PILOT</div>
-            </div>
-          </div>
-
-          {/* Connector Line */}
-          <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="450">
-            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
-          </div>
-
-          {/* Step 4 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <div data-aos="zoom-in" data-aos-delay="500" style={{
-              background: '#ffffff',
-              padding: '30px',
-              borderRadius: '20px',
-              border: '1px solid #DCDCDC',
-              textAlign: 'center',
-              order: -1
-            }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>04</div>
-              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>DEPLOYMENT</div>
-            </div>
-            <div data-aos="fade-left" data-aos-delay="550">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
-                Week 7-10
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
-                Deployment & Scaling
-              </h3>
-              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
-                Integrate agents into production systems with secure access controls. Deploy with proper monitoring and rollback capabilities.
-              </p>
-            </div>
-          </div>
-
-          {/* Connector Line */}
-          <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="600">
-            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
-          </div>
-
-          {/* Step 5 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <div data-aos="fade-right" data-aos-delay="650">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
-                Ongoing
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
-                Monitoring & Improvement
-              </h3>
-              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
-                Monitor agent performance, gather user feedback and continuously iterate. Optimize processes based on real-world data and outcomes.
-              </p>
-            </div>
-            <div data-aos="zoom-in" data-aos-delay="700" style={{
-              background: '#ffffff',
-              padding: '30px',
-              borderRadius: '20px',
-              border: '1px solid #DCDCDC',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>05</div>
-              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>MONITOR</div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 

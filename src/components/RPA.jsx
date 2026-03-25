@@ -5,6 +5,46 @@ import 'aos/dist/aos.css';
 import ReadyToStartCTA from './ReadyToStartCTA';
 import ConsultationForm from './ConsultationForm';
 
+/* ── SVG Icon helpers ── */
+const SvgIcon = ({ children, size = 24, color = 'currentColor', style = {} }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, ...style }}>
+    {children}
+  </svg>
+);
+
+const IconSearch = (p) => <SvgIcon {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></SvgIcon>;
+const IconClipboard = (p) => <SvgIcon {...p}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></SvgIcon>;
+const IconBot = (p) => <SvgIcon {...p}><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="11"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></SvgIcon>;
+const IconRocket = (p) => <SvgIcon {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3"/></SvgIcon>;
+const IconBook = (p) => <SvgIcon {...p}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></SvgIcon>;
+const IconBarChart = (p) => <SvgIcon {...p}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></SvgIcon>;
+
+const IconClock = (p) => <SvgIcon {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></SvgIcon>;
+const IconAlertCircle = (p) => <SvgIcon {...p}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></SvgIcon>;
+const IconCalendar = (p) => <SvgIcon {...p}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></SvgIcon>;
+const IconDollar = (p) => <SvgIcon {...p}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></SvgIcon>;
+const IconTrendDown = (p) => <SvgIcon {...p}><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></SvgIcon>;
+const IconFrown = (p) => <SvgIcon {...p}><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></SvgIcon>;
+
+const IconZap = (p) => <SvgIcon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></SvgIcon>;
+const IconCheck = (p) => <SvgIcon {...p}><polyline points="20 6 9 17 4 12"/></SvgIcon>;
+const IconGlobe = (p) => <SvgIcon {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></SvgIcon>;
+const IconWallet = (p) => <SvgIcon {...p}><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></SvgIcon>;
+const IconTrendUp = (p) => <SvgIcon {...p}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></SvgIcon>;
+const IconSmile = (p) => <SvgIcon {...p}><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></SvgIcon>;
+
+const IconCoins = (p) => <SvgIcon {...p}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><line x1="7" y1="6" x2="7.01" y2="6"/><line x1="14" y1="12" x2="14.01" y2="12"/></SvgIcon>;
+const IconUsers = (p) => <SvgIcon {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></SvgIcon>;
+const IconPackage = (p) => <SvgIcon {...p}><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></SvgIcon>;
+const IconScale = (p) => <SvgIcon {...p}><path d="M16 3l5 5-5 5"/><path d="M21 8H9"/><path d="M8 21l-5-5 5-5"/><path d="M3 16h12"/></SvgIcon>;
+
+const journeyIcons = [IconSearch, IconClipboard, IconBot, IconRocket, IconBook, IconBarChart];
+
+const beforeIcons = [IconClock, IconAlertCircle, IconCalendar, IconDollar, IconTrendDown, IconFrown];
+const afterIcons = [IconZap, IconCheck, IconGlobe, IconWallet, IconTrendUp, IconSmile];
+
+const useCaseIcons = [IconCoins, IconUsers, IconPackage, IconScale];
+
 export default function RPA() {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
@@ -195,13 +235,23 @@ export default function RPA() {
             Your RPA <strong>Implementation Journey</strong>
           </h2>
 
-          {/* Connected Journey Timeline */}
+          {/* Horizontal Stepper */}
           <div style={{
             position: 'relative',
-            maxWidth: '1200px',
+            maxWidth: '1100px',
             margin: '0 auto',
             paddingBottom: '30px'
           }}>
+            {/* Connecting line */}
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '60px',
+              right: '60px',
+              height: '1px',
+              background: '#DCDCDC',
+              zIndex: 0
+            }} />
 
             <div style={{
               display: 'grid',
@@ -214,133 +264,131 @@ export default function RPA() {
                 {
                   phase: '01',
                   title: 'Assessment',
-                  icon: '🔍',
                   description: 'Evaluate processes and spot high-impact automation opportunities',
                   duration: '2-4 weeks'
                 },
                 {
                   phase: '02',
                   title: 'Planning',
-                  icon: '📋',
                   description: 'Develop roadmap, set priorities and establish governance framework',
                   duration: '2-3 weeks'
                 },
                 {
                   phase: '03',
                   title: 'Build',
-                  icon: '🤖',
                   description: 'Design and develop bots with UiPath or Power Automate',
                   duration: 'Variable'
                 },
                 {
                   phase: '04',
                   title: 'Deploy',
-                  icon: '🚀',
                   description: 'Test, validate and deploy bots to production environment',
                   duration: '1-2 weeks'
                 },
                 {
                   phase: '05',
                   title: 'Train',
-                  icon: '📚',
                   description: 'Establish CoE, train teams and build internal capability',
                   duration: 'Ongoing'
                 },
                 {
                   phase: '06',
                   title: 'Optimize',
-                  icon: '📊',
                   description: '24/7 monitoring, optimization and continuous improvement',
                   duration: 'Ongoing'
                 }
-              ].map((stage, idx) => (
-              <div
-                key={idx}
-                style={{
-                  textAlign: 'center'
-                }}
-                data-aos="fade-up"
-                data-aos-delay={idx * 100}
-                data-aos-duration="1000"
-                data-aos-once="false"
-              >
-                {/* Phase Dot */}
-                <div style={{
-                  width: '70px',
-                  height: '70px',
-                  borderRadius: '50%',
-                  background: '#185ADB',
-                  margin: '0 auto 20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: '800',
-                  fontSize: '16px',
-                  boxShadow: '0 10px 30px rgba(24, 90, 219, 0.3)'
-                }}>
-                  {stage.phase}
-                </div>
-
-                {/* Content Box */}
-                <div style={{
-                  padding: '20px',
-                  background: '#ffffff',
-                  borderRadius: '20px',
-                  border: '1px solid #DCDCDC',
-                  minHeight: '240px',
-                  height: '240px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#185ADB';
-                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(24, 90, 219, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#DCDCDC';
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}>
-                  <div style={{ fontSize: '36px', marginBottom: '10px' }}>{stage.icon}</div>
-                  <h4 style={{
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: '#185ADB',
-                    margin: '0 0 10px 0'
-                  }}>
-                    {stage.title}
-                  </h4>
-                  <p style={{
-                    fontSize: '12px',
-                    color: '#444444',
-                    margin: '0 0 12px 0',
-                    lineHeight: '1.5'
-                  }}>
-                    {stage.description}
-                  </p>
+              ].map((stage, idx) => {
+                const StepIcon = journeyIcons[idx];
+                return (
+                <div
+                  key={idx}
+                  style={{
+                    textAlign: 'center'
+                  }}
+                  data-aos="fade-up"
+                  data-aos-delay={idx * 100}
+                  data-aos-duration="1000"
+                  data-aos-once="false"
+                >
+                  {/* Numbered Circle */}
                   <div style={{
-                    fontSize: '11px',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: '#185ADB',
+                    margin: '0 auto 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
                     fontWeight: '700',
-                    color: '#6b7280',
-                    paddingTop: '10px',
-                    borderTop: '1px solid #DCDCDC'
+                    fontSize: '14px'
                   }}>
-                    {stage.duration}
+                    {stage.phase}
+                  </div>
+
+                  {/* Content Box */}
+                  <div style={{
+                    padding: '36px 20px',
+                    background: '#ffffff',
+                    borderRadius: '20px',
+                    border: '1px solid #DCDCDC',
+                    minHeight: '240px',
+                    height: '240px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#185ADB';
+                    e.currentTarget.style.boxShadow = '0 15px 30px rgba(24, 90, 219, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(-5px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#DCDCDC';
+                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                      <StepIcon size={24} color="#185ADB" />
+                    </div>
+                    <h4 style={{
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      color: '#185ADB',
+                      margin: '0 0 10px 0'
+                    }}>
+                      {stage.title}
+                    </h4>
+                    <p style={{
+                      fontSize: '12px',
+                      color: '#444444',
+                      margin: '0 0 12px 0',
+                      lineHeight: '1.5'
+                    }}>
+                      {stage.description}
+                    </p>
+                    <div style={{
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      color: '#6b7280',
+                      paddingTop: '10px',
+                      borderTop: '1px solid #DCDCDC'
+                    }}>
+                      {stage.duration}
+                    </div>
                   </div>
                 </div>
-              </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* Benefits Section - Before/After Comparison */}
-        <section style={{ marginBottom: '0', width: '100%', padding: '100px 20px', background: '#f8f9fa' }}>
+        <section style={{ marginBottom: '0', width: '100%', padding: '100px 20px', background: '#F1F7F3' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <div className="section-tag" style={{ textAlign: 'center' }}>BUSINESS IMPACT</div>
@@ -382,10 +430,9 @@ export default function RPA() {
             {/* BEFORE - Manual Processes */}
             <div style={{
               padding: '36px',
-              background: '#ffffff',
+              background: '#F9FAFB',
               borderRadius: '20px',
               border: '1px solid #DCDCDC',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
               position: 'relative',
               display: 'flex',
               flexDirection: 'column',
@@ -394,17 +441,17 @@ export default function RPA() {
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = '#185ADB';
               e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+              e.currentTarget.style.boxShadow = '0 15px 30px rgba(24, 90, 219, 0.08)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = '#DCDCDC';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = 'none';
             }}>
               <h3 style={{
                 fontSize: '26px',
                 fontWeight: '400',
-                color: '#991b1b',
+                color: '#010B1D',
                 marginBottom: '24px',
                 marginTop: '0'
               }}>
@@ -416,47 +463,62 @@ export default function RPA() {
                 flex: 1
               }}>
                 {[
-                  { metric: 'Processing Time', value: '8-10 hours/day', icon: '⏱️' },
-                  { metric: 'Error Rate', value: '5-10% manual errors', icon: '🔴' },
-                  { metric: 'Availability', value: '9-5 business hours', icon: '📅' },
-                  { metric: 'Cost/Month', value: '$15,000-20,000', icon: '💸' },
-                  { metric: 'Scalability', value: 'Limited by headcount', icon: '📉' },
-                  { metric: 'Employee Satisfaction', value: 'Repetitive, low morale', icon: '😕' }
-                ].map((item, idx) => (
+                  { metric: 'Processing Time', value: '8-10 hours/day' },
+                  { metric: 'Error Rate', value: '5-10% manual errors' },
+                  { metric: 'Availability', value: '9-5 business hours' },
+                  { metric: 'Cost/Month', value: '$15,000-20,000' },
+                  { metric: 'Scalability', value: 'Limited by headcount' },
+                  { metric: 'Employee Satisfaction', value: 'Repetitive, low morale' }
+                ].map((item, idx) => {
+                  const BeforeIcon = beforeIcons[idx];
+                  return (
                   <div key={idx} style={{
                     display: 'flex',
                     gap: '15px',
                     alignItems: 'flex-start'
                   }}>
-                    <div style={{ fontSize: '24px' }}>{item.icon}</div>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: '#ffffff',
+                      border: '1px solid #DCDCDC',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <BeforeIcon size={18} color="#9ca3af" />
+                    </div>
                     <div>
                       <div style={{
                         fontSize: '13px',
                         fontWeight: '700',
-                        color: '#7f1d1d'
+                        color: '#6b7280'
                       }}>
                         {item.metric}
                       </div>
                       <div style={{
                         fontSize: '14px',
                         fontWeight: '600',
-                        color: '#991b1b'
+                        color: '#444444'
                       }}>
                         {item.value}
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* AFTER - RPA Automation */}
             <div style={{
               padding: '36px',
-              background: '#ffffff',
+              background: '#EFF6FF',
               borderRadius: '20px',
               border: '1px solid #DCDCDC',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
+              borderLeft: '4px solid #185ADB',
               position: 'relative',
               display: 'flex',
               flexDirection: 'column',
@@ -464,18 +526,21 @@ export default function RPA() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = '#185ADB';
+              e.currentTarget.style.borderLeftWidth = '4px';
               e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+              e.currentTarget.style.boxShadow = '0 15px 30px rgba(24, 90, 219, 0.08)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = '#DCDCDC';
+              e.currentTarget.style.borderLeftColor = '#185ADB';
+              e.currentTarget.style.borderLeftWidth = '4px';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = 'none';
             }}>
               <h3 style={{
                 fontSize: '26px',
                 fontWeight: '400',
-                color: '#166534',
+                color: '#010B1D',
                 marginBottom: '24px',
                 marginTop: '0'
               }}>
@@ -487,45 +552,60 @@ export default function RPA() {
                 flex: 1
               }}>
                 {[
-                  { metric: 'Processing Time', value: 'Minutes not hours', icon: '⚡', improvement: '90% faster' },
-                  { metric: 'Error Rate', value: '< 0.1% errors', icon: '✓', improvement: '99% reduction' },
-                  { metric: 'Availability', value: '24/7 without breaks', icon: '🌍', improvement: '100% uptime' },
-                  { metric: 'Cost/Month', value: '$2,000-3,000', icon: '💰', improvement: '85% savings' },
-                  { metric: 'Scalability', value: 'Unlimited, add bots', icon: '📈', improvement: 'Linear scale' },
-                  { metric: 'Employee Satisfaction', value: 'Strategic, high-value work', icon: '😊', improvement: 'Empowered' }
-                ].map((item, idx) => (
+                  { metric: 'Processing Time', value: 'Minutes not hours', improvement: '90% faster' },
+                  { metric: 'Error Rate', value: '< 0.1% errors', improvement: '99% reduction' },
+                  { metric: 'Availability', value: '24/7 without breaks', improvement: '100% uptime' },
+                  { metric: 'Cost/Month', value: '$2,000-3,000', improvement: '85% savings' },
+                  { metric: 'Scalability', value: 'Unlimited, add bots', improvement: 'Linear scale' },
+                  { metric: 'Employee Satisfaction', value: 'Strategic, high-value work', improvement: 'Empowered' }
+                ].map((item, idx) => {
+                  const AfterIcon = afterIcons[idx];
+                  return (
                   <div key={idx} style={{
                     display: 'flex',
                     gap: '15px',
                     alignItems: 'flex-start'
                   }}>
-                    <div style={{ fontSize: '24px' }}>{item.icon}</div>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: '#ffffff',
+                      border: '1px solid #DCDCDC',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <AfterIcon size={18} color="#185ADB" />
+                    </div>
                     <div style={{ flex: 1 }}>
                       <div style={{
                         fontSize: '13px',
                         fontWeight: '700',
-                        color: '#166534'
+                        color: '#185ADB'
                       }}>
                         {item.metric}
                       </div>
                       <div style={{
                         fontSize: '14px',
                         fontWeight: '600',
-                        color: '#15803d'
+                        color: '#010B1D'
                       }}>
                         {item.value}
                       </div>
                       <div style={{
                         fontSize: '12px',
                         fontWeight: '700',
-                        color: '#22c55e',
+                        color: '#185ADB',
                         marginTop: '4px'
                       }}>
                         {item.improvement}
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -559,7 +639,6 @@ export default function RPA() {
               {[
                 {
                   industry: 'Finance & Accounting',
-                  icon: '💰',
                   color: '#185ADB',
                   scenario: 'Invoice Processing',
                   process: [
@@ -572,7 +651,6 @@ export default function RPA() {
                 },
                 {
                   industry: 'Human Resources',
-                  icon: '👥',
                   color: '#0D9488',
                   scenario: 'Employee Onboarding',
                   process: [
@@ -585,7 +663,6 @@ export default function RPA() {
                 },
                 {
                   industry: 'Supply Chain',
-                  icon: '📦',
                   color: '#185ADB',
                   scenario: 'Order-to-Cash Process',
                   process: [
@@ -598,7 +675,6 @@ export default function RPA() {
                 },
                 {
                   industry: 'Compliance & Audit',
-                  icon: '⚖️',
                   color: '#0D9488',
                   scenario: 'Regulatory Reporting',
                   process: [
@@ -609,7 +685,9 @@ export default function RPA() {
                   ],
                   impact: 'Reports generated 80% faster | Zero manual errors | Full audit trail'
                 }
-              ].map((useCase, idx) => (
+              ].map((useCase, idx) => {
+                const CaseIcon = useCaseIcons[idx];
+                return (
                 <div
                   key={idx}
                   data-aos="fade-up"
@@ -617,7 +695,7 @@ export default function RPA() {
                   data-aos-duration="1000"
                   data-aos-once="false"
                   style={{
-                    padding: '40px',
+                    padding: '36px',
                     background: '#ffffff',
                     border: '1px solid #DCDCDC',
                     borderRadius: '20px',
@@ -626,7 +704,7 @@ export default function RPA() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = '#185ADB';
-                    e.currentTarget.style.boxShadow = '0 15px 40px rgba(24, 90, 219, 0.12)';
+                    e.currentTarget.style.boxShadow = '0 15px 30px rgba(24, 90, 219, 0.08)';
                     e.currentTarget.style.transform = 'translateY(-5px)';
                   }}
                   onMouseLeave={(e) => {
@@ -644,7 +722,18 @@ export default function RPA() {
                     {/* Left: Header & Info */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                        <div style={{ fontSize: '40px' }}>{useCase.icon}</div>
+                        <div style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          background: '#EFF6FF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <CaseIcon size={24} color={useCase.color} />
+                        </div>
                         <div>
                           <div style={{ fontSize: '13px', fontWeight: '700', color: useCase.color, textTransform: 'uppercase', letterSpacing: '1px' }}>
                             {useCase.industry}
@@ -658,7 +747,7 @@ export default function RPA() {
                       {/* Impact Highlight */}
                       <div style={{
                         padding: '15px',
-                        background: '#f8f9fa',
+                        background: '#F1F7F3',
                         borderRadius: '12px',
                         border: '1px solid #DCDCDC',
                         marginTop: '20px'
@@ -684,8 +773,8 @@ export default function RPA() {
                               width: '40px',
                               height: '40px',
                               borderRadius: '50%',
-                              background: '#f8f9fa',
-                              border: '2px solid #DCDCDC',
+                              background: '#EFF6FF',
+                              border: '1px solid #DCDCDC',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -709,7 +798,8 @@ export default function RPA() {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -753,23 +843,22 @@ export default function RPA() {
               <div
                 key={idx}
                 style={{
-                  padding: '35px',
+                  padding: '36px',
                   background: '#ffffff',
                   borderRadius: '20px',
                   textAlign: 'center',
                   border: '1px solid #DCDCDC',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
                   transition: 'all 0.3s ease',
                   animation: isVisible ? `slideUp 0.8s ease-out ${idx * 0.15}s both` : 'none'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#185ADB';
-                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+                  e.currentTarget.style.boxShadow = '0 15px 30px rgba(24, 90, 219, 0.08)';
                   e.currentTarget.style.transform = 'translateY(-5px)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#DCDCDC';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
+                  e.currentTarget.style.boxShadow = 'none';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >

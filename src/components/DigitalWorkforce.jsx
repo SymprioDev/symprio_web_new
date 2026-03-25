@@ -20,6 +20,52 @@ const workforceFaqs = [
   }
 ];
 
+/* SVG Icon Components */
+const ShieldIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+  </svg>
+);
+
+const TargetIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+
+const HandshakeIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/>
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+const BuildingIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/>
+  </svg>
+);
+
+const categoryIcons = [<ShieldIcon />, <CodeIcon />, <ChartIcon />, <TargetIcon />];
+const modelIcons = [<HandshakeIcon />, <UsersIcon />, <BuildingIcon />];
+
 export default function DigitalWorkforce() {
   const navigate = useNavigate();
 
@@ -117,7 +163,7 @@ export default function DigitalWorkforce() {
         </section>
 
         {/* Offerings Section */}
-        <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto' }}>
+        <section style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>CATEGORIES</div>
           <h2 style={{
             fontSize: '40px',
@@ -132,25 +178,21 @@ export default function DigitalWorkforce() {
             {[
               {
                 title: 'IT & Infrastructure',
-                icon: '\uD83D\uDD12',
                 description: 'Security consultants, cloud architects, and Oracle DBAs.',
                 roles: ['IT Support Engineer', 'Security Consultant', 'Cloud Architect']
               },
               {
                 title: 'Software Excellence',
-                icon: '\uD83D\uDCBB',
                 description: 'Full-stack developers and technical leads with modern expertise.',
                 roles: ['Full-Stack Developer', 'Node.js Expert', 'Frontend Lead']
               },
               {
                 title: 'Project Leadership',
-                icon: '\uD83D\uDCCA',
                 description: 'Scrum masters and PMs who deliver high-impact results.',
                 roles: ['Scrum Master', 'Project Manager', 'Agile Coach']
               },
               {
                 title: 'Business Functions',
-                icon: '\uD83C\uDFAF',
                 description: 'Strategic roles in HR, digital marketing, and operations.',
                 roles: ['Digital Marketer', 'HR Operations', 'SEO Strategist']
               }
@@ -159,7 +201,7 @@ export default function DigitalWorkforce() {
                 key={idx}
                 data-aos="fade-up"
                 style={{
-                  padding: '40px',
+                  padding: '36px',
                   background: '#fff',
                   borderRadius: '20px',
                   border: '1px solid #DCDCDC',
@@ -168,7 +210,7 @@ export default function DigitalWorkforce() {
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#185ADB';
                   e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#DCDCDC';
@@ -176,8 +218,20 @@ export default function DigitalWorkforce() {
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                <div style={{ fontSize: '48px', marginBottom: '20px' }}>{offering.icon}</div>
-                <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', marginBottom: '15px' }}>{offering.title}</h3>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: '#EFF6FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#185ADB',
+                  marginBottom: '20px'
+                }}>
+                  {categoryIcons[idx]}
+                </div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#010B1D', marginBottom: '12px', marginTop: '0' }}>{offering.title}</h3>
                 <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', marginBottom: '20px' }}>{offering.description}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {offering.roles.map((role, i) => (
@@ -185,9 +239,9 @@ export default function DigitalWorkforce() {
                       fontSize: '12px',
                       padding: '6px 14px',
                       borderRadius: '9999px',
-                      background: '#f8f9fa',
-                      border: '1px solid #DCDCDC',
-                      color: '#010B1D',
+                      background: '#EFF6FF',
+                      border: 'none',
+                      color: '#185ADB',
                       fontWeight: '600'
                     }}>{role}</span>
                   ))}
@@ -198,7 +252,7 @@ export default function DigitalWorkforce() {
         </section>
 
         {/* Engagement Models */}
-        <section style={{ padding: '100px 0' }}>
+        <section style={{ padding: '100px 20px' }}>
           <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>ENGAGEMENT</div>
           <h2 style={{
             fontSize: '40px',
@@ -213,23 +267,20 @@ export default function DigitalWorkforce() {
             {[
               {
                 title: 'Talent Augmentation',
-                icon: '\uD83E\uDD1D',
                 desc: 'Quickly scale your internal teams with specialized external expertise.'
               },
               {
                 title: 'Managed Teams',
-                icon: '\uD83D\uDC65',
                 desc: 'Dedicated Symprio teams managing end-to-end delivery of your roadmap.',
                 highlight: true
               },
               {
                 title: 'Strategic Outsourcing',
-                icon: '\uD83C\uDFE2',
                 desc: 'Complete ownership of business functions for long-term operational success.'
               }
             ].map((model, idx) => (
               <div key={idx} style={{
-                padding: '40px',
+                padding: '36px',
                 background: model.highlight ? 'linear-gradient(135deg, #010B1D 0%, #185ADB 100%)' : '#fff',
                 color: model.highlight ? '#fff' : 'inherit',
                 borderRadius: '20px',
@@ -241,7 +292,7 @@ export default function DigitalWorkforce() {
                 if (!model.highlight) {
                   e.currentTarget.style.borderColor = '#185ADB';
                   e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -252,8 +303,20 @@ export default function DigitalWorkforce() {
                 }
               }}
               data-aos="zoom-in" data-aos-delay={idx * 100}>
-                <div style={{ fontSize: '48px', marginBottom: '24px' }}>{model.icon}</div>
-                <h3 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px' }}>{model.title}</h3>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: model.highlight ? 'rgba(255,255,255,0.15)' : '#EFF6FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: model.highlight ? '#fff' : '#185ADB',
+                  margin: '0 auto 24px'
+                }}>
+                  {modelIcons[idx]}
+                </div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', marginTop: '0' }}>{model.title}</h3>
                 <p style={{ fontSize: '16px', color: model.highlight ? 'rgba(255,255,255,0.85)' : '#444444', margin: 0, lineHeight: '1.7' }}>{model.desc}</p>
               </div>
             ))}

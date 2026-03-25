@@ -110,14 +110,14 @@ export default function SymprioHero() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '460px',
-          perspective: '900px'
+          minHeight: '560px',
+          perspective: '1200px'
         }}>
           {/* Soft glow behind sphere */}
           <div style={{
             position: 'absolute',
-            width: '300px',
-            height: '300px',
+            width: '420px',
+            height: '420px',
             borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(24, 90, 219, 0.06) 0%, transparent 70%)',
             top: '50%',
@@ -128,8 +128,8 @@ export default function SymprioHero() {
 
           {/* 3D Sphere container */}
           <div className="sphere" style={{
-            width: '360px',
-            height: '360px',
+            width: '500px',
+            height: '500px',
             position: 'relative',
             transformStyle: 'preserve-3d'
           }}>
@@ -137,8 +137,8 @@ export default function SymprioHero() {
             {partners.map((p, i) => {
               // Distribute on sphere: 2 rows, staggered
               const rows = [
-                { rotateX: -20, items: [0, 1] },
-                { rotateX: 20, items: [2, 3] }
+                { rotateX: -25, items: [0, 1] },
+                { rotateX: 25, items: [2, 3] }
               ];
               const row = i < 2 ? 0 : 1;
               const col = i % 2;
@@ -153,27 +153,27 @@ export default function SymprioHero() {
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    width: '88px',
-                    height: '88px',
-                    marginLeft: '-44px',
-                    marginTop: '-44px',
+                    width: '110px',
+                    height: '110px',
+                    marginLeft: '-55px',
+                    marginTop: '-55px',
                     transformStyle: 'preserve-3d',
-                    transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateZ(180px)`
+                    transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateZ(250px)`
                   }}
                 >
                   <div className="sphere-logo-card" style={{
-                    width: '88px',
-                    height: '88px',
+                    width: '110px',
+                    height: '110px',
                     background: '#fff',
-                    borderRadius: '22px',
+                    borderRadius: '26px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.1)',
                     border: '1px solid rgba(0,0,0,0.04)',
                     backfaceVisibility: 'hidden'
                   }}>
-                    <img src={p.logo} alt={p.name} style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                    <img src={p.logo} alt={p.name} style={{ width: '64px', height: '64px', objectFit: 'contain' }} />
                   </div>
                 </div>
               );
@@ -184,21 +184,21 @@ export default function SymprioHero() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '90px',
-              height: '90px',
-              marginLeft: '-45px',
-              marginTop: '-45px',
+              width: '110px',
+              height: '110px',
+              marginLeft: '-55px',
+              marginTop: '-55px',
               background: '#fff',
-              borderRadius: '24px',
+              borderRadius: '28px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 20px 50px rgba(10, 45, 110, 0.15)',
+              boxShadow: '0 20px 60px rgba(10, 45, 110, 0.18)',
               border: '1px solid rgba(0,0,0,0.04)',
               zIndex: 10,
               transform: 'translateZ(0px)'
             }}>
-              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '56px', objectFit: 'contain' }} />
+              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '68px', objectFit: 'contain' }} />
             </div>
           </div>
         </div>

@@ -135,409 +135,531 @@ export default function SupportSubscription() {
   };
   
   return (
-    <div style={{
-      background: '#fff',
-      color: '#1f2937',
-      fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+    <section style={{
       minHeight: '100vh',
+      background: '#f8fafc',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '48px 20px',
       position: 'relative'
     }}>
-      {/* Header Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, #1f2937 0%, #0891b2 100%)',
-        padding: '80px 20px 60px',
-        textAlign: 'center'
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '40px',
+        width: '100%',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        alignItems: 'stretch'
       }}>
-        <h1 style={{
-          fontSize: '42px',
-          fontWeight: '700',
+        {/* Left: Info Panel */}
+        <div style={{
+          background: '#0f172a',
           color: '#fff',
-          margin: 0,
-          textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          borderRadius: '16px',
+          padding: '50px 40px',
+          boxShadow: '0 20px 60px rgba(15, 23, 42, 0.25)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          justifyContent: 'center'
         }}>
-          Support Hours Subscription
-        </h1>
-        <p style={{
-          fontSize: '18px',
-          color: 'rgba(255,255,255,0.9)',
-          marginTop: '16px',
-          maxWidth: '600px',
-          marginLeft: 'auto',
-          marginRight: 'auto'
+          <h2 style={{ margin: '0 0 8px 0', fontSize: '28px', fontWeight: '800', color: '#ffffff' }}>
+            Support Subscription
+          </h2>
+          <p style={{ margin: '0 0 12px 0', color: '#cbd5e1', lineHeight: '1.7' }}>
+            Get dedicated support hours for your business needs. Flexible and affordable support packages tailored to your requirements.
+          </p>
+          
+          <div style={{ background: 'rgba(255,255,255,0.08)', padding: '16px', borderRadius: '12px' }}>
+            <div style={{ fontWeight: '700', marginBottom: '6px' }}>📋 How It Works</div>
+            <div style={{ color: '#e2e8f0', lineHeight: '1.6' }}>
+              1. Choose your preferred hours<br/>
+              2. Get dedicated support<br/>
+              3. Flexible scheduling
+            </div>
+          </div>
+          
+          <div style={{ background: 'rgba(255,255,255,0.08)', padding: '16px', borderRadius: '12px' }}>
+            <div style={{ fontWeight: '700', marginBottom: '6px' }}>💰 Transparent Pricing</div>
+            <div style={{ color: '#e2e8f0', lineHeight: '1.6' }}>
+              Pay only for what you need.<br/>
+              No hidden fees.
+            </div>
+          </div>
+          
+          <div style={{ background: 'rgba(255,255,255,0.08)', padding: '16px', borderRadius: '12px' }}>
+            <div style={{ fontWeight: '700', marginBottom: '6px' }}>📞 Contact Us</div>
+            <div style={{ color: '#e2e8f0' }}>+60 13 880 2574</div>
+            <div style={{ color: '#e2e8f0' }}>contact@symprio.com</div>
+          </div>
+        </div>
+
+        {/* Right: Form Container */}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '16px',
+          padding: '48px 40px',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+          position: 'relative',
+          zIndex: 1,
+          justifySelf: 'start'
         }}>
-          Get dedicated support hours for your business needs. Flexible and affordable.
-        </p>
+          <h1 style={{
+            fontSize: '32px',
+            fontWeight: '800',
+            color: '#1f2937',
+            margin: '0 0 8px 0',
+            textAlign: 'center'
+          }}>
+            Subscribe Now
+          </h1>
+
+          <p style={{
+            fontSize: '14px',
+            color: '#6b7280',
+            textAlign: 'center',
+            margin: '0 0 32px 0',
+            lineHeight: '1.6'
+          }}>
+            Fill out the form below and we'll get back to you with a customized support package.
+          </p>
+
+          {successMessage ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '24px',
+              minHeight: '300px'
+            }}>
+              <div style={{ fontSize: '80px' }}>✓</div>
+              <div style={{
+                background: 'linear-gradient(135deg, #d1fae5 0%, #d1fae5 100%)',
+                color: '#065f46',
+                padding: '24px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                fontWeight: '600',
+                fontSize: '18px',
+                width: '100%'
+              }}>
+                {successMessage}
+              </div>
+            </div>
+          ) : (
+            <>
+              {errorMessage && (
+                <div style={{
+                  background: 'linear-gradient(135deg, #fee2e2 0%, #fee2e2 100%)',
+                  color: '#991b1b',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  marginBottom: '24px',
+                  textAlign: 'center',
+                  fontWeight: '600'
+                }}>
+                  ✗ {errorMessage}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Name */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Name <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Your name"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      transition: 'all 0.3s ease',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0891b2';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(8, 145, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e5e7eb';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Company Name */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Company Name <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    required
+                    placeholder="Your company"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      transition: 'all 0.3s ease',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0891b2';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(8, 145, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e5e7eb';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Email Address <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="you@company.com"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      transition: 'all 0.3s ease',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0891b2';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(8, 145, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e5e7eb';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Contact Number */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Contact Number <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <select
+                      defaultValue="+60"
+                      style={{
+                        padding: '12px 8px',
+                        fontSize: '14px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        background: '#fff',
+                        minWidth: '80px',
+                        fontFamily: 'inherit',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <option value="+60">+60</option>
+                      <option value="+65">+65</option>
+                      <option value="+91">+91</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                    </select>
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      value={formData.contactNumber}
+                      onChange={handleChange}
+                      required
+                      placeholder="XXXXXXXXX"
+                      style={{
+                        flex: 1,
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        fontFamily: 'inherit',
+                        transition: 'all 0.3s ease',
+                        boxSizing: 'border-box'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#0891b2';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(8, 145, 178, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#e5e7eb';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Subscription Hours */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Subscription Hours <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleHoursChange(formData.hours - 1)}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        background: '#f3f4f6',
+                        color: '#374151',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#e5e7eb';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#f3f4f6';
+                      }}
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      name="hours"
+                      value={formData.hours}
+                      onChange={(e) => handleHoursChange(e.target.value)}
+                      min={50}
+                      step={1}
+                      readOnly
+                      style={{
+                        width: '100px',
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        textAlign: 'center',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        outline: 'none',
+                        boxSizing: 'border-box',
+                        background: '#fff'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleHoursChange(formData.hours + 1)}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        background: '#f3f4f6',
+                        color: '#374151',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#e5e7eb';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#f3f4f6';
+                      }}
+                    >
+                      +
+                    </button>
+                    <span style={{ color: '#6b7280', fontSize: '14px' }}>
+                      (Min: 50 hours)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px'
+                  }}>
+                    Message <span style={{ color: '#9ca3af', fontWeight: '400' }}>(Optional)</span>
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows={4}
+                    placeholder="Tell us about your support needs..."
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      minHeight: '100px',
+                      resize: 'vertical',
+                      transition: 'all 0.3s ease',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0891b2';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(8, 145, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e5e7eb';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Total Amount */}
+                <div style={{
+                  background: '#f3f4f6',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  marginTop: '4px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#6b7280' }}>
+                      Rate per hour:
+                    </span>
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      ${rate}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#6b7280' }}>
+                      Hours:
+                    </span>
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      {formData.hours}
+                    </span>
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    paddingTop: '12px',
+                    borderTop: '1px solid #d1d5db'
+                  }}>
+                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1f2937' }}>
+                      Total Amount:
+                    </span>
+                    <span style={{ fontSize: '24px', fontWeight: '800', color: '#0891b2' }}>
+                      ${totalAmount.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  style={{
+                    background: 'linear-gradient(135deg, #0891b2, #3b82f6)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '14px 28px',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: submitting ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    marginTop: '8px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    opacity: submitting ? 0.6 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!submitting) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(8, 145, 178, 0.4)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {submitting ? 'Submitting...' : 'Subscribe Now'}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
       
-      {/* Form Container */}
-      <div style={{
-        maxWidth: '600px',
-        margin: '0 auto',
-        padding: '40px 24px 60px'
-      }}>
-        <form onSubmit={handleSubmit} style={{
-          background: '#f9fafb',
-          borderRadius: '12px',
-          padding: '32px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-        }}>
-          {/* Name */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Name <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                fontSize: '14px',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-                boxSizing: 'border-box'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#0891b2'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-          </div>
-          
-          {/* Company Name */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Company Name <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <input
-              type="text"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleChange}
-              required
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                fontSize: '14px',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-                boxSizing: 'border-box'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#0891b2'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-          </div>
-          
-          {/* Email */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Email <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="you@company.com"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                fontSize: '14px',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-                boxSizing: 'border-box'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#0891b2'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-          </div>
-          
-          {/* Contact Number with Country Code */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Contact Number <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <select
-                style={{
-                  padding: '12px 8px',
-                  fontSize: '14px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  background: '#fff',
-                  outline: 'none',
-                  minWidth: '80px'
-                }}
-                defaultValue="+60"
-              >
-                <option value="+60">+60</option>
-                <option value="+65">+65</option>
-                <option value="+91">+91</option>
-                <option value="+1">+1</option>
-                <option value="+44">+44</option>
-              </select>
-              <input
-                type="tel"
-                name="contactNumber"
-                value={formData.contactNumber}
-                onChange={handleChange}
-                required
-                placeholder="XXXXXXXXX"
-                style={{
-                  flex: 1,
-                  padding: '12px 16px',
-                  fontSize: '14px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  outline: 'none',
-                  transition: 'border-color 0.2s',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#0891b2'}
-                onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-              />
-            </div>
-          </div>
-          
-          {/* Message */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Message <span style={{ color: '#9ca3af' }}>(Optional)</span>
-            </label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                fontSize: '14px',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                outline: 'none',
-                resize: 'vertical',
-                transition: 'border-color 0.2s',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#0891b2'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-          </div>
-          
-          {/* Subscription Hours */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: '6px'
-            }}>
-              Subscription Hours <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <button
-                type="button"
-                onClick={() => handleHoursChange(formData.hours - 1)}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  background: '#fff',
-                  color: '#374151',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                −
-              </button>
-              <input
-                type="number"
-                name="hours"
-                value={formData.hours}
-                onChange={(e) => handleHoursChange(e.target.value)}
-                min={50}
-                step={1}
-                readOnly
-                style={{
-                  width: '100px',
-                  padding: '12px 16px',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  outline: 'none',
-                  boxSizing: 'border-box'
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => handleHoursChange(formData.hours + 1)}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  background: '#fff',
-                  color: '#374151',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                +
-              </button>
-              <span style={{ color: '#6b7280', fontSize: '14px' }}>
-                (Min: 50 hours)
-              </span>
-            </div>
-          </div>
-          
-          {/* Total Amount */}
-          <div style={{
-            background: '#ecfdf5',
-            border: '1px solid #10b981',
-            borderRadius: '8px',
-            padding: '16px',
-            marginBottom: '24px'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151' }}>
-                Rate per hour:
-              </span>
-              <span style={{ fontSize: '14px', color: '#374151' }}>
-                ${rate}
-              </span>
-            </div>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginTop: '8px',
-              paddingTop: '8px',
-              borderTop: '1px solid #10b981'
-            }}>
-              <span style={{ fontSize: '16px', fontWeight: '700', color: '#1f2937' }}>
-                Total Amount:
-              </span>
-              <span style={{ fontSize: '20px', fontWeight: '700', color: '#0891b2' }}>
-                ${totalAmount.toLocaleString()}
-              </span>
-            </div>
-          </div>
-          
-          {/* Error Message */}
-          {errorMessage && (
-            <div style={{
-              background: '#fef2f2',
-              border: '1px solid #ef4444',
-              borderRadius: '8px',
-              padding: '12px',
-              marginBottom: '16px',
-              color: '#ef4444',
-              fontSize: '14px'
-            }}>
-              {errorMessage}
-            </div>
-          )}
-          
-          {/* Success Message */}
-          {successMessage && (
-            <div style={{
-              background: '#ecfdf5',
-              border: '1px solid #10b981',
-              borderRadius: '8px',
-              padding: '12px',
-              marginBottom: '16px',
-              color: '#10b981',
-              fontSize: '14px'
-            }}>
-              {successMessage}
-            </div>
-          )}
-          
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={submitting || loading}
-            style={{
-              width: '100%',
-              padding: '14px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              color: '#fff',
-              background: loading ? '#9ca3af' : 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
-              background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-              opacity: submitting ? 0.7 : 1,
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 4px 6px rgba(8, 145, 178, 0.3)'
-            }}
-            onMouseEnter={(e) => {
-              if (!submitting && !loading) {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 12px rgba(8, 145, 178, 0.4)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 6px rgba(8, 145, 178, 0.3)';
-            }}
-          >
-            {submitting ? 'Submitting...' : 'Submit Request'}
-          </button>
-        </form>
-      </div>
-    </div>
+      {/* Responsive styles for mobile */}
+      <style>{`
+        @media (max-width: 768px) {
+          section > div {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+    </section>
   );
 }

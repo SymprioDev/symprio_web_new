@@ -37,7 +37,7 @@ export default function AboutSnippet() {
   const styles = {
     section: {
       backgroundColor: '#ffffff',
-      padding: '100px 20px',
+      padding: '120px 20px',
       width: '100%',
       boxSizing: 'border-box',
     },
@@ -53,85 +53,48 @@ export default function AboutSnippet() {
       flex: '1 1 0',
       minWidth: 0,
     },
-    tag: {
-      display: 'inline-block',
-      fontSize: '13px',
-      fontWeight: '600',
-      letterSpacing: '0.12em',
-      textTransform: 'uppercase',
-      color: '#0D9488',
-      backgroundColor: 'rgba(13, 148, 136, 0.08)',
-      borderRadius: '999px',
-      padding: '5px 14px',
-      marginBottom: '20px',
-    },
     heading: {
       fontSize: isMobile ? '28px' : '38px',
-      fontWeight: '700',
+      fontWeight: '400',
       lineHeight: '1.25',
       color: '#0A2D6E',
       margin: '0 0 24px 0',
     },
-    headingAccent: {
-      color: '#0D9488',
-    },
     body: {
       fontSize: '16px',
-      lineHeight: '1.75',
-      color: '#374151',
+      lineHeight: '1.7',
+      color: '#444444',
       margin: '0 0 32px 0',
     },
     checklistWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
+      gap: '16px',
       marginBottom: '40px',
     },
     checklistItem: {
       display: 'flex',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       gap: '10px',
       fontSize: '15px',
-      color: '#374151',
+      color: '#444444',
+      fontWeight: '500',
       lineHeight: '1.5',
     },
-    checkIcon: {
+    checkDot: {
       flexShrink: '0',
-      width: '20px',
-      height: '20px',
+      width: '8px',
+      height: '8px',
       borderRadius: '50%',
-      backgroundColor: 'rgba(13, 148, 136, 0.12)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: '1px',
-    },
-    checkSvg: {
-      width: '11px',
-      height: '11px',
-    },
-    ctaButton: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '6px',
-      backgroundColor: '#0A2D6E',
-      color: '#ffffff',
-      fontWeight: '600',
-      fontSize: '15px',
-      padding: '13px 28px',
-      borderRadius: '6px',
-      border: 'none',
-      cursor: 'pointer',
-      textDecoration: 'none',
-      transition: 'background-color 0.2s ease, transform 0.2s ease',
+      backgroundColor: '#185ADB',
     },
     rightCol: {
       flex: isMobile ? 'unset' : '0 0 360px',
       width: isMobile ? '100%' : '360px',
     },
     statsCard: {
-      background: 'linear-gradient(135deg, #0A2D6E 0%, #0D9488 100%)',
-      borderRadius: '16px',
+      background: 'linear-gradient(135deg, #185ADB 0%, #0D9488 100%)',
+      borderRadius: '20px',
       padding: '40px 32px',
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
@@ -144,8 +107,8 @@ export default function AboutSnippet() {
       textAlign: 'center',
     },
     statValue: {
-      fontSize: '40px',
-      fontWeight: '800',
+      fontSize: '48px',
+      fontWeight: '700',
       color: '#ffffff',
       lineHeight: '1',
       marginBottom: '8px',
@@ -153,8 +116,8 @@ export default function AboutSnippet() {
     },
     statLabel: {
       fontSize: '13px',
-      fontWeight: '500',
-      color: 'rgba(255, 255, 255, 0.78)',
+      fontWeight: '400',
+      color: 'rgba(255, 255, 255, 0.7)',
       lineHeight: '1.4',
       textAlign: 'center',
     },
@@ -164,26 +127,16 @@ export default function AboutSnippet() {
     navigate('/about');
   };
 
-  const handleCtaMouseEnter = (e) => {
-    e.currentTarget.style.backgroundColor = '#0077B6';
-    e.currentTarget.style.transform = 'translateY(-1px)';
-  };
-
-  const handleCtaMouseLeave = (e) => {
-    e.currentTarget.style.backgroundColor = '#0A2D6E';
-    e.currentTarget.style.transform = 'translateY(0)';
-  };
-
   return (
     <section style={styles.section}>
       <div style={styles.container}>
         {/* Left Column */}
         <div style={styles.leftCol} data-aos="fade-up">
-          <span style={styles.tag}>Who We Are</span>
+          <div className="section-tag">About Our Company</div>
 
           <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="100">
             We Study Your Business. We Deliver{' '}
-            <span style={styles.headingAccent}>Real Results.</span>
+            <strong>Real Results.</strong>
           </h2>
 
           <p style={styles.body} data-aos="fade-up" data-aos-delay="150">
@@ -198,36 +151,19 @@ export default function AboutSnippet() {
           <div style={styles.checklistWrapper} data-aos="fade-up" data-aos-delay="200">
             {checklist.map((item, index) => (
               <div key={index} style={styles.checklistItem}>
-                <span style={styles.checkIcon}>
-                  <svg
-                    style={styles.checkSvg}
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M2 6L5 9L10 3"
-                      stroke="#0D9488"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
+                <span style={styles.checkDot} />
                 <span>{item}</span>
               </div>
             ))}
           </div>
 
           <button
-            style={styles.ctaButton}
+            className="btn-pill btn-primary"
             onClick={handleCtaClick}
-            onMouseEnter={handleCtaMouseEnter}
-            onMouseLeave={handleCtaMouseLeave}
             data-aos="fade-up"
             data-aos-delay="250"
           >
-            Learn More About Us →
+            Learn More &rarr;
           </button>
         </div>
 

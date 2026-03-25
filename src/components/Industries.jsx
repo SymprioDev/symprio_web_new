@@ -13,35 +13,21 @@ const industries = [
 
 export default function Industries() {
   return (
-    <section style={{ padding: '100px 20px', background: '#f9fafb' }}>
+    <section style={{ padding: '100px 20px', background: '#f8f9fa' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <div style={{
-            display: 'inline-block',
-            color: '#0D9488',
-            fontWeight: '800',
-            fontSize: '12px',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            marginBottom: '16px',
-            padding: '4px 12px',
-            background: 'rgba(13, 148, 136, 0.08)',
-            borderRadius: '4px'
-          }}>
-            Industries
-          </div>
+          <div className="section-tag">Industries</div>
           <h2 style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
-            fontWeight: '900',
-            color: '#0A2D6E',
+            color: '#010B1D',
             margin: '0 0 20px 0',
             lineHeight: '1.2'
           }}>
-            Expertise Across <span style={{ color: '#0D9488' }}>Every Industry</span>
+            Expertise Across <strong>Every Industry</strong>
           </h2>
           <p style={{
-            fontSize: '18px',
-            color: '#4b5563',
+            fontSize: '16px',
+            color: '#444444',
             maxWidth: '600px',
             margin: '0 auto',
             lineHeight: '1.7'
@@ -50,10 +36,10 @@ export default function Industries() {
           </p>
         </div>
 
-        <div style={{
+        <div className="industries-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '24px'
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '20px'
         }}>
           {industries.map((industry, idx) => (
             <div
@@ -62,26 +48,26 @@ export default function Industries() {
               data-aos-delay={idx * 50}
               className="industry-card"
               style={{
-                padding: '36px 28px',
+                padding: '32px 24px',
                 background: '#ffffff',
-                border: '1px solid rgba(0,0,0,0.06)',
-                borderRadius: '20px',
+                border: '1px solid #DCDCDC',
+                borderRadius: '16px',
                 transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                 cursor: 'default'
               }}
             >
               <div style={{ fontSize: '40px', marginBottom: '16px' }}>{industry.icon}</div>
               <h3 style={{
-                fontSize: '17px',
-                fontWeight: '800',
-                color: '#0A2D6E',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#010B1D',
                 marginBottom: '10px'
               }}>
                 {industry.name}
               </h3>
               <p style={{
                 fontSize: '14px',
-                color: '#6b7280',
+                color: '#444444',
                 lineHeight: '1.6',
                 margin: 0
               }}>
@@ -94,9 +80,19 @@ export default function Industries() {
 
       <style>{`
         .industry-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(10, 45, 110, 0.08);
-          border-color: rgba(13, 148, 136, 0.3);
+          transform: translateY(-5px);
+          box-shadow: 0 15px 30px rgba(24, 90, 219, 0.1);
+          border-color: #185ADB !important;
+        }
+        @media (max-width: 1024px) {
+          .industries-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .industries-grid {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
     </section>

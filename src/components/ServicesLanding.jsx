@@ -13,71 +13,92 @@ export default function ServicesLanding() {
 
   const services = [
     {
-      title: 'Digital Transformation',
-      description: 'Accelerate your business evolution with expert strategy and change management.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
+      title: 'Robotic Process Automation',
+      description: 'Automate repetitive tasks with UiPath, Power Automate & Automation Anywhere.',
+      image: '/assets/images/rpa.jpg',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+        </svg>
+      ),
+      link: '/services/rpa'
+    },
+    {
+      title: 'AI Application Development',
+      description: 'Chatbots, AI agents, document intelligence & computer vision.',
+      image: '/assets/images/ai-development.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
-      link: '/digital-transformation'
+      link: '/services/ai-development'
     },
     {
-      title: 'Agentic AI Solutions',
-      description: 'Deploy autonomous AI agents that handle complex tasks and boost team productivity.',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
+      title: 'Agentic AI & LLM Solutions',
+      description: 'Autonomous agents, LLM fine-tuning & RAG implementation.',
+      image: '/assets/images/agentic-ai.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
-      link: '/agentic-ai'
+      link: '/services/agentic-ai'
     },
     {
-      title: 'Intelligent RPA',
-      description: 'Eliminate manual errors and slash operational costs with Robotic Process Automation.',
-      image: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800',
+      title: 'Process Assessment & Consultancy',
+      description: 'We study your processes and recommend the best path forward.',
+      image: '/assets/images/process-assessment.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
         </svg>
       ),
-      link: '/rpa'
+      link: '/services/process-assessment'
     },
     {
-      title: 'ERP & Platforms',
-      description: 'Optimize your core operations with seamless Oracle and enterprise platform solutions.',
-      image: 'https://images.unsplash.com/photo-1551288049-bbdac8a28a1e?auto=format&fit=crop&q=80&w=800',
+      title: 'Digital Transformation',
+      description: 'Strategy, roadmap, change management and execution.',
+      image: '/assets/images/digital-transformation.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
       ),
-      link: '/erp'
+      link: '/services/digital-transformation'
     },
     {
-      title: 'Digital Workforce',
-      description: 'Access elite IT talent and flexible staff augmentation for your enterprise.',
-      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
+      title: 'ERP & Oracle Services',
+      description: 'Oracle Cloud & R12 implementations, integrations and upgrades.',
+      image: '/assets/images/erp-oracle.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
       ),
-      link: '/digital-workforce'
+      link: '/services/erp-oracle'
     },
     {
-      title: 'Custom Development',
-      description: 'Build bespoke, scalable software tailored to your unique business needs.',
-      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800',
+      title: 'Custom Software Development',
+      description: 'Full-stack web, mobile and cloud-native solutions.',
+      image: '/assets/images/custom-dev.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       ),
-      link: '/custom-development'
+      link: '/services/custom-software'
+    },
+    {
+      title: 'Digital Workforce',
+      description: 'Expert IT talent with flexible engagement models.',
+      image: '/assets/images/digital-workforce.jpg',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+      link: '/services/digital-workforce'
     }
   ];
 
@@ -93,7 +114,7 @@ export default function ServicesLanding() {
       <PageBanner 
         title="Our Services" 
         breadcrumb={[{ label: 'Services' }]} 
-        backgroundImage="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1600"
+        backgroundImage="/assets/images/hero-bg.jpg"
       />
 
       {/* Services Grid Section */}
@@ -195,7 +216,7 @@ export default function ServicesLanding() {
             </div>
             <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000" 
+                src="/assets/images/about-bg.jpg" 
                 alt="Tech Innovation" 
                 className="w-full h-full object-cover"
               />
@@ -230,7 +251,5 @@ export default function ServicesLanding() {
         </div>
       </section>
     </div>
-  );
-}
   );
 }

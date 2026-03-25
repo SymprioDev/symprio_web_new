@@ -4,10 +4,10 @@
 @tailwind utilities;
 
 :root {
-  --primary: #185ADB;
-  --secondary: #0A192F;
-  --accent: #FF8A00;
-  --bg-soft: linear-gradient(135deg, #f3f4f6 0%, #e0e7ff 100%);
+  --primary: #0a2d6e;
+  --secondary: #0077b6;
+  --accent: #00f5d4;
+  --bg-soft: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
   --text-main: #1f2937;
   --text-muted: #6b7280;
 }

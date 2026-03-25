@@ -167,8 +167,8 @@ export default function SymprioHero() {
       overflow: 'hidden'
     }} id="home">
       <SEO
-        title="Home"
-        description="AI & Automation Solutions for the Modern Enterprise. Symprio empowers businesses to reduce costs and accelerate growth."
+        title="AI & Automation Solutions for Enterprises & SMEs"
+        description="Symprio delivers AI-powered automation, RPA, digital transformation, and corporate training serving APAC, US, UK & Middle East."
       />
 
       <div style={{

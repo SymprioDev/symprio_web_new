@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 const INDUSTRIES = [
   'All',
@@ -293,6 +294,7 @@ export default function CaseStudiesLanding() {
 
   return (
     <div className="bg-white">
+      <SEO title="Case Studies — AI & Automation Success Stories" description="Real-world results: see how Symprio helped enterprises reduce costs, save time, and grow with AI and RPA." />
       <PageBanner
         title="Success Stories"
         breadcrumb={[{ label: 'Case Studies' }]}

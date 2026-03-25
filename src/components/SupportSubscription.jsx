@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function SupportSubscription() {
   const navigate = useNavigate();
@@ -38,9 +39,10 @@ export default function SupportSubscription() {
 
   return (
     <div className="bg-white">
-      <PageBanner 
-        title="Managed Services & Support" 
-        breadcrumb={[{ label: 'Support' }]} 
+      <SEO title="Support Subscription — Dedicated RPA & AI Support Hours" description="Subscribe to dedicated Symprio support hours. Flexible RPA, AI and automation support for your business." />
+      <PageBanner
+        title="Managed Services & Support"
+        breadcrumb={[{ label: 'Support' }]}
         backgroundImage="/assets/images/digital-workforce.jpg"
       />
       

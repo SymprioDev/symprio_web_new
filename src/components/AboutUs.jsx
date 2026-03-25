@@ -46,9 +46,9 @@ export default function AboutUs() {
 
   return (
     <div className="bg-white">
-      <SEO 
-        title="About Us" 
-        description="Learn about Symprio, a global leader in intelligent automation and digital transformation."
+      <SEO
+        title="About Symprio — AI & Automation Consultancy"
+        description="Learn about Symprio, a global AI and RPA consultancy. Serving 45+ enterprise clients across 15+ countries."
       />
 
       <PageBanner 

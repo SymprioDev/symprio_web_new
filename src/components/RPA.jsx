@@ -9,6 +9,8 @@ export default function RPA() {
       subtitle="Intelligent bots created to automate high-volume, repetitive tasks—enhancing accuracy and scaling your digital workforce."
       heroImage="/assets/images/rpa.jpg"
       breadcrumb="RPA"
+      seoTitle="RPA Services — UiPath & Power Automate Experts"
+      seoDescription="Comprehensive RPA services from assessment to deployment. UiPath, Power Automate, Automation Anywhere. 400+ bots deployed across APAC."
       introHeading="Robotic Process Automation Services"
       introBody={[
         "Symprio provides end-to-end RPA services from assessment through delivery, including ongoing support, training, and establishment of an RPA Center of Excellence. Our experienced architects and developers leverage leading platforms like UiPath and Microsoft Power Automate to deliver enterprise-grade automation solutions.",

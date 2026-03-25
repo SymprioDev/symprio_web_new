@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -115,6 +116,7 @@ export default function Contact() {
 
   return (
     <div className="bg-white">
+      <SEO title="Contact Symprio — Free AI & Automation Consultation" description="Contact Symprio for a free consultation on AI, RPA, digital transformation or training. We respond within 1 business day." />
       <PageBanner
         title="Get in Touch"
         breadcrumb={[{ label: 'Contact' }]}

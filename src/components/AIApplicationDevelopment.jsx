@@ -24,6 +24,8 @@ export default function AIApplicationDevelopment() {
       subtitle="Custom AI applications that solve real-world business challenges, from intelligent chatbots to autonomous agents."
       heroImage="/assets/images/ai-development.jpg"
       breadcrumb="AI Development"
+      seoTitle="AI Application Development — Chatbots, Agents, RAG"
+      seoDescription="Build intelligent AI applications: chatbots, AI agents, RAG, LLM fine-tuning, computer vision and document intelligence."
       introHeading="Future-Proof Your Business with Intelligent AI"
       introBody={[
         'Symprio specializes in building custom AI applications that solve real-world business challenges. From intelligent chatbots to autonomous agents, we help you leverage the power of Generative AI and Machine Learning to drive efficiency and innovation.',

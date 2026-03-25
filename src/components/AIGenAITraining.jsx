@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function AIGenAITraining() {
   useEffect(() => {
@@ -17,9 +18,10 @@ export default function AIGenAITraining() {
 
   return (
     <div className="bg-white">
-      <PageBanner 
-        title="AI & GenAI Training" 
-        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'AI & GenAI' }]} 
+      <SEO title="AI & Generative AI Training" description="Practical AI and GenAI training covering ChatGPT, Claude, Manus, n8n, vibe coding and AI agent workflows for business teams." />
+      <PageBanner
+        title="AI & GenAI Training"
+        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'AI & GenAI' }]}
         backgroundImage="/assets/images/ai-development.jpg"
       />
       

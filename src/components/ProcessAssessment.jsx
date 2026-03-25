@@ -9,6 +9,8 @@ export default function ProcessAssessment() {
       subtitle="Understand your processes before you automate them."
       heroImage="/assets/images/process-assessment.jpg"
       breadcrumb="Process Assessment"
+      seoTitle="Process Assessment & Consultancy Services"
+      seoDescription="Symprio studies your business processes and recommends the best automation strategy. Domain-agnostic consultancy for SMEs and enterprises."
       introHeading="Don't Automate Chaos. Optimize First."
       introBody={[
         "Before deploying technology, it is critical to understand if a process is truly \"automation-ready\". Symprio's assessment methodology helps you identify the high-impact areas where AI and RPA can deliver maximum ROI.",

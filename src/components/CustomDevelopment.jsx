@@ -42,6 +42,8 @@ export default function CustomDevelopment() {
       subtitle="Full-stack excellence from initial concept to global scale."
       heroImage="/assets/images/custom-dev.jpg"
       breadcrumb="Custom Software"
+      seoTitle="Custom Software Development — Web, Mobile & Cloud"
+      seoDescription="Full-stack web apps, mobile apps, and cloud-native solutions. Agile methodology, modern frameworks, AI-integrated development."
       introHeading="Agile & DevOps Excellence"
       introBody={[
         'Symprio is your trusted partner for building bespoke solutions that align with your unique business objectives. We specialize in full-stack development leveraging modern technologies, agile methodologies, and DevOps practices to deliver scalable, secure, and innovative solutions.',

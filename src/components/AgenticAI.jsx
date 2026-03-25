@@ -24,6 +24,8 @@ export default function AgenticAI() {
       subtitle="The next evolution of AI: autonomous digital agents that reason, decide, and execute complex workflows without constant oversight."
       heroImage="/assets/images/agentic-ai.jpg"
       breadcrumb="Agentic AI"
+      seoTitle="Agentic AI & LLM Solutions — Autonomous AI Agents"
+      seoDescription="Deploy autonomous AI agents, fine-tune LLMs and implement RAG for your business. Serving banks, insurers, fintechs and enterprises."
       introHeading="The Next Stage of Autonomous Enterprise"
       introBody={[
         'Agentic AI represents a paradigm shift from tools that respond to tools that act. Our solutions enable organizations to deploy specialized agents that can browse the web, use internal tools, and collaborate to solve multi-stage problems autonomously.',

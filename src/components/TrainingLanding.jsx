@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function TrainingLanding() {
   const navigate = useNavigate();
@@ -65,9 +66,10 @@ export default function TrainingLanding() {
 
   return (
     <div className="bg-white">
-      <PageBanner 
-        title="Training & Enablement" 
-        breadcrumb={[{ label: 'Training' }]} 
+      <SEO title="Corporate AI & RPA Training" description="Symprio delivers RPA, AI, GenAI and digital transformation training for businesses across APAC and globally." />
+      <PageBanner
+        title="Training & Enablement"
+        breadcrumb={[{ label: 'Training' }]}
         backgroundImage="/assets/images/training-bg.jpg"
       />
 

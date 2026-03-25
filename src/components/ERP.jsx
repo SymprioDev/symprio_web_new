@@ -9,6 +9,8 @@ export default function ERP() {
       subtitle="Transforming complex business operations into streamlined, cloud-native powerhouses."
       heroImage="/assets/images/erp-oracle.jpg"
       breadcrumb="ERP & Oracle"
+      seoTitle="Oracle ERP Implementation & Consultancy"
+      seoDescription="Expert Oracle Cloud and R12 ERP implementations, upgrades and integrations. Deep APAC expertise with proven delivery methodology."
       introHeading="Oracle Cloud Excellence"
       introBody={[
         "As an Oracle partner, Symprio delivers end-to-end ERP implementations and cloud transformations. We combine certified expertise with deep industry knowledge to maximize ROI and minimize disruption across your enterprise systems.",

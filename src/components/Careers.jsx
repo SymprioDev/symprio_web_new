@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 const JOBS = [
   {
@@ -121,6 +122,7 @@ export default function Careers() {
 
   return (
     <div className="bg-white">
+      <SEO title="Careers at Symprio — Join Our AI & Automation Team" description="Build the future of AI and automation. Join Symprio's expert team across engineering, consulting, sales and operations." />
       <PageBanner
         title="Join Our Team"
         breadcrumb={[{ label: 'Careers' }]}

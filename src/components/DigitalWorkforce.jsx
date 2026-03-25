@@ -42,6 +42,8 @@ export default function DigitalWorkforce() {
       subtitle="Augmenting your success with elite, vetted global talent."
       heroImage="/assets/images/digital-workforce.jpg"
       breadcrumb="Digital Workforce"
+      seoTitle="IT Staff Augmentation & Digital Workforce Services"
+      seoDescription="Access expert RPA, AI, and IT talent with flexible engagement models. Staff augmentation, managed teams, and full outsourcing."
       introHeading="Flexible Talent Augmentation"
       introBody={[
         'Symprio provides flexible and transparent talent solutions to support large organizations. We deliver skilled professionals across IT, software development, project management, and business functions, serving global enterprises like Meta, AXA, and AIA.',

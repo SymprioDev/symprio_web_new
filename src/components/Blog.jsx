@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function Blog() {
   const [posts, setPosts] = useState([]);
@@ -32,9 +33,10 @@ export default function Blog() {
 
   return (
     <div className="bg-white min-h-screen">
-      <PageBanner 
-        title="Symprio Ideas" 
-        breadcrumb={[{ label: 'Blog' }]} 
+      <SEO title="Blog — AI, RPA & Automation Insights" description="Expert insights on AI, RPA, Agentic AI, digital transformation and automation best practices from the Symprio team." />
+      <PageBanner
+        title="Symprio Ideas"
+        breadcrumb={[{ label: 'Blog' }]}
         backgroundImage="/assets/images/about-bg.jpg"
       />
 

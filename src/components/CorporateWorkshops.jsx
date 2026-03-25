@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function CorporateWorkshops() {
   useEffect(() => {
@@ -10,9 +11,10 @@ export default function CorporateWorkshops() {
 
   return (
     <div className="bg-white">
-      <PageBanner 
-        title="Corporate Workshops" 
-        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'Workshops' }]} 
+      <SEO title="Corporate Digital Transformation Workshops" description="Bespoke digital transformation and AI strategy workshops for C-suite and senior leadership. Online and on-site across APAC and globally." />
+      <PageBanner
+        title="Corporate Workshops"
+        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'Workshops' }]}
         backgroundImage="/assets/images/process-assessment.jpg"
       />
       

@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from './SEO';
 import FAQSection from './FAQSection';
 import ConsultationForm from './ConsultationForm';
 
@@ -15,6 +16,8 @@ export default function ServicePageTemplate({
   subtitle,
   heroImage,
   breadcrumb,
+  seoTitle,
+  seoDescription,
   introHeading,
   introBody = [],
   features = [],
@@ -87,6 +90,13 @@ export default function ServicePageTemplate({
 
   return (
     <>
+      {seoTitle && (
+        <SEO
+          title={seoTitle}
+          description={seoDescription}
+        />
+      )}
+
       {/* ── Section 1: Hero Banner ── */}
       <section
         style={{

@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from './SEO';
 
 export default function PrivacyPolicy() {
   return (
@@ -9,6 +10,7 @@ export default function PrivacyPolicy() {
       minHeight: '100vh',
       position: 'relative'
     }}>
+      <SEO title="Privacy Policy" description="Symprio's privacy policy. How we collect, use and protect your personal data." />
       {/* Simple Header Banner */}
       <div style={{
         background: 'linear-gradient(135deg, #1f2937 0%, #0891b2 100%)',

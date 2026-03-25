@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
+import SEO from './SEO';
 
 export default function RPATraining() {
   useEffect(() => {
@@ -18,9 +19,10 @@ export default function RPATraining() {
 
   return (
     <div className="bg-white">
-      <PageBanner 
-        title="RPA Developer Training" 
-        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'RPA' }]} 
+      <SEO title="RPA Training — UiPath & Power Automate" description="Hands-on UiPath and Power Automate training. Foundation to advanced level for professionals." />
+      <PageBanner
+        title="RPA Developer Training"
+        breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'RPA' }]}
         backgroundImage="/assets/images/rpa.jpg"
       />
       

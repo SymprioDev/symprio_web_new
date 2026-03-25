@@ -12,14 +12,14 @@ const PageBanner = ({ title, breadcrumb = [], backgroundImage }) => {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${bgImage})`,
-          zIndex: -1
+          zIndex: 0
         }}
       >
         <div className="absolute inset-0 bg-[#010B1D]/75 backdrop-blur-[2px]"></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10 pt-20">
-        <h1 className="text-5xl font-semibold text-white mb-6 animate-fade-in-up">
+        <h1 className="text-5xl font-semibold text-white mb-6">
           {title}
         </h1>
       </div>

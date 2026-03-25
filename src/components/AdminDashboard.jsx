@@ -715,10 +715,10 @@ const AdminDashboard = () => {
     });
   };
 
-  // Calculate dashboard stats
-  const pendingEnquiries = enquiries.filter(e => e.status === 'new').length;
-  const pendingApplications = jobApplications.filter(a => a.status === 'pending' || !a.status).length;
-  const pendingSubscriptions = subscriptions.filter(s => s.status === 'Pending' || !s.status).length;
+  // Calculate dashboard stats (case-insensitive)
+  const pendingEnquiries = enquiries.filter(e => (e.status || '').toLowerCase() === 'new').length;
+  const pendingApplications = jobApplications.filter(a => !a.status || (a.status || '').toLowerCase() === 'pending').length;
+  const pendingSubscriptions = subscriptions.filter(s => !s.status || (s.status || '').toLowerCase() === 'pending').length;
 
   // Sidebar menu items
   const menuItems = [
@@ -737,6 +737,9 @@ const AdminDashboard = () => {
 
   // Status badge component
   const StatusBadge = ({ status, type = 'default' }) => {
+    // Normalize status to lowercase for consistent color mapping
+    const normalizedStatus = (status || '').toLowerCase();
+    
     const colors = {
       new: 'bg-yellow-100 text-yellow-700',
       replied: 'bg-green-100 text-green-700',
@@ -747,27 +750,30 @@ const AdminDashboard = () => {
       default: 'bg-gray-100 text-gray-700'
     };
     
+    // Capitalize first letter for display
+    const displayStatus = status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : '';
+    
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colors[status] || colors.default}`}>
-        {status}
+      <span className={`px-2 py-1 rounded text-xs font-medium ${colors[normalizedStatus] || colors.default}`}>
+        {displayStatus}
       </span>
     );
   };
 
   // Card component
   const StatCard = ({ title, value, icon: Icon, color, trend }) => (
-    <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
-      <div>
-        <p className="text-gray-500 text-sm">{title}</p>
+    <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between min-w-0">
+      <div className="min-w-0 flex-1">
+        <p className="text-gray-500 text-sm truncate">{title}</p>
         <h2 className="text-2xl font-bold text-gray-800">{value}</h2>
         {trend && (
           <p className="text-xs text-green-600 mt-1 flex items-center">
-            <TrendingUp size={12} className="mr-1" />
-            {trend}
+            <TrendingUp size={12} className="mr-1 shrink-0" />
+            <span className="truncate">{trend}</span>
           </p>
         )}
       </div>
-      <div className={`p-3 rounded-lg ${color}`}>
+      <div className={`p-3 rounded-lg shrink-0 ${color}`}>
         <Icon size={24} className="text-white" />
       </div>
     </div>
@@ -877,7 +883,7 @@ const AdminDashboard = () => {
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <StatCard 
                   title="Total Enquiries" 
                   value={enquiries.length} 
@@ -910,7 +916,7 @@ const AdminDashboard = () => {
               {/* Quick Actions */}
               <div className="bg-white rounded-xl shadow p-6">
                 <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <button 
                     onClick={() => setActiveTab('enquiries')}
                     className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-center"
@@ -1080,7 +1086,7 @@ const AdminDashboard = () => {
           {/* Job Applications Tab */}
           {activeTab === 'jobApplications' && (
             <div className="space-y-4">
-              <div className="bg-white rounded-xl shadow">
+              <div className="bg-white rounded-xl shadow overflow-hidden">
                 <div className="p-4 border-b border-gray-100">
                   <h2 className="text-lg font-semibold text-gray-800">
                     Job Applications ({filteredApplications.length}{jobApplications.length > 0 && ` of ${jobApplications.length}`})
@@ -1114,7 +1120,7 @@ const AdminDashboard = () => {
                         </div>
                       ) : (
                         <div className="overflow-x-auto">
-                          <table className="w-full border rounded-lg overflow-hidden">
+                          <table className="w-full border rounded-lg overflow-hidden min-w-[600px]">
                             <thead className="bg-gray-100">
                               <tr>
                                 <th className="p-3 text-left text-sm font-semibold text-gray-700">First Name</th>
@@ -1201,7 +1207,7 @@ const AdminDashboard = () => {
                   
                   {!loadingSubscriptions && subscriptions.length > 0 && (
                     <div className="overflow-x-auto">
-                      <table className="w-full border rounded-lg overflow-hidden">
+                      <table className="w-full border rounded-lg overflow-hidden min-w-[800px]">
                         <thead className="bg-gray-100">
                           <tr>
                             <th className="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
@@ -1215,61 +1221,73 @@ const AdminDashboard = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {subscriptions.map((sub) => (
-                            <tr key={sub.id} className="border-t hover:bg-gray-50">
-                              <td className="p-3 text-gray-800">{sub.name || '-'}</td>
-                              <td className="p-3 text-gray-800">{sub.companyName || '-'}</td>
-                              <td className="p-3 text-gray-800">{sub.contactNumber || '-'}</td>
-                              <td className="p-3 text-center text-gray-800">{sub.hours || 0}</td>
-                              <td className="p-3 text-center text-cyan-600 font-semibold">${sub.totalAmount || 0}</td>
-                              <td className="p-3 text-gray-800">
-                                {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-GB') : '-'}
-                              </td>
-                              <td className="p-3 text-center">
-                                <div className="flex flex-col items-center gap-2">
-                                  <span 
-                                    className="px-2 py-1 rounded text-xs font-semibold"
-                                    style={getSubscriptionStatusColor(sub.status || 'Pending')}
-                                  >
-                                    {sub.status || 'Pending'}
-                                  </span>
-                                  <select
-                                    value={sub.status || 'Pending'}
-                                    onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
-                                    className="px-2 py-1 border border-gray-300 rounded text-xs"
-                                  >
-                                    {subscriptionStatusTypes.length > 0 ? (
-                                      subscriptionStatusTypes.map(status => (
-                                        <option key={status.id} value={status.status_name}>{status.status_name}</option>
-                                      ))
-                                    ) : (
-                                      <>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Reviewed">Reviewed</option>
-                                        <option value="Rejected">Rejected</option>
-                                      </>
-                                    )}
-                                  </select>
-                                </div>
-                              </td>
-                              <td className="p-3 text-center">
-                                <div className="flex gap-2 justify-center">
-                                  <button
-                                    onClick={() => handleViewSubscription(sub)}
-                                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                                  >
-                                    View
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteSubscription(sub.id)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
+                          {subscriptions.map((sub) => {
+                            // Normalize status to handle case mismatch
+                            const displayStatus = sub.status 
+                              ? sub.status.charAt(0).toUpperCase() + sub.status.slice(1).toLowerCase()
+                              : 'Pending';
+                            const normalizedStatus = (sub.status || 'Pending').toLowerCase();
+                            
+                            return (
+                              <tr key={sub.id} className="border-t hover:bg-gray-50">
+                                <td className="p-3 text-gray-800">{sub.name || '-'}</td>
+                                <td className="p-3 text-gray-800">{sub.companyName || '-'}</td>
+                                <td className="p-3 text-gray-800">{sub.contactNumber || '-'}</td>
+                                <td className="p-3 text-center text-gray-800">{sub.hours || 0}</td>
+                                <td className="p-3 text-center text-cyan-600 font-semibold">${sub.totalAmount || 0}</td>
+                                <td className="p-3 text-gray-800">
+                                  {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-GB') : '-'}
+                                </td>
+                                <td className="p-3 text-center">
+                                  <div className="flex flex-col items-center gap-2">
+                                    <span 
+                                      className={`px-2 py-1 rounded text-xs font-semibold ${
+                                        normalizedStatus === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                        normalizedStatus === 'reviewed' ? 'bg-green-100 text-green-700' :
+                                        normalizedStatus === 'rejected' ? 'bg-red-100 text-red-700' :
+                                        'bg-gray-100 text-gray-700'
+                                      }`}
+                                    >
+                                      {displayStatus}
+                                    </span>
+                                    <select
+                                      value={displayStatus}
+                                      onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
+                                      className="px-2 py-1 border border-gray-300 rounded text-xs"
+                                    >
+                                      {subscriptionStatusTypes.length > 0 ? (
+                                        subscriptionStatusTypes.map(status => (
+                                          <option key={status.id} value={status.status_name}>{status.status_name}</option>
+                                        ))
+                                      ) : (
+                                        <>
+                                          <option value="Pending">Pending</option>
+                                          <option value="Reviewed">Reviewed</option>
+                                          <option value="Rejected">Rejected</option>
+                                        </>
+                                      )}
+                                    </select>
+                                  </div>
+                                </td>
+                                <td className="p-3 text-center">
+                                  <div className="flex gap-2 justify-center">
+                                    <button
+                                      onClick={() => handleViewSubscription(sub)}
+                                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                    >
+                                      View
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteSubscription(sub.id)}
+                                      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

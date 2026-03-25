@@ -6,9 +6,28 @@ import ApplicationFilters from './ApplicationFilters';
 import MailConfig from './MailConfig';
 import SubscriptionViewModal from './SubscriptionViewModal';
 import SubscriptionStatusTypes from './SubscriptionStatusTypes';
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Briefcase,
+  Mail,
+  Users,
+  Settings,
+  LogOut,
+  ChevronRight,
+  Calendar,
+  GraduationCap,
+  MapPin,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+  Plus,
+  X
+} from 'lucide-react';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('events');
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [events, setEvents] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [jobs, setJobs] = useState([]);
@@ -234,34 +253,17 @@ const AdminDashboard = () => {
     }
     setLoadingSubscriptions(true);
     try {
-      console.log('Fetching subscriptions...');
-      // Try with proxy first
-      let response = await fetch('/api/subscription', {
+      const response = await fetch('/api/subscription', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
-      // If proxy fails, try direct
-      if (!response.ok && response.status === 404) {
-        console.log('Trying direct fetch to port 5000...');
-        response = await fetch('/api/subscription', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      }
-      
-      console.log('Response status:', response.status);
-      
       if (response.ok) {
         const data = await response.json();
-        console.log('Subscriptions fetched:', data);
         setSubscriptions(Array.isArray(data) ? data : []);
       } else if (response.status === 401) {
         console.error('Unauthorized - token may be expired');
-      } else {
-        console.error('Failed to fetch subscriptions:', response.status);
       }
     } catch (error) {
       console.error('Error fetching subscriptions:', error);
@@ -321,7 +323,6 @@ const AdminDashboard = () => {
       
       if (response.ok) {
         showNotification('success', 'Subscription deleted successfully');
-        // Refresh the list
         setSubscriptions(prev => prev.filter(sub => sub.id !== id));
       } else {
         showNotification('error', 'Failed to delete subscription');
@@ -334,16 +335,12 @@ const AdminDashboard = () => {
 
   // Handle subscription status change
   const handleSubscriptionStatusChange = async (id, newStatus) => {
-    console.log("Updating subscription status:", id, newStatus);
-    
-    // Update UI immediately
     setSubscriptions(prev =>
       prev.map(sub =>
         sub.id === id ? { ...sub, status: newStatus } : sub
       )
     );
     
-    // API call to persist change - use proxy URL with /api/subscriptions (plural)
     try {
       const response = await fetch(`/api/subscriptions/${id}/status`, {
         method: 'PUT',
@@ -354,12 +351,7 @@ const AdminDashboard = () => {
         body: JSON.stringify({ status: newStatus })
       });
       
-      console.log("Subscription status update response:", response.status, response.ok);
-      
       if (!response.ok) {
-        console.error('Failed to update subscription status, status:', response.status);
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Error response:', errorData);
         showNotification('error', 'Failed to update subscription status');
       } else {
         showNotification('success', 'Status updated successfully');
@@ -369,7 +361,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Handle view subscription
   const handleViewSubscription = (sub) => {
     setSelectedSubscription(sub);
     setShowSubscriptionModal(true);
@@ -422,17 +413,14 @@ const AdminDashboard = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    // Update UI immediately
     setJobApplications(prev =>
       prev.map(app =>
         app.id === id ? { ...app, status: newStatus } : app
       )
     );
     
-    // Also update filtered applications if needed
     setFilters(prev => ({ ...prev }));
     
-    // API call to persist change
     try {
       const response = await fetch(`/api/job-applications/${id}/status`, {
         method: 'PATCH',
@@ -445,7 +433,6 @@ const AdminDashboard = () => {
       
       if (!response.ok) {
         console.error('Failed to update status');
-        // Optionally revert on failure
       }
     } catch (error) {
       console.error('Error updating status:', error);
@@ -673,7 +660,6 @@ const AdminDashboard = () => {
   // Filter job applications using useMemo for performance
   const filteredApplications = useMemo(() => {
     return jobApplications.filter(app => {
-      // Search filter (name, email, job title)
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
         const matchesSearch = 
@@ -684,12 +670,10 @@ const AdminDashboard = () => {
         if (!matchesSearch) return false;
       }
 
-      // Job Title filter
       if (filters.jobTitle && app.jobTitle !== filters.jobTitle) {
         return false;
       }
 
-      // Date from filter
       if (filters.dateFrom) {
         const appDate = new Date(app.submittedDate);
         const fromDate = new Date(filters.dateFrom);
@@ -698,7 +682,6 @@ const AdminDashboard = () => {
         if (appDate < fromDate) return false;
       }
 
-      // Date to filter
       if (filters.dateTo) {
         const appDate = new Date(app.submittedDate);
         const toDate = new Date(filters.dateTo);
@@ -707,8 +690,6 @@ const AdminDashboard = () => {
         if (appDate > toDate) return false;
       }
 
-      // Status filter (if app has status field)
-      // Treat NULL/undefined status as 'pending' for pre-migration applications
       if (filters.status) {
         const appStatus = app.status || 'pending';
         if (appStatus !== filters.status) {
@@ -720,12 +701,10 @@ const AdminDashboard = () => {
     });
   }, [jobApplications, filters]);
 
-  // Handle filter changes
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
 
-  // Handle filter reset
   const handleResetFilters = () => {
     setFilters({
       search: '',
@@ -736,1203 +715,578 @@ const AdminDashboard = () => {
     });
   };
 
+  // Calculate dashboard stats
+  const pendingEnquiries = enquiries.filter(e => e.status === 'new').length;
+  const pendingApplications = jobApplications.filter(a => a.status === 'pending' || !a.status).length;
+  const pendingSubscriptions = subscriptions.filter(s => s.status === 'Pending' || !s.status).length;
+
+  // Sidebar menu items
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'events', label: 'Events', icon: Calendar },
+    { id: 'trainings', label: 'Trainings', icon: GraduationCap },
+    { id: 'jobs', label: 'Job Listings', icon: Briefcase },
+    { id: 'jobApplications', label: 'Job Applications', icon: Users, badge: pendingApplications },
+    { id: 'locations', label: 'Locations', icon: MapPin },
+    { id: 'enquiries', label: 'Enquiries', icon: MessageSquare, badge: pendingEnquiries },
+    { id: 'subscriptions', label: 'Support Subscriptions', icon: CheckCircle, badge: pendingSubscriptions },
+    { id: 'subscriptionConfig', label: 'Subscription Config', icon: Settings },
+    { id: 'statusTypes', label: 'Status Types', icon: TrendingUp },
+    { id: 'mailConfig', label: 'Mail Configuration', icon: Mail },
+  ];
+
+  // Status badge component
+  const StatusBadge = ({ status, type = 'default' }) => {
+    const colors = {
+      new: 'bg-yellow-100 text-yellow-700',
+      replied: 'bg-green-100 text-green-700',
+      resolved: 'bg-blue-100 text-blue-700',
+      pending: 'bg-yellow-100 text-yellow-700',
+      reviewed: 'bg-green-100 text-green-700',
+      rejected: 'bg-red-100 text-red-700',
+      default: 'bg-gray-100 text-gray-700'
+    };
+    
+    return (
+      <span className={`px-2 py-1 rounded text-xs font-medium ${colors[status] || colors.default}`}>
+        {status}
+      </span>
+    );
+  };
+
+  // Card component
+  const StatCard = ({ title, value, icon: Icon, color, trend }) => (
+    <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+      <div>
+        <p className="text-gray-500 text-sm">{title}</p>
+        <h2 className="text-2xl font-bold text-gray-800">{value}</h2>
+        {trend && (
+          <p className="text-xs text-green-600 mt-1 flex items-center">
+            <TrendingUp size={12} className="mr-1" />
+            {trend}
+          </p>
+        )}
+      </div>
+      <div className={`p-3 rounded-lg ${color}`}>
+        <Icon size={24} className="text-white" />
+      </div>
+    </div>
+  );
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #00d4ff 0%, #3b82f6 100%)',
-      padding: '30px 20px'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
-        {/* Header */}
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '30px',
-          marginBottom: '30px',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div>
-            <h1 style={{ fontSize: '32px', margin: '0 0 10px 0', color: '#1f2937' }}>
-              Admin Dashboard
-            </h1>
-            <p style={{ color: '#6b7280', margin: 0 }}>
-              Welcome, {user?.name || user?.email}
-            </p>
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 flex flex-col h-screen overflow-hidden`}>
+        {/* Logo */}
+        <div className="p-4 border-b border-gray-200 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-white font-bold text-lg">S</span>
+            </div>
+            {sidebarOpen && (
+              <div>
+                <h1 className="font-bold text-gray-800">Symprio</h1>
+                <p className="text-xs text-gray-500">Admin Panel</p>
+              </div>
+            )}
           </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`
+                  w-full flex items-center gap-3 p-3 rounded-lg transition-all
+                  ${isActive 
+                    ? 'bg-blue-100 text-blue-600 font-medium' 
+                    : 'hover:bg-gray-100 text-gray-600'}
+                `}
+              >
+                <Icon size={20} className="shrink-0" />
+                {sidebarOpen && (
+                  <>
+                    <span className="flex-1 text-left truncate">{item.label}</span>
+                    {item.badge > 0 && (
+                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shrink-0">
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Bottom section */}
+        <div className="p-4 border-t border-gray-200 space-y-2 shrink-0">
           <button
             onClick={() => {
               logout();
               navigate('/');
             }}
-            style={{
-              background: '#dc2626',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#b91c1c';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#dc2626';
-            }}
+            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 text-red-600 transition-all"
           >
-            Logout
+            <LogOut size={20} className="shrink-0" />
+            {sidebarOpen && <span className="truncate">Logout</span>}
           </button>
         </div>
+      </aside>
 
-        {/* Tabs */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '30px',
-          background: 'white',
-          padding: '12px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-        }}>
-          <button
-            onClick={() => setActiveTab('events')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'events' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'events' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Events
-          </button>
-          <button
-            onClick={() => setActiveTab('trainings')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'trainings' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'trainings' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Trainings
-          </button>
-          <button
-            onClick={() => setActiveTab('jobs')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'jobs' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'jobs' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Job Listings ({jobs.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('jobApplications')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'jobApplications' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'jobApplications' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Job Applications ({jobApplications.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('locations')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'locations' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'locations' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Locations ({locations.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('enquiries')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'enquiries' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'enquiries' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Enquiries ({enquiries.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('mailConfig')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'mailConfig' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'mailConfig' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Mail Configuration
-          </button>
-          <button
-            onClick={() => setActiveTab('subscriptionConfig')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'subscriptionConfig' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'subscriptionConfig' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Subscription Config
-          </button>
-          <button
-            onClick={() => setActiveTab('subscriptions')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'subscriptions' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'subscriptions' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Support Subscriptions
-          </button>
-          <button
-            onClick={() => setActiveTab('statusTypes')}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === 'statusTypes' ? '#00d4ff' : 'transparent',
-              color: activeTab === 'statusTypes' ? 'white' : '#6b7280',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Status Types
-          </button>
-        </div>
-
-        {/* Events Tab */}
-        {activeTab === 'events' && (
-          <div>
+      {/* Right Section */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="h-16 bg-white shadow shrink-0 flex items-center justify-between px-6">
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => setShowEventForm(!showEventForm)}
-              style={{
-                background: 'white',
-                color: '#00d4ff',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '6px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '30px'
-              }}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              {showEventForm ? '✕ Cancel' : '+ Add Event'}
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
-
-            {showEventForm && (
-              <form
-                onSubmit={handleAddEvent}
-                style={{
-                  background: 'white',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  marginBottom: '30px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Title</label>
-                  <input
-                    value={eventForm.title}
-                    onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
-                    placeholder="Event title"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Description</label>
-                  <textarea
-                    value={eventForm.description}
-                    onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
-                    placeholder="Event description"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box',
-                      minHeight: '100px'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Date</label>
-                  <input
-                    type="date"
-                    value={eventForm.date}
-                    onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Location</label>
-                  <input
-                    value={eventForm.location}
-                    onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
-                    placeholder="Event location"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Registration Link (Optional)</label>
-                  <input
-                    type="url"
-                    value={eventForm.link}
-                    onChange={(e) => setEventForm({ ...eventForm, link: e.target.value })}
-                    placeholder="https://example.com/register"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  style={{
-                    background: '#00d4ff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Add Event
-                </button>
-              </form>
-            )}
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '20px'
-            }}>
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  style={{
-                    background: 'white',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-                  }}
-                >
-                  <h3 style={{ margin: '0 0 8px 0' }}>{event.title}</h3>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>{event.description}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>📅 {event.date}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 16px 0' }}>📍 {event.location}</p>
-                  <button
-                    onClick={() => handleDeleteEvent(event.id)}
-                    style={{
-                      background: '#dc2626',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
+            <div>
+              <h1 className="text-lg font-semibold text-gray-800">
+                {menuItems.find(m => m.id === activeTab)?.label || 'Dashboard'}
+              </h1>
             </div>
           </div>
-        )}
-
-        {/* Trainings Tab */}
-        {activeTab === 'trainings' && (
-          <div>
-            <button
-              onClick={() => setShowTrainingForm(!showTrainingForm)}
-              style={{
-                background: 'white',
-                color: '#00d4ff',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '6px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '30px'
-              }}
-            >
-              {showTrainingForm ? '✕ Cancel' : '+ Add Training'}
-            </button>
-
-            {showTrainingForm && (
-              <form
-                onSubmit={handleAddTraining}
-                style={{
-                  background: 'white',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  marginBottom: '30px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Title</label>
-                  <input
-                    value={trainingForm.title}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
-                    placeholder="Training title"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Description</label>
-                  <textarea
-                    value={trainingForm.description}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, description: e.target.value })}
-                    placeholder="Training description"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box',
-                      minHeight: '100px'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Date</label>
-                  <input
-                    type="date"
-                    value={trainingForm.date}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, date: e.target.value })}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Duration</label>
-                  <input
-                    value={trainingForm.duration}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, duration: e.target.value })}
-                    placeholder="e.g., 2 hours"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Instructor</label>
-                  <input
-                    value={trainingForm.instructor}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, instructor: e.target.value })}
-                    placeholder="Instructor name"
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Capacity</label>
-                  <input
-                    type="number"
-                    value={trainingForm.capacity}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, capacity: e.target.value })}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Enrollment Link (Optional)</label>
-                  <input
-                    type="url"
-                    value={trainingForm.link}
-                    onChange={(e) => setTrainingForm({ ...trainingForm, link: e.target.value })}
-                    placeholder="https://example.com/enroll"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  style={{
-                    background: '#00d4ff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Add Training
-                </button>
-              </form>
-            )}
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '20px'
-            }}>
-              {trainings.map((training) => (
-                <div
-                  key={training.id}
-                  style={{
-                    background: 'white',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-                  }}
-                >
-                  <h3 style={{ margin: '0 0 8px 0' }}>{training.title}</h3>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>{training.description}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>📅 {training.date}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>⏱️ {training.duration}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>👨‍🏫 {training.instructor}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 16px 0' }}>👥 Capacity: {training.capacity}</p>
-                  <button
-                    onClick={() => handleDeleteTraining(training.id)}
-                    style={{
-                      background: '#dc2626',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-medium text-gray-800">{user?.name || user?.email}</p>
+              <p className="text-xs text-gray-500">Administrator</p>
+            </div>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shrink-0">
+              <span className="text-white font-medium">
+                {(user?.name || user?.email || 'A')[0].toUpperCase()}
+              </span>
             </div>
           </div>
-        )}
+        </header>
 
-        {/* Jobs Tab */}
-        {activeTab === 'jobs' && (
-          <div>
-            <button
-              onClick={() => setShowJobForm(!showJobForm)}
-              style={{
-                background: 'white',
-                color: '#00d4ff',
-                padding: '12px 24px',
-                border: 'none',
-                borderRadius: '8px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              {showJobForm ? '✕ Close' : '+ Post New Job'}
-            </button>
-
-            {showJobForm && (
-              <form
-                onSubmit={handleAddJob}
-                style={{
-                  background: 'white',
-                  padding: '30px',
-                  borderRadius: '8px',
-                  marginBottom: '30px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                }}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#1f2937' }}>Job Title *</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Senior React Developer"
-                      value={jobForm.title}
-                      onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#1f2937' }}>Department *</label>
-                    <select
-                      value={jobForm.department}
-                      onChange={(e) => setJobForm({ ...jobForm, department: e.target.value })}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        boxSizing: 'border-box'
-                      }}
-                    >
-                      <option value="Engineering">Engineering</option>
-                      <option value="Sales">Sales</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Product">Product</option>
-                      <option value="Design">Design</option>
-                      <option value="Operations">Operations</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#1f2937' }}>Job Type *</label>
-                    <select
-                      value={jobForm.type}
-                      onChange={(e) => setJobForm({ ...jobForm, type: e.target.value })}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        boxSizing: 'border-box'
-                      }}
-                    >
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Contract">Contract</option>
-                      <option value="Internship">Internship</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#1f2937' }}>Location</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Remote, New York"
-                      value={jobForm.location}
-                      onChange={(e) => setJobForm({ ...jobForm, location: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#1f2937' }}>Job Description *</label>
-                  <textarea
-                    placeholder="Enter detailed job description..."
-                    value={jobForm.description}
-                    onChange={(e) => setJobForm({ ...jobForm, description: e.target.value })}
-                    required
-                    rows="6"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box',
-                      fontFamily: 'inherit'
-                    }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  style={{
-                    background: '#00d4ff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Post Job
-                </button>
-              </form>
-            )}
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '20px'
-            }}>
-              {jobs.map((job) => (
-                <div
-                  key={job.id}
-                  style={{
-                    background: 'white',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                    borderTop: `4px solid #${['3b82f6', '8b5cf6', 'f59e0b', 'ec4899', '10b981', '06b6d4'][['Engineering', 'Sales', 'Marketing', 'Product', 'Design', 'Operations'].indexOf(job.department)] || '3b82f6'}`
-                  }}
-                >
-                  <h3 style={{ margin: '0 0 8px 0' }}>{job.title}</h3>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0', fontWeight: '600' }}>{job.department}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 8px 0' }}>📋 {job.type}</p>
-                  <p style={{ color: '#6b7280', margin: '0 0 16px 0' }}>📍 {job.location}</p>
-                  <p style={{ color: '#4b5563', margin: '0 0 16px 0', fontSize: '14px' }}>{job.description}</p>
-                  <button
-                    onClick={() => handleDeleteJob(job.id)}
-                    style={{
-                      background: '#dc2626',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'jobApplications' && (
-          <div>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1f2937' }}>
-              Job Applications ({filteredApplications.length}{jobApplications.length > 0 && ` of ${jobApplications.length}`})
-            </h2>
-            
-            {/* Loading State */}
-            {jobAppsLoading && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
-                Loading job applications...
-              </div>
-            )}
-            
-            {/* Error State */}
-            {!jobAppsLoading && jobAppsError && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#dc2626', background: '#fee2e2', borderRadius: '8px', marginBottom: '20px' }}>
-                {jobAppsError}
-              </div>
-            )}
-            
-            {/* Empty State */}
-            {!jobAppsLoading && !jobAppsError && jobApplications.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
-                No job applications yet.
-              </div>
-            )}
-            
-            {/* Show filters and table when not loading, no error, and has applications */}
-            {!jobAppsLoading && !jobAppsError && jobApplications.length > 0 && (
-              <>
-                {/* Filters Section */}
-                <ApplicationFilters
-                  jobs={jobs}
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  onReset={handleResetFilters}
+        {/* Main Content */}
+        <main className="p-6 overflow-y-auto flex-1 bg-gray-100">
+          {/* Dashboard Tab */}
+          {activeTab === 'dashboard' && (
+            <div className="space-y-6">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard 
+                  title="Total Enquiries" 
+                  value={enquiries.length} 
+                  icon={MessageSquare}
+                  color="bg-blue-500"
+                  trend={`${pendingEnquiries} pending`}
                 />
-                
-                {filteredApplications.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
-                    No applications found matching your filters. Try adjusting your search criteria.
+                <StatCard 
+                  title="Job Applications" 
+                  value={jobApplications.length} 
+                  icon={Briefcase}
+                  color="bg-purple-500"
+                  trend={`${pendingApplications} pending`}
+                />
+                <StatCard 
+                  title="Subscriptions" 
+                  value={subscriptions.length} 
+                  icon={Users}
+                  color="bg-green-500"
+                  trend={`${pendingSubscriptions} pending`}
+                />
+                <StatCard 
+                  title="Upcoming Events" 
+                  value={events.length} 
+                  icon={Calendar}
+                  color="bg-orange-500"
+                />
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <button 
+                    onClick={() => setActiveTab('enquiries')}
+                    className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-center"
+                  >
+                    <MessageSquare className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">View Enquiries</p>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('jobApplications')}
+                    className="p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors text-center"
+                  >
+                    <Briefcase className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">Review Applications</p>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('subscriptions')}
+                    className="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-center"
+                  >
+                    <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">Manage Subscriptions</p>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('mailConfig')}
+                    className="p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors text-center"
+                  >
+                    <Mail className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">Mail Settings</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Recent Activity Preview */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Enquiries */}
+                <div className="bg-white rounded-xl shadow">
+                  <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="font-semibold text-gray-800">Recent Enquiries</h2>
+                    <button 
+                      onClick={() => setActiveTab('enquiries')}
+                      className="text-sm text-blue-600 hover:text-blue-700"
+                    >
+                      View All <ChevronRight size={14} className="inline" />
+                    </button>
                   </div>
+                  <div className="p-4">
+                    {enquiries.slice(0, 3).map((enquiry) => (
+                      <div key={enquiry.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                        <div>
+                          <p className="font-medium text-gray-800">{enquiry.name}</p>
+                          <p className="text-sm text-gray-500">{enquiry.email}</p>
+                        </div>
+                        <StatusBadge status={enquiry.status} />
+                      </div>
+                    ))}
+                    {enquiries.length === 0 && (
+                      <p className="text-center text-gray-500 py-4">No enquiries yet</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Recent Applications */}
+                <div className="bg-white rounded-xl shadow">
+                  <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="font-semibold text-gray-800">Recent Applications</h2>
+                    <button 
+                      onClick={() => setActiveTab('jobApplications')}
+                      className="text-sm text-blue-600 hover:text-blue-700"
+                    >
+                      View All <ChevronRight size={14} className="inline" />
+                    </button>
+                  </div>
+                  <div className="p-4">
+                    {jobApplications.slice(0, 3).map((app) => (
+                      <div key={app.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                        <div>
+                          <p className="font-medium text-gray-800">{app.firstName}</p>
+                          <p className="text-sm text-gray-500">{app.jobTitle || 'General Application'}</p>
+                        </div>
+                        <StatusBadge status={app.status || 'pending'} />
+                      </div>
+                    ))}
+                    {jobApplications.length === 0 && (
+                      <p className="text-center text-gray-500 py-4">No applications yet</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Enquiries Tab */}
+          {activeTab === 'enquiries' && (
+            <div className="bg-white rounded-xl shadow">
+              <div className="p-4 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Customer Enquiries ({enquiries.length})
+                </h2>
+              </div>
+              <div className="p-4">
+                {enquiries.length === 0 ? (
+                  <p className="text-center text-gray-500 py-8">No enquiries received yet.</p>
                 ) : (
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
-                      <thead>
-                        <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>First Name</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Mobile</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Job Title</th>
-                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Submitted</th>
-                          <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Status</th>
-                          <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredApplications.map((app) => (
-                      <tr key={app.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <td style={{ padding: '16px', color: '#374151' }}>{app.firstName}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>{app.mobileNumber}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>{app.jobTitle || '-'}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>
-                          {app.submittedDate ? new Date(app.submittedDate).toLocaleDateString() : '-'}
-                        </td>
-                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                  <div className="space-y-4">
+                    {enquiries.map((enquiry) => (
+                      <div
+                        key={enquiry.id}
+                        className="bg-gray-50 p-4 rounded-lg border-l-4"
+                        style={{ borderLeftColor: enquiry.status === 'new' ? '#f59e0b' : enquiry.status === 'replied' ? '#10b981' : '#6b7280' }}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Name</p>
+                            <p className="font-medium text-gray-800">{enquiry.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Email</p>
+                            <p className="text-blue-600">{enquiry.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Phone</p>
+                            <p className="text-gray-700">{enquiry.phone}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Company</p>
+                            <p className="text-gray-700">{enquiry.company}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Service</p>
+                            <p className="text-gray-700">{enquiry.service}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase font-semibold">Date</p>
+                            <p className="text-gray-700">{new Date(enquiry.created_at).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg mb-3">
+                          <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Message</p>
+                          <p className="text-gray-700 text-sm">{enquiry.message}</p>
+                        </div>
+                        <div className="flex gap-2 items-center">
                           <select
-                            value={app.status || 'pending'}
-                            onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                            style={{
-                              padding: '6px 10px',
-                              borderRadius: '4px',
-                              border: '1px solid #d1d5db',
-                              background: app.status === 'rejected' ? '#fee2e2' : app.status === 'reviewed' ? '#d1fae5' : '#fef3c7',
-                              color: app.status === 'rejected' ? '#dc2626' : app.status === 'reviewed' ? '#059669' : '#d97706',
-                              fontWeight: '600',
-                              fontSize: '12px',
-                              cursor: 'pointer'
-                            }}
+                            value={enquiry.status}
+                            onChange={(e) => handleUpdateEnquiryStatus(enquiry.id, e.target.value)}
+                            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                           >
-                            <option value="pending">Pending</option>
-                            <option value="reviewed">Reviewed</option>
-                            <option value="rejected">Rejected</option>
+                            <option value="new">New</option>
+                            <option value="replied">Replied</option>
+                            <option value="resolved">Resolved</option>
                           </select>
-                        </td>
-                        <td style={{ padding: '16px', textAlign: 'center' }}>
                           <button
-                            onClick={() => {
-                              setSelectedApplication(app);
-                              setShowApplicationModal(true);
-                            }}
-                            style={{
-                              background: '#dbeafe',
-                              color: '#2563eb',
-                              border: 'none',
-                              padding: '8px 16px',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontWeight: '600',
-                              marginRight: '8px'
-                            }}
-                          >
-                            View
-                          </button>
-                          <button
-                            onClick={() => handleDeleteJobApplication(app.id)}
-                            style={{
-                              background: '#fee2e2',
-                              color: '#dc2626',
-                              border: 'none',
-                              padding: '8px 16px',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontWeight: '600'
-                            }}
+                            onClick={() => handleDeleteEnquiry(enquiry.id)}
+                            className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-600"
                           >
                             Delete
                           </button>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
                   </div>
                 )}
-              </>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'locations' && (
-          <div>
-            <button
-              onClick={() => setShowLocationForm(!showLocationForm)}
-              style={{
-                background: 'white',
-                color: '#00d4ff',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '6px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '30px'
-              }}
-            >
-              {showLocationForm ? '✕ Cancel' : '+ Add Location'}
-            </button>
-
-            {showLocationForm && (
-              <form
-                onSubmit={handleAddLocation}
-                style={{
-                  background: 'white',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  marginBottom: '30px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Location Name</label>
-                    <input
-                      type="text"
-                      value={locationForm.name}
-                      onChange={(e) => setLocationForm({ ...locationForm, name: e.target.value })}
-                      placeholder="Location name"
-                      required
-                      style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Phone</label>
-                    <input
-                      type="text"
-                      value={locationForm.phone}
-                      onChange={(e) => setLocationForm({ ...locationForm, phone: e.target.value })}
-                      placeholder="Phone number"
-                      required
-                      style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Address</label>
-                  <input
-                    type="text"
-                    value={locationForm.address}
-                    onChange={(e) => setLocationForm({ ...locationForm, address: e.target.value })}
-                    placeholder="Full address"
-                    required
-                    style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
-                  />
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginTop: '20px' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Email (optional)</label>
-                    <input
-                      type="email"
-                      value={locationForm.email}
-                      onChange={(e) => setLocationForm({ ...locationForm, email: e.target.value })}
-                      placeholder="contact@company.com"
-                      style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Background Image URL (optional)</label>
-                    <input
-                      type="text"
-                      value={locationForm.imageUrl}
-                      onChange={(e) => setLocationForm({ ...locationForm, imageUrl: e.target.value })}
-                      placeholder="https://..."
-                      style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Upload Background Image</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setLocationForm({ ...locationForm, imageFile: e.target.files?.[0] || null })}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  style={{
-                    marginTop: '24px',
-                    background: '#00d4ff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Save Location
-                </button>
-              </form>
-            )}
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-              {locations.map((location) => (
-                <div key={location.id} style={{ background: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
-                  <div style={{ fontWeight: '700', color: '#1f2937', marginBottom: '6px' }}>{location.name}</div>
-                  <div style={{ color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>{location.address}</div>
-                  <div style={{ color: '#6b7280', fontSize: '14px' }}>📞 {location.phone}</div>
-                  {location.email && <div style={{ color: '#6b7280', fontSize: '14px' }}>✉️ {location.email}</div>}
-                  <button
-                    onClick={() => handleDeleteLocation(location.id)}
-                    style={{
-                      marginTop: '12px',
-                      background: '#dc2626',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 14px',
-                      borderRadius: '6px',
-                      fontWeight: '600',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Enquiries Tab */}
-        {activeTab === 'enquiries' && (
-          <div style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h2 style={{ marginTop: 0, marginBottom: '24px', color: '#1f2937' }}>
-              Customer Enquiries ({enquiries.length})
-            </h2>
-            {enquiries.length === 0 ? (
-              <p style={{ color: '#6b7280' }}>No enquiries received yet.</p>
-            ) : (
-              <div style={{
-                display: 'grid',
-                gap: '16px'
-              }}>
-                {enquiries.map((enquiry) => (
-                  <div
-                    key={enquiry.id}
-                    style={{
-                      background: '#f9fafb',
-                      padding: '16px',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                      borderLeft: `4px solid ${enquiry.status === 'new' ? '#f59e0b' : enquiry.status === 'replied' ? '#10b981' : '#6b7280'}`
-                    }}
-                  >
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                      gap: '16px',
-                      marginBottom: '12px'
-                    }}>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Name</p>
-                        <p style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>{enquiry.name}</p>
-                      </div>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Email</p>
-                        <p style={{ margin: 0, fontSize: '14px', color: '#00d4ff' }}>{enquiry.email}</p>
-                      </div>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Phone</p>
-                        <p style={{ margin: 0, fontSize: '14px' }}>{enquiry.phone}</p>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                      gap: '16px',
-                      marginBottom: '12px'
-                    }}>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Company</p>
-                        <p style={{ margin: 0, fontSize: '14px' }}>{enquiry.company}</p>
-                      </div>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Service</p>
-                        <p style={{ margin: 0, fontSize: '14px' }}>{enquiry.service}</p>
-                      </div>
-                      <div>
-                        <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Submitted</p>
-                        <p style={{ margin: 0, fontSize: '14px' }}>{new Date(enquiry.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      background: 'white',
-                      padding: '12px',
-                      borderRadius: '6px',
-                      marginBottom: '12px'
-                    }}>
-                      <p style={{ margin: '0 0 4px 0', color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Message</p>
-                      <p style={{ margin: 0, fontSize: '14px', color: '#4b5563', lineHeight: '1.6' }}>{enquiry.message}</p>
-                    </div>
-
-                    <div style={{
-                      display: 'flex',
-                      gap: '8px',
-                      alignItems: 'center'
-                    }}>
-                      <select
-                        value={enquiry.status}
-                        onChange={(e) => handleUpdateEnquiryStatus(enquiry.id, e.target.value)}
-                        style={{
-                          padding: '8px 12px',
-                          borderRadius: '6px',
-                          border: '1px solid #d1d5db',
-                          background: 'white',
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          fontWeight: '600'
-                        }}
-                      >
-                        <option value="new">New</option>
-                        <option value="replied">Replied</option>
-                        <option value="resolved">Resolved</option>
-                      </select>
-                      <button
-                        onClick={() => handleDeleteEnquiry(enquiry.id)}
-                        style={{
-                          background: '#dc2626',
-                          color: 'white',
-                          border: 'none',
-                          padding: '8px 16px',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '600'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-        {/* Status Types Tab */}
-        {activeTab === 'statusTypes' && (
-          <SubscriptionStatusTypes 
-            token={token} 
-            onNotification={showNotification}
-            onRefresh={fetchSubscriptionStatusTypes}
-          />
-        )}
+          {/* Job Applications Tab */}
+          {activeTab === 'jobApplications' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Job Applications ({filteredApplications.length}{jobApplications.length > 0 && ` of ${jobApplications.length}`})
+                  </h2>
+                </div>
+                <div className="p-4">
+                  {jobAppsLoading && (
+                    <div className="text-center py-8 text-gray-500">Loading job applications...</div>
+                  )}
+                  
+                  {!jobAppsLoading && jobAppsError && (
+                    <div className="text-center py-8 text-red-600 bg-red-50 rounded-lg">{jobAppsError}</div>
+                  )}
+                  
+                  {!jobAppsLoading && !jobAppsError && jobApplications.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">No job applications yet.</div>
+                  )}
+                  
+                  {!jobAppsLoading && !jobAppsError && jobApplications.length > 0 && (
+                    <>
+                      <ApplicationFilters
+                        jobs={jobs}
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onReset={handleResetFilters}
+                      />
+                      
+                      {filteredApplications.length === 0 ? (
+                        <div className="text-center py-8 text-gray-500">
+                          No applications found matching your filters.
+                        </div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="w-full border rounded-lg overflow-hidden">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                <th className="p-3 text-left text-sm font-semibold text-gray-700">First Name</th>
+                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Mobile</th>
+                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Job Title</th>
+                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Submitted</th>
+                                <th className="p-3 text-center text-sm font-semibold text-gray-700">Status</th>
+                                <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredApplications.map((app) => (
+                                <tr key={app.id} className="border-t hover:bg-gray-50">
+                                  <td className="p-3 text-gray-800">{app.firstName}</td>
+                                  <td className="p-3 text-gray-800">{app.mobileNumber}</td>
+                                  <td className="p-3 text-gray-800">{app.jobTitle || '-'}</td>
+                                  <td className="p-3 text-gray-800">
+                                    {app.submittedDate ? new Date(app.submittedDate).toLocaleDateString() : '-'}
+                                  </td>
+                                  <td className="p-3 text-center">
+                                    <select
+                                      value={app.status || 'pending'}
+                                      onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                                      className={`px-2 py-1 rounded text-xs font-medium border-0 ${
+                                        app.status === 'rejected' ? 'bg-red-100 text-red-700' : 
+                                        app.status === 'reviewed' ? 'bg-green-100 text-green-700' : 
+                                        'bg-yellow-100 text-yellow-700'
+                                      }`}
+                                    >
+                                      <option value="pending">Pending</option>
+                                      <option value="reviewed">Reviewed</option>
+                                      <option value="rejected">Rejected</option>
+                                    </select>
+                                  </td>
+                                  <td className="p-3 text-center">
+                                    <div className="flex gap-2 justify-center">
+                                      <button
+                                        onClick={() => {
+                                          setSelectedApplication(app);
+                                          setShowApplicationModal(true);
+                                        }}
+                                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                      >
+                                        View
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteJobApplication(app.id)}
+                                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Mail Configuration Tab */}
-        {activeTab === 'mailConfig' && (
-          <MailConfig 
-            token={token} 
-            onNotification={showNotification} 
-          />
-        )}
+          {/* Subscriptions Tab */}
+          {activeTab === 'subscriptions' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Support Subscriptions ({subscriptions.length})
+                  </h2>
+                </div>
+                <div className="p-4">
+                  {loadingSubscriptions && (
+                    <div className="text-center py-8 text-gray-500">Loading subscriptions...</div>
+                  )}
+                  
+                  {!loadingSubscriptions && subscriptions.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">No subscriptions found.</div>
+                  )}
+                  
+                  {!loadingSubscriptions && subscriptions.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border rounded-lg overflow-hidden">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Company</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Contact</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Hours</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Total</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Date</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Status</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subscriptions.map((sub) => (
+                            <tr key={sub.id} className="border-t hover:bg-gray-50">
+                              <td className="p-3 text-gray-800">{sub.name || '-'}</td>
+                              <td className="p-3 text-gray-800">{sub.companyName || '-'}</td>
+                              <td className="p-3 text-gray-800">{sub.contactNumber || '-'}</td>
+                              <td className="p-3 text-center text-gray-800">{sub.hours || 0}</td>
+                              <td className="p-3 text-center text-cyan-600 font-semibold">${sub.totalAmount || 0}</td>
+                              <td className="p-3 text-gray-800">
+                                {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-GB') : '-'}
+                              </td>
+                              <td className="p-3 text-center">
+                                <div className="flex flex-col items-center gap-2">
+                                  <span 
+                                    className="px-2 py-1 rounded text-xs font-semibold"
+                                    style={getSubscriptionStatusColor(sub.status || 'Pending')}
+                                  >
+                                    {sub.status || 'Pending'}
+                                  </span>
+                                  <select
+                                    value={sub.status || 'Pending'}
+                                    onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
+                                    className="px-2 py-1 border border-gray-300 rounded text-xs"
+                                  >
+                                    {subscriptionStatusTypes.length > 0 ? (
+                                      subscriptionStatusTypes.map(status => (
+                                        <option key={status.id} value={status.status_name}>{status.status_name}</option>
+                                      ))
+                                    ) : (
+                                      <>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Reviewed">Reviewed</option>
+                                        <option value="Rejected">Rejected</option>
+                                      </>
+                                    )}
+                                  </select>
+                                </div>
+                              </td>
+                              <td className="p-3 text-center">
+                                <div className="flex gap-2 justify-center">
+                                  <button
+                                    onClick={() => handleViewSubscription(sub)}
+                                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                  >
+                                    View
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteSubscription(sub.id)}
+                                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Subscription Configuration Tab */}
-        {activeTab === 'subscriptionConfig' && (
-          <div>
-            <div style={{
-              background: 'white',
-              padding: '32px',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              maxWidth: '500px'
-            }}>
-              <h2 style={{ marginTop: 0, marginBottom: '24px', fontSize: '20px', fontWeight: '700' }}>
-                Subscription Rate Configuration
-              </h2>
-              <p style={{ color: '#6b7280', marginBottom: '24px' }}>
-                Set the rate per hour for support hours subscription.
-              </p>
+          {/* Subscription Config Tab */}
+          {activeTab === 'subscriptionConfig' && (
+            <div className="bg-white rounded-xl shadow p-6 max-w-lg">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Subscription Rate Configuration</h2>
+              <p className="text-gray-600 mb-6">Set the rate per hour for support hours subscription.</p>
               <form onSubmit={handleSaveSubscriptionConfig}>
-                <div style={{ marginBottom: '24px' }}>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                    Rate ($ per hour)
-                  </label>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Rate ($ per hour)</label>
                   <input
                     type="number"
                     value={subscriptionRate}
@@ -1941,210 +1295,501 @@ const AdminDashboard = () => {
                     min="1"
                     required
                     disabled={loadingSubscriptionRate}
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      fontSize: '14px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      boxSizing: 'border-box'
-                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loadingSubscriptionRate}
-                  style={{
-                    background: '#00d4ff',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: loadingSubscriptionRate ? 'not-allowed' : 'pointer',
-                    opacity: loadingSubscriptionRate ? 0.7 : 1
-                  }}
+                  className="w-full bg-cyan-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-cyan-600 disabled:opacity-50"
                 >
                   {loadingSubscriptionRate ? 'Loading...' : 'Save Configuration'}
                 </button>
               </form>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Support Subscriptions Tab */}
-        {activeTab === 'subscriptions' && (
-          <div>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1f2937' }}>
-              Support Subscriptions ({subscriptions.length})
-            </h2>
-            
-            {/* Loading State */}
-            {loadingSubscriptions && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
-                Loading subscriptions...
-              </div>
-            )}
-            
-            {/* Empty State */}
-            {!loadingSubscriptions && subscriptions.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
-                No subscriptions found.
-              </div>
-            )}
-            
-            {/* Subscriptions Table */}
-            {!loadingSubscriptions && subscriptions.length > 0 && (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
-                  <thead>
-                    <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Name</th>
-                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Company</th>
-                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Contact</th>
-                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Hours</th>
-                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Total</th>
-                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Date</th>
-                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Status</th>
-                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {subscriptions.map((sub) => (
-                      <tr key={sub.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <td style={{ padding: '16px', color: '#374151' }}>{sub.name || '-'}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>{sub.companyName || '-'}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>{sub.contactNumber || '-'}</td>
-                        <td style={{ padding: '16px', textAlign: 'center', color: '#374151' }}>{sub.hours || 0}</td>
-                        <td style={{ padding: '16px', textAlign: 'center', color: '#0891b2', fontWeight: '600' }}>${sub.totalAmount || 0}</td>
-                        <td style={{ padding: '16px', color: '#374151' }}>
-                          {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-GB') : '-'}
-                        </td>
-                        <td style={{ padding: '16px', textAlign: 'center' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                            <span style={{
-                              ...getSubscriptionStatusColor(sub.status || 'Pending'),
-                              padding: '4px 10px',
-                              borderRadius: '12px',
-                              fontWeight: '600',
-                              fontSize: '12px',
-                              display: 'inline-block'
-                            }}>
-                              {sub.status || 'Pending'}
-                            </span>
-                            <select
-                              value={sub.status || 'Pending'}
-                              onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
-                              style={{
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                border: '1px solid #d1d5db',
-                                background: 'white',
-                                color: '#374151',
-                                fontSize: '13px',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              {subscriptionStatusTypes.length > 0 ? (
-                                subscriptionStatusTypes.map(status => (
-                                  <option key={status.id} value={status.status_name}>{status.status_name}</option>
-                                ))
-                              ) : (
-                                <>
-                                  <option value="Pending">Pending</option>
-                                  <option value="Reviewed">Reviewed</option>
-                                  <option value="Rejected">Rejected</option>
-                                </>
-                              )}
-                            </select>
-                          </div>
-                        </td>
-                        <td style={{ padding: '16px', textAlign: 'center' }}>
+          {/* Status Types Tab */}
+          {activeTab === 'statusTypes' && (
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <SubscriptionStatusTypes 
+                token={token} 
+                onNotification={showNotification}
+                onRefresh={fetchSubscriptionStatusTypes}
+              />
+            </div>
+          )}
+
+          {/* Events Tab */}
+          {activeTab === 'events' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-gray-800">Events ({events.length})</h2>
+                  <button
+                    onClick={() => setShowEventForm(!showEventForm)}
+                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >
+                    {showEventForm ? <X size={18} /> : <Plus size={18} />}
+                    {showEventForm ? 'Cancel' : 'Add Event'}
+                  </button>
+                </div>
+                
+                {showEventForm && (
+                  <form onSubmit={handleAddEvent} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input
+                          value={eventForm.title}
+                          onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                          placeholder="Event title"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={eventForm.date}
+                          onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                      <input
+                        value={eventForm.location}
+                        onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                        placeholder="Event location"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea
+                        value={eventForm.description}
+                        onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                        placeholder="Event description"
+                        rows="3"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      Add Event
+                    </button>
+                  </form>
+                )}
+                
+                <div className="p-4">
+                  {events.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">No events yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {events.map((event) => (
+                        <div key={event.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                          <h3 className="font-semibold text-gray-800 mb-2">{event.title}</h3>
+                          <p className="text-sm text-gray-600 mb-1">📅 {event.date}</p>
+                          <p className="text-sm text-gray-600 mb-3">📍 {event.location}</p>
+                          <p className="text-sm text-gray-500 mb-4 line-clamp-2">{event.description}</p>
                           <button
-                            onClick={() => handleViewSubscription(sub)}
-                            style={{
-                              background: '#dbeafe',
-                              color: '#2563eb',
-                              border: 'none',
-                              padding: '8px 16px',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontWeight: '600',
-                              marginRight: '8px'
-                            }}
-                          >
-                            View
-                          </button>
-                          <button
-                            onClick={() => handleDeleteSubscription(sub.id)}
-                            style={{
-                              background: '#fee2e2',
-                              color: '#dc2626',
-                              border: 'none',
-                              padding: '8px 16px',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontWeight: '600'
-                            }}
+                            onClick={() => handleDeleteEvent(event.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                           >
                             Delete
                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-        {/* Notification */}
-        {notification && (
-          <div style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            padding: '16px 24px',
-            borderRadius: '8px',
-            background: notification.type === 'success' ? '#10b981' : '#ef4444',
-            color: 'white',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            zIndex: 1000,
-            animation: 'slideIn 0.3s ease-out'
-          }}>
-            {notification.message}
-          </div>
-        )}
-        
-        {/* Application View Modal */}
-        {showApplicationModal && selectedApplication && (
-          <ApplicationViewModal
-            application={selectedApplication}
-            onClose={() => {
-              setShowApplicationModal(false);
-              setSelectedApplication(null);
-            }}
-          />
-        )}
+          {/* Trainings Tab */}
+          {activeTab === 'trainings' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-gray-800">Trainings ({trainings.length})</h2>
+                  <button
+                    onClick={() => setShowTrainingForm(!showTrainingForm)}
+                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >
+                    {showTrainingForm ? <X size={18} /> : <Plus size={18} />}
+                    {showTrainingForm ? 'Cancel' : 'Add Training'}
+                  </button>
+                </div>
+                
+                {showTrainingForm && (
+                  <form onSubmit={handleAddTraining} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input
+                          value={trainingForm.title}
+                          onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
+                          placeholder="Training title"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Instructor</label>
+                        <input
+                          value={trainingForm.instructor}
+                          onChange={(e) => setTrainingForm({ ...trainingForm, instructor: e.target.value })}
+                          placeholder="Instructor name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input
+                          type="date"
+                          value={trainingForm.date}
+                          onChange={(e) => setTrainingForm({ ...trainingForm, date: e.target.value })}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                        <input
+                          value={trainingForm.duration}
+                          onChange={(e) => setTrainingForm({ ...trainingForm, duration: e.target.value })}
+                          placeholder="e.g., 2 hours"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
+                        <input
+                          type="number"
+                          value={trainingForm.capacity}
+                          onChange={(e) => setTrainingForm({ ...trainingForm, capacity: e.target.value })}
+                          placeholder="50"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea
+                        value={trainingForm.description}
+                        onChange={(e) => setTrainingForm({ ...trainingForm, description: e.target.value })}
+                        placeholder="Training description"
+                        rows="3"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      Add Training
+                    </button>
+                  </form>
+                )}
+                
+                <div className="p-4">
+                  {trainings.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">No trainings yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {trainings.map((training) => (
+                        <div key={training.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                          <h3 className="font-semibold text-gray-800 mb-2">{training.title}</h3>
+                          <p className="text-sm text-gray-600 mb-1">📅 {training.date}</p>
+                          <p className="text-sm text-gray-600 mb-1">⏱️ {training.duration}</p>
+                          <p className="text-sm text-gray-600 mb-1">👤 {training.instructor}</p>
+                          <p className="text-sm text-gray-600 mb-3">👥 Capacity: {training.capacity}</p>
+                          <p className="text-sm text-gray-500 mb-4 line-clamp-2">{training.description}</p>
+                          <button
+                            onClick={() => handleDeleteTraining(training.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Subscription View Modal */}
-        {showSubscriptionModal && selectedSubscription && (
-          <SubscriptionViewModal
-            subscription={selectedSubscription}
-            onClose={() => {
-              setShowSubscriptionModal(false);
-              setSelectedSubscription(null);
-            }}
-          />
-        )}
+          {/* Jobs Tab */}
+          {activeTab === 'jobs' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-gray-800">Job Listings ({jobs.length})</h2>
+                  <button
+                    onClick={() => setShowJobForm(!showJobForm)}
+                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >
+                    {showJobForm ? <X size={18} /> : <Plus size={18} />}
+                    {showJobForm ? 'Cancel' : 'Post Job'}
+                  </button>
+                </div>
+                
+                {showJobForm && (
+                  <form onSubmit={handleAddJob} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                        <input
+                          value={jobForm.title}
+                          onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })}
+                          placeholder="Job title"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select
+                          value={jobForm.department}
+                          onChange={(e) => setJobForm({ ...jobForm, department: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="Engineering">Engineering</option>
+                          <option value="Sales">Sales</option>
+                          <option value="Marketing">Marketing</option>
+                          <option value="Product">Product</option>
+                          <option value="Design">Design</option>
+                          <option value="Operations">Operations</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                        <select
+                          value={jobForm.type}
+                          onChange={(e) => setJobForm({ ...jobForm, type: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="Full-time">Full-time</option>
+                          <option value="Part-time">Part-time</option>
+                          <option value="Contract">Contract</option>
+                          <option value="Internship">Internship</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input
+                          value={jobForm.location}
+                          onChange={(e) => setJobForm({ ...jobForm, location: e.target.value })}
+                          placeholder="e.g., Remote, New York"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
+                      <textarea
+                        value={jobForm.description}
+                        onChange={(e) => setJobForm({ ...jobForm, description: e.target.value })}
+                        placeholder="Enter detailed job description..."
+                        rows="4"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      Post Job
+                    </button>
+                  </form>
+                )}
+                
+                <div className="p-4">
+                  {jobs.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">No job listings yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {jobs.map((job) => (
+                        <div key={job.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow" style={{ borderTopColor: '#3b82f6', borderTopWidth: '4px' }}>
+                          <h3 className="font-semibold text-gray-800 mb-1">{job.title}</h3>
+                          <p className="text-sm text-cyan-600 font-medium mb-2">{job.department}</p>
+                          <p className="text-sm text-gray-600 mb-1">📋 {job.type}</p>
+                          <p className="text-sm text-gray-600 mb-3">📍 {job.location}</p>
+                          <p className="text-sm text-gray-500 mb-4 line-clamp-3">{job.description}</p>
+                          <button
+                            onClick={() => handleDeleteJob(job.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Locations Tab */}
+          {activeTab === 'locations' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-gray-800">Locations ({locations.length})</h2>
+                  <button
+                    onClick={() => setShowLocationForm(!showLocationForm)}
+                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >
+                    {showLocationForm ? <X size={18} /> : <Plus size={18} />}
+                    {showLocationForm ? 'Cancel' : 'Add Location'}
+                  </button>
+                </div>
+                
+                {showLocationForm && (
+                  <form onSubmit={handleAddLocation} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location Name</label>
+                        <input
+                          value={locationForm.name}
+                          onChange={(e) => setLocationForm({ ...locationForm, name: e.target.value })}
+                          placeholder="Location name"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input
+                          value={locationForm.phone}
+                          onChange={(e) => setLocationForm({ ...locationForm, phone: e.target.value })}
+                          placeholder="Phone number"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                      <input
+                        value={locationForm.address}
+                        onChange={(e) => setLocationForm({ ...locationForm, address: e.target.value })}
+                        placeholder="Full address"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
+                        <input
+                          type="email"
+                          value={locationForm.email}
+                          onChange={(e) => setLocationForm({ ...locationForm, email: e.target.value })}
+                          placeholder="contact@company.com"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Background Image URL (optional)</label>
+                        <input
+                          value={locationForm.imageUrl}
+                          onChange={(e) => setLocationForm({ ...locationForm, imageUrl: e.target.value })}
+                          placeholder="https://..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Upload Background Image</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setLocationForm({ ...locationForm, imageFile: e.target.files?.[0] || null })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      />
+                    </div>
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      Save Location
+                    </button>
+                  </form>
+                )}
+                
+                <div className="p-4">
+                  {locations.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">No locations yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {locations.map((location) => (
+                        <div key={location.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                          <h3 className="font-semibold text-gray-800 mb-2">{location.name}</h3>
+                          <p className="text-sm text-gray-600 mb-1">📍 {location.address}</p>
+                          <p className="text-sm text-gray-600 mb-1">📞 {location.phone}</p>
+                          {location.email && <p className="text-sm text-gray-600 mb-3">✉️ {location.email}</p>}
+                          <button
+                            onClick={() => handleDeleteLocation(location.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Mail Configuration Tab */}
+          {activeTab === 'mailConfig' && (
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <MailConfig 
+                token={token} 
+                onNotification={showNotification} 
+              />
+            </div>
+          )}
+        </main>
       </div>
+
+      {/* Notification */}
+      {notification && (
+        <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all ${
+          notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`}>
+          {notification.message}
+        </div>
+      )}
+      
+      {/* Application View Modal */}
+      {showApplicationModal && selectedApplication && (
+        <ApplicationViewModal
+          application={selectedApplication}
+          onClose={() => {
+            setShowApplicationModal(false);
+            setSelectedApplication(null);
+          }}
+        />
+      )}
+
+      {/* Subscription View Modal */}
+      {showSubscriptionModal && selectedSubscription && (
+        <SubscriptionViewModal
+          subscription={selectedSubscription}
+          onClose={() => {
+            setShowSubscriptionModal(false);
+            setSelectedSubscription(null);
+          }}
+        />
+      )}
     </div>
   );
 };
 
 export default AdminDashboard;
-
-
-
-

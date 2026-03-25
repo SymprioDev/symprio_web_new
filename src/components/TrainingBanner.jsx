@@ -100,23 +100,22 @@ export default function TrainingBanner() {
   return (
     <section style={styles.section}>
       <div style={styles.inner}>
-        {/* Microsoft Partner Badge */}
+        {/* Badge */}
         <div data-aos="fade-up">
-          <span style={styles.partnerBadge}>Microsoft Official Partner</span>
+          <span style={styles.partnerBadge}>Training &amp; Enablement</span>
         </div>
 
         {/* Heading */}
         <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="50">
-          We Are a{" "}
-          <span style={styles.headingHighlight}>Microsoft Official Partner</span>{" "}
-          — We Train Your Team Too
+          We Don't Just Build Solutions —{" "}
+          <span style={styles.headingHighlight}>We Upskill Your Team</span>
         </h2>
 
         {/* Body text */}
         <p style={styles.body} data-aos="fade-up" data-aos-delay="100">
-          From UiPath &amp; Power Automate RPA training to AI &amp; GenAI
-          workshops and corporate leadership programs — Symprio delivers
-          practical, hands-on training that builds real capability.
+          As a certified training partner, Symprio delivers hands-on programs
+          in RPA, AI, GenAI, and digital transformation — empowering your people
+          to drive automation from within.
         </p>
 
         {/* Training chips */}

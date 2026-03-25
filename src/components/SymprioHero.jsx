@@ -6,8 +6,28 @@ const partners = [
   { name: 'UiPath', logo: '/uipath-logo.png' },
   { name: 'Microsoft', logo: '/microsoft-logo.png' },
   { name: 'Oracle', logo: '/oracle-logo.png' },
-  { name: 'Salesforce', logo: '/salesforce-logo.png' }
+  { name: 'Salesforce', logo: '/salesforce-logo.png' },
+  { name: 'Google', logo: '/google-logo.png' },
+  { name: 'Meta', logo: '/meta-logo.png' },
+  { name: 'ChatGPT', logo: '/chatgpt-logo.png' },
+  { name: 'Claude', logo: '/claude-logo.png' },
+  { name: 'Mistral', logo: '/mistral-logo.png' },
+  { name: 'Manus', text: 'Manus' }
 ];
+
+// Distribute N items evenly on a sphere using golden angle
+function getSpherePositions(count, radius) {
+  const positions = [];
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < count; i++) {
+    const y = 1 - (i / (count - 1)) * 2; // -1 to 1
+    const theta = goldenAngle * i;
+    const rotateX = Math.asin(y) * (180 / Math.PI);
+    const rotateY = (theta * 180) / Math.PI;
+    positions.push({ rotateX, rotateY, radius });
+  }
+  return positions;
+}
 
 export default function SymprioHero() {
   const navigate = useNavigate();
@@ -16,6 +36,8 @@ export default function SymprioHero() {
   useEffect(() => {
     setShowAnimation(true);
   }, []);
+
+  const spherePositions = getSpherePositions(partners.length, 280);
 
   return (
     <div style={{
@@ -36,10 +58,10 @@ export default function SymprioHero() {
 
       <div style={{
         width: '100%',
-        maxWidth: '1200px',
+        maxWidth: '1400px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '60px',
+        gridTemplateColumns: '1fr 1.2fr',
+        gap: '40px',
         alignItems: 'center',
         position: 'relative',
         zIndex: 10
@@ -101,50 +123,65 @@ export default function SymprioHero() {
           </div>
         </div>
 
-        {/* Right — 3D Sphere Rotating Partner Logos */}
+        {/* Right — Full 3D Sphere */}
         <div style={{
           position: 'relative',
           opacity: showAnimation ? 1 : 0,
-          transform: showAnimation ? 'scale(1)' : 'scale(0.85)',
+          transform: showAnimation ? 'scale(1)' : 'scale(0.8)',
           transition: 'all 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '560px',
-          perspective: '1200px'
+          minHeight: '620px',
+          perspective: '1400px'
         }}>
-          {/* Soft glow behind sphere */}
+          {/* Gradient glow behind sphere */}
           <div style={{
             position: 'absolute',
-            width: '420px',
-            height: '420px',
+            width: '600px',
+            height: '600px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.08) 0%, rgba(13, 148, 136, 0.04) 40%, transparent 70%)',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             pointerEvents: 'none'
           }} />
 
-          {/* 3D Sphere container */}
+          {/* Decorative orbit rings */}
+          <div style={{
+            position: 'absolute',
+            width: '520px',
+            height: '520px',
+            borderRadius: '50%',
+            border: '1px dashed rgba(24, 90, 219, 0.08)',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%) rotateX(70deg)',
+            pointerEvents: 'none'
+          }} />
+          <div style={{
+            position: 'absolute',
+            width: '400px',
+            height: '400px',
+            borderRadius: '50%',
+            border: '1px dashed rgba(24, 90, 219, 0.06)',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%) rotateX(70deg) rotateZ(45deg)',
+            pointerEvents: 'none'
+          }} />
+
+          {/* 3D Sphere container — cinematic ease */}
           <div className="sphere" style={{
-            width: '500px',
-            height: '500px',
+            width: '600px',
+            height: '600px',
             position: 'relative',
             transformStyle: 'preserve-3d'
           }}>
-            {/* Partner logos positioned on sphere surface */}
+            {/* Partner logos on sphere surface */}
             {partners.map((p, i) => {
-              // Distribute on sphere: 2 rows, staggered
-              const rows = [
-                { rotateX: -25, items: [0, 1] },
-                { rotateX: 25, items: [2, 3] }
-              ];
-              const row = i < 2 ? 0 : 1;
-              const col = i % 2;
-              const rotateY = col * 180 + (row * 90);
-              const rotateX = rows[row].rotateX;
-
+              const pos = spherePositions[i];
               return (
                 <div
                   key={p.name}
@@ -153,65 +190,73 @@ export default function SymprioHero() {
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    width: '110px',
-                    height: '110px',
-                    marginLeft: '-55px',
-                    marginTop: '-55px',
+                    width: '90px',
+                    height: '90px',
+                    marginLeft: '-45px',
+                    marginTop: '-45px',
                     transformStyle: 'preserve-3d',
-                    transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateZ(250px)`
+                    transform: `rotateY(${pos.rotateY}deg) rotateX(${pos.rotateX}deg) translateZ(${pos.radius}px)`
                   }}
                 >
                   <div className="sphere-logo-card" style={{
-                    width: '110px',
-                    height: '110px',
+                    width: '90px',
+                    height: '90px',
                     background: '#fff',
-                    borderRadius: '26px',
+                    borderRadius: '22px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 12px 40px rgba(0,0,0,0.1)',
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
                     border: '1px solid rgba(0,0,0,0.04)',
                     backfaceVisibility: 'hidden'
                   }}>
-                    <img src={p.logo} alt={p.name} style={{ width: '64px', height: '64px', objectFit: 'contain' }} />
+                    {p.logo ? (
+                      <img src={p.logo} alt={p.name} style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                    ) : (
+                      <span style={{ fontSize: '16px', fontWeight: '800', color: '#185ADB', letterSpacing: '-0.02em' }}>{p.text}</span>
+                    )}
                   </div>
                 </div>
               );
             })}
 
-            {/* Center Symprio logo — stays fixed */}
-            <div style={{
+            {/* Center Symprio logo — counter-rotates to stay fixed */}
+            <div className="sphere-center" style={{
               position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '110px',
-              height: '110px',
-              marginLeft: '-55px',
-              marginTop: '-55px',
-              background: '#fff',
-              borderRadius: '28px',
+              width: '120px',
+              height: '120px',
+              marginLeft: '-60px',
+              marginTop: '-60px',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)',
+              borderRadius: '30px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 20px 60px rgba(10, 45, 110, 0.18)',
-              border: '1px solid rgba(0,0,0,0.04)',
+              boxShadow: '0 24px 60px rgba(10, 45, 110, 0.2)',
+              border: '2px solid rgba(24, 90, 219, 0.1)',
               zIndex: 10,
               transform: 'translateZ(0px)'
             }}>
-              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '68px', objectFit: 'contain' }} />
+              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '74px', objectFit: 'contain' }} />
             </div>
           </div>
         </div>
       </div>
 
       <style>{`
+        /* Cinematic rotation — slow in front, fast behind */
         @keyframes sphereRotate {
-          0% { transform: rotateY(0deg) rotateX(5deg); }
-          100% { transform: rotateY(360deg) rotateX(5deg); }
+          0%   { transform: rotateY(0deg) rotateX(8deg); }
+          25%  { transform: rotateY(60deg) rotateX(8deg); }
+          50%  { transform: rotateY(180deg) rotateX(8deg); }
+          75%  { transform: rotateY(300deg) rotateX(8deg); }
+          100% { transform: rotateY(360deg) rotateX(8deg); }
         }
 
         .sphere {
-          animation: sphereRotate 18s linear infinite;
+          animation: sphereRotate 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
           transform-style: preserve-3d;
         }
 
@@ -219,31 +264,39 @@ export default function SymprioHero() {
           transform-style: preserve-3d;
         }
 
-        /* Keep the center logo from rotating */
-        .sphere > div:last-child {
-          animation: sphereRotateReverse 18s linear infinite;
+        /* Counter-rotate center logo to stay upright */
+        @keyframes sphereCenterReverse {
+          0%   { transform: translateZ(0) rotateX(-8deg) rotateY(0deg); }
+          25%  { transform: translateZ(0) rotateX(-8deg) rotateY(-60deg); }
+          50%  { transform: translateZ(0) rotateX(-8deg) rotateY(-180deg); }
+          75%  { transform: translateZ(0) rotateX(-8deg) rotateY(-300deg); }
+          100% { transform: translateZ(0) rotateX(-8deg) rotateY(-360deg); }
         }
 
-        @keyframes sphereRotateReverse {
-          0% { transform: translateZ(0) rotateX(-5deg) rotateY(0deg); }
-          100% { transform: translateZ(0) rotateX(-5deg) rotateY(-360deg); }
+        .sphere-center {
+          animation: sphereCenterReverse 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
         }
 
         .sphere-logo-card {
-          transition: box-shadow 0.3s ease;
+          transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
 
         .sphere-logo-card:hover {
           box-shadow: 0 20px 50px rgba(24, 90, 219, 0.2) !important;
+          transform: scale(1.1);
+        }
+
+        @media (max-width: 1024px) {
+          .sphere {
+            width: 400px !important;
+            height: 400px !important;
+          }
         }
 
         @media (max-width: 768px) {
           .sphere {
-            width: 280px !important;
-            height: 280px !important;
-          }
-          .sphere-item {
-            transform: rotateY(var(--ry)) rotateX(var(--rx)) translateZ(140px) !important;
+            width: 300px !important;
+            height: 300px !important;
           }
         }
       `}</style>

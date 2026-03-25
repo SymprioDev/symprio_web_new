@@ -159,7 +159,7 @@ export default function ERP() {
             margin: '0 auto',
             textAlign: 'center'
           }}>
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Why Oracle Cloud</div>
+            <div className="section-tag">Why Oracle Cloud</div>
             <h2 style={{
               fontSize: '40px',
               fontWeight: '400',
@@ -188,7 +188,7 @@ export default function ERP() {
         background: '#F1F7F3'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Module Stack</div>
+        <div className="section-tag">Module Stack</div>
         <h2 style={{
           fontSize: '40px',
           fontWeight: '400',
@@ -332,7 +332,7 @@ export default function ERP() {
         background: '#ffffff'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Comparison</div>
+        <div className="section-tag">Comparison</div>
         <h2 style={{
           fontSize: '40px',
           fontWeight: '400',
@@ -530,7 +530,7 @@ export default function ERP() {
         background: '#F1F7F3'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Industries</div>
+        <div className="section-tag">Industries</div>
         <h2 style={{
           fontSize: '40px',
           fontWeight: '400',

@@ -59,10 +59,11 @@ a, button {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Orbixa Section Tag */
+/* Orbixa Section Tag — always centered */
 .section-tag {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   font-size: 15px;
   font-weight: 600;
@@ -78,7 +79,8 @@ a, button {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--secondary);
+  background: #185ADB;
+  flex-shrink: 0;
 }
 
 /* Button Styles — Orbixa pill */

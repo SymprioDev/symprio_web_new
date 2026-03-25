@@ -78,7 +78,7 @@ export default function KeyBenefits() {
         margin: '0 auto'
       }}>
         {/* Section Tag */}
-        <div className="section-tag" style={{ textAlign: 'center' }}>Why Choose Us</div>
+        <div className="section-tag">Why Choose Us</div>
 
         {/* Heading */}
         <h2

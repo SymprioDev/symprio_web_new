@@ -23,7 +23,7 @@ export default function FAQSection({ faqs: customFaqs }) {
     <section style={{ padding: '120px 20px', background: '#ffffff' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <div className="section-tag" style={{ textAlign: 'center' }}>Have Questions?</div>
+          <div className="section-tag">Have Questions?</div>
           <h2 style={{ marginTop: '16px', color: '#010B1D', fontWeight: '400' }}>
             Frequently Asked <em className="accent-text" style={{fontWeight:'400'}}>Questions</em>
           </h2>

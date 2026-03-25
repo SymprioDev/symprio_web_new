@@ -68,7 +68,7 @@ export default function Testimonials() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
       {/* Testimonials */}
       <div style={{ marginBottom: '80px' }}>
-        <div className="section-tag" style={{ textAlign: 'center' }}>Client Stories</div>
+        <div className="section-tag">Client Stories</div>
         <h2 style={{
           fontSize: '36px',
           fontWeight: '400',

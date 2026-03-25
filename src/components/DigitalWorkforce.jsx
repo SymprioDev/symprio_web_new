@@ -165,7 +165,7 @@ export default function DigitalWorkforce() {
             margin: '0 auto',
             textAlign: 'center'
           }}>
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Talent Solutions</div>
+            <div className="section-tag">Talent Solutions</div>
             <h2 style={{
               fontSize: '40px',
               fontWeight: '400',
@@ -189,7 +189,7 @@ export default function DigitalWorkforce() {
 
         {/* Offerings Section */}
         <section style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Talent Categories</div>
+          <div className="section-tag">Talent Categories</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',
@@ -278,7 +278,7 @@ export default function DigitalWorkforce() {
 
         {/* Engagement Models */}
         <section style={{ padding: '100px 20px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Engagement Models</div>
+          <div className="section-tag">Engagement Models</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',

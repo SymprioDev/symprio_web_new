@@ -131,7 +131,7 @@ const ZigzagFeatures = () => {
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Title Section */}
         <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Our Solutions</div>
+          <div className="section-tag">Our Solutions</div>
           <h2
             data-aos="fade-up"
             data-aos-duration="800"
@@ -382,7 +382,7 @@ export default function DigitalTransformation() {
           }}>
             {/* Left Column - Information */}
             <div>
-              <div className="section-tag" style={{ marginBottom: '16px' }}>Our Approach</div>
+              <div className="section-tag">Our Approach</div>
               <h2 style={{
                 fontSize: '36px',
                 fontWeight: '400',
@@ -586,7 +586,7 @@ export default function DigitalTransformation() {
               marginBottom: '80px'
             }}
           >
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>What We Cover</div>
+            <div className="section-tag">What We Cover</div>
             <h2 style={{
               fontSize: '40px',
               fontWeight: '400',

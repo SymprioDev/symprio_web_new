@@ -157,7 +157,7 @@ export default function ProcessAssessment() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div data-aos="fade-right">
-              <div className="section-tag" style={{ marginBottom: '16px' }}>Our Approach</div>
+              <div className="section-tag">Our Approach</div>
               <h2 style={{ fontSize: '40px', fontWeight: '400', color: '#010B1D', marginBottom: '24px', lineHeight: '1.3' }}>
                 Don't Automate Chaos. <strong>Optimize First.</strong>
               </h2>

@@ -244,7 +244,7 @@ export default function RPA() {
 
         {/* Services & Capabilities Section - Implementation Journey */}
         <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '100px 20px', background: '#ffffff', marginBottom: '80px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Implementation Journey</div>
+          <div className="section-tag">Implementation Journey</div>
           <h2 style={{
             fontSize: '42px',
             fontWeight: '400',
@@ -416,7 +416,7 @@ export default function RPA() {
         <section style={{ marginBottom: '0', width: '100%', padding: '100px 20px', background: '#F1F7F3' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <div className="section-tag" style={{ textAlign: 'center' }}>Business Impact</div>
+            <div className="section-tag">Business Impact</div>
             <h2 style={{
               fontSize: '40px',
               fontWeight: '400',
@@ -640,7 +640,7 @@ export default function RPA() {
         {/* Industry Use Cases Section - Process-Based Scenarios */}
         <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '100px 20px', background: '#ffffff', marginBottom: '80px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Use Cases</div>
+            <div className="section-tag">Use Cases</div>
             <h2 style={{
               fontSize: '42px',
               fontWeight: '400',
@@ -831,7 +831,7 @@ export default function RPA() {
 
         {/* Metrics & Proof Section */}
         <section style={{ marginBottom: '80px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Track Record</div>
+          <div className="section-tag">Track Record</div>
           <h2 style={{
             fontSize: '36px',
             fontWeight: '400',

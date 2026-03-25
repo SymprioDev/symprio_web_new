@@ -206,7 +206,7 @@ export default function CustomDevelopment() {
             margin: '0 auto',
             textAlign: 'center'
           }}>
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Our Approach</div>
+            <div className="section-tag">Our Approach</div>
             <h2 style={{
               fontSize: '40px',
               fontWeight: '400',
@@ -230,7 +230,7 @@ export default function CustomDevelopment() {
 
         {/* Services Section - Timeline/Process Flow */}
         <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Development Process</div>
+          <div className="section-tag">Development Process</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',
@@ -325,7 +325,7 @@ export default function CustomDevelopment() {
 
         {/* Typical Projects Section */}
         <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px', background: '#F1F7F3', borderRadius: '20px', marginBottom: '0' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>What We Build</div>
+          <div className="section-tag">What We Build</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',
@@ -404,7 +404,7 @@ export default function CustomDevelopment() {
 
         {/* Technology Stack Section */}
         <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px 100px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Technology Stack</div>
+          <div className="section-tag">Technology Stack</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',

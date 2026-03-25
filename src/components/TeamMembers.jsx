@@ -47,7 +47,7 @@ const TeamMembers = () => {
         textAlign: 'center',
         marginBottom: '80px'
       }}>
-        <div className="section-tag" style={{ textAlign: 'center' }}>Our Team</div>
+        <div className="section-tag">Our Team</div>
         <h2 data-aos="fade-up" data-aos-delay="100" data-aos-duration="800" data-aos-offset="50" style={{
           fontSize: '36px',
           fontWeight: '400',

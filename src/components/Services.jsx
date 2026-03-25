@@ -166,7 +166,7 @@ const Services = () => {
             data-aos-duration="800"
             data-aos-delay="100"
             data-aos-once="false">
-              End-to-End AI & Automation <strong>Services</strong>
+              End-to-End AI & Automation <em className="accent-text" style={{fontWeight:'400'}}>Services</em>
             </h2>
           </div>
 

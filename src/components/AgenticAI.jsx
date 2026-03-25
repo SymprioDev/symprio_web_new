@@ -418,7 +418,8 @@ export default function AgenticAI() {
       <div id="comparison-section" style={{
             marginTop: '20px',
             padding: '100px 20px',
-            position: 'relative'
+            position: 'relative',
+            background: '#ffffff'
           }}>
             {/* Animated Title Section */}
             <div style={{
@@ -482,42 +483,48 @@ export default function AgenticAI() {
                   }}>
                     <th style={{
                       padding: '16px',
-                      fontWeight: '700',
+                      fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      fontSize: '16px'
+                      fontSize: '16px',
+                      borderBottom: '1px solid #DCDCDC'
                     }}>Category</th>
                     <th style={{
                       padding: '16px',
-                      fontWeight: '700',
+                      fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      fontSize: '16px'
+                      fontSize: '16px',
+                      borderBottom: '1px solid #DCDCDC'
                     }}>Generative AI</th>
                     <th style={{
                       padding: '16px',
-                      fontWeight: '700',
+                      fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      fontSize: '16px'
+                      fontSize: '16px',
+                      borderBottom: '1px solid #DCDCDC'
                     }}>Agentic AI</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr style={{
-                    borderBottom: '1px solid #DCDCDC'
+                    borderBottom: '1px solid #DCDCDC',
+                    background: '#ffffff'
                   }}>
                     <td style={{
                       padding: '16px',
                       fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f8f9fa'
+                      background: '#f8f9fa',
+                      borderRight: '1px solid #DCDCDC'
                     }}>Autonomy</td>
                     <td style={{
                       padding: '16px',
                       color: '#444444',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      borderRight: '1px solid #DCDCDC'
                     }}>Requires human prompts & limited independent action</td>
                     <td style={{
                       padding: '16px',
@@ -526,19 +533,22 @@ export default function AgenticAI() {
                     }}>Self-directed execution with minimal intervention</td>
                   </tr>
                   <tr style={{
-                    borderBottom: '1px solid #DCDCDC'
+                    borderBottom: '1px solid #DCDCDC',
+                    background: '#f8f9fa'
                   }}>
                     <td style={{
                       padding: '16px',
                       fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f8f9fa'
+                      background: '#f8f9fa',
+                      borderRight: '1px solid #DCDCDC'
                     }}>Decision Making</td>
                     <td style={{
                       padding: '16px',
                       color: '#444444',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      borderRight: '1px solid #DCDCDC'
                     }}>Suggests options for human approval</td>
                     <td style={{
                       padding: '16px',
@@ -547,19 +557,22 @@ export default function AgenticAI() {
                     }}>Makes autonomous decisions & executes</td>
                   </tr>
                   <tr style={{
-                    borderBottom: '1px solid #DCDCDC'
+                    borderBottom: '1px solid #DCDCDC',
+                    background: '#ffffff'
                   }}>
                     <td style={{
                       padding: '16px',
                       fontWeight: '600',
                       color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f8f9fa'
+                      background: '#f8f9fa',
+                      borderRight: '1px solid #DCDCDC'
                     }}>Control</td>
                     <td style={{
                       padding: '16px',
                       color: '#444444',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      borderRight: '1px solid #DCDCDC'
                     }}>User-driven operations & manual control</td>
                     <td style={{
                       padding: '16px',

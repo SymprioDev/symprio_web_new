@@ -79,7 +79,7 @@ export default function Testimonials() {
         data-aos="fade-up"
         data-aos-duration="800"
         data-aos-once="false">
-          Feedback from <strong>Real Teams</strong>
+          Feedback from <em className="accent-text" style={{fontWeight:'400'}}>Real Teams</em>
         </h2>
 
         <div className="testimonials-grid" style={{

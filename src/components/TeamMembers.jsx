@@ -55,7 +55,7 @@ const TeamMembers = () => {
           margin: '0 0 15px 0',
           lineHeight: '1.2'
         }}>
-          The Experts Behind <strong>Symprio</strong>
+          The Experts Behind <em className="accent-text" style={{fontWeight:'400'}}>Our Success</em>
         </h2>
       </div>
 
@@ -63,7 +63,7 @@ const TeamMembers = () => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '30px',
+        gap: '24px',
         maxWidth: '100%',
         margin: '0 auto'
       }}>
@@ -76,29 +76,33 @@ const TeamMembers = () => {
             data-aos-offset="50"
             style={{
               background: '#ffffff',
-              border: '1px solid #DCDCDC',
-              borderRadius: '20px',
+              borderRadius: '24px',
               overflow: 'hidden',
               transition: 'all 0.4s ease',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.06)',
+              position: 'relative'
             }}
             onClick={() => window.open(member.linkedin, '_blank')}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.08)';
-              e.currentTarget.style.borderColor = '#185ADB';
+              e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.1)';
+              const icon = e.currentTarget.querySelector('.linkedin-icon');
+              if (icon) icon.style.opacity = '1';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.borderColor = '#DCDCDC';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.06)';
+              const icon = e.currentTarget.querySelector('.linkedin-icon');
+              if (icon) icon.style.opacity = '0';
             }}
           >
             {/* Image */}
             <div style={{
               width: '100%',
-              height: '280px',
-              overflow: 'hidden'
+              height: '360px',
+              overflow: 'hidden',
+              position: 'relative'
             }}>
               <img
                 src={member.image}
@@ -107,16 +111,42 @@ const TeamMembers = () => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: 'center top',
+                  objectPosition: 'top',
                   display: 'block'
                 }}
               />
+              {/* LinkedIn hover icon overlay */}
+              <div className="linkedin-icon" style={{
+                position: 'absolute',
+                bottom: '12px',
+                right: '12px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 0,
+                transition: 'opacity 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+              }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="#185ADB"
+                >
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </div>
             </div>
 
             {/* Info */}
             <div style={{ padding: '24px', textAlign: 'center' }}>
               <h3 style={{
-                fontSize: '20px',
+                fontSize: '22px',
                 fontWeight: '600',
                 color: '#010B1D',
                 margin: '0 0 6px 0'
@@ -124,21 +154,12 @@ const TeamMembers = () => {
                 {member.name}
               </h3>
               <p style={{
-                fontSize: '14px',
+                fontSize: '15px',
                 color: '#444444',
-                margin: '0 0 12px 0'
+                margin: '0'
               }}>
                 {member.position}
               </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="#185ADB"
-              >
-                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-              </svg>
             </div>
           </div>
         ))}

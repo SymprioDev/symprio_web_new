@@ -136,7 +136,7 @@ export default function AboutSnippet() {
 
           <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="100">
             We Study Your Business. We Deliver{' '}
-            <strong>Real Results.</strong>
+            <em className="accent-text" style={{fontWeight:'400'}}>Real Results.</em>
           </h2>
 
           <p style={styles.body} data-aos="fade-up" data-aos-delay="150">

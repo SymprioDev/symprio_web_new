@@ -92,7 +92,7 @@ export default function Industries() {
             margin: '0 0 20px 0',
             lineHeight: '1.2'
           }}>
-            Expertise Across <strong>Every Industry</strong>
+            Expertise Across <em className="accent-text" style={{fontWeight:'400'}}>Every Industry</em>
           </h2>
           <p style={{
             fontSize: '16px',

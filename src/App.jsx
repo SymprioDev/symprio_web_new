@@ -46,6 +46,7 @@ import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
 import BlogLatestPosts from './components/BlogLatestPosts';
 import Industries from './components/Industries';
+import PowerfulFeatures from './components/PowerfulFeatures';
 
 const HomePage = () => {
   return (
@@ -68,6 +69,7 @@ const HomePage = () => {
       <SymprioStats />
       <Industries />
       <KeyBenefits />
+      <PowerfulFeatures />
       <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />
       <EventsAndTrainings />
       <CurvedDivider topColor="#F1F7F3" bottomColor="#ffffff" height={120} curve="smooth" />

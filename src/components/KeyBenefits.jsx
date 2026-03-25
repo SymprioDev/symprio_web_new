@@ -91,7 +91,7 @@ export default function KeyBenefits() {
             margin: '0 0 60px 0',
             lineHeight: 1.3
           }}>
-          Why Businesses Choose <strong>Symprio</strong>
+          Why Businesses Choose <em className="accent-text" style={{fontWeight:'400'}}>Symprio</em>
         </h2>
 
         {/* Cards Grid */}

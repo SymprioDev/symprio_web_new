@@ -100,7 +100,7 @@ export default function FeaturesGrid() {
             marginBottom: '24px',
             lineHeight: '1.2'
           }}>
-            Modern Business <strong>Solutions</strong>
+            Modern Business <em className="accent-text" style={{fontWeight:'400'}}>Solutions</em>
           </h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#444444', fontSize: '16px', lineHeight: '1.6' }}>
             Symprio provides the industrial-grade infrastructure your business needs to lead in the age of AI.

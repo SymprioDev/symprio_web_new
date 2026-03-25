@@ -149,6 +149,13 @@ a, button {
   background-clip: text;
 }
 
+/* Orbixa serif italic accent for headings */
+.accent-text {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  color: #185ADB;
+}
+
 /* Orbixa hover scale */
 .hover-scale { transition: transform 0.3s ease; }
 .hover-scale:hover { transform: translateY(-3px); }

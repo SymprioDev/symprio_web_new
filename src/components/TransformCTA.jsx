@@ -29,7 +29,7 @@ export default function TransformCTA() {
             lineHeight: '1.3',
             color: '#ffffff'
           }}>
-          Ready to Transform Your <strong>Business?</strong>
+          Ready to Transform Your <em className="accent-text" style={{fontWeight:'400', color:'#fff'}}>Business?</em>
         </h2>
 
         <p

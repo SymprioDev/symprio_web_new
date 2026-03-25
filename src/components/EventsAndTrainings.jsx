@@ -4,11 +4,11 @@ const EventsAndTrainings = () => {
   const [events, setEvents] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [subscribeEmail, setSubscribeEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 2000);
-    return () => clearInterval(interval);
   }, []);
 
   const fetchData = async () => {
@@ -57,25 +57,74 @@ const EventsAndTrainings = () => {
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <p style={{
-            fontSize: '14px',
-            fontWeight: '600',
-            color: '#3b82f6',
-            margin: '0 0 8px 0',
+          <div style={{
+            display: 'inline-block',
+            color: '#0D9488',
+            fontWeight: '800',
+            fontSize: '12px',
+            letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px'
+            marginBottom: '16px',
+            padding: '4px 12px',
+            background: 'rgba(13, 148, 136, 0.08)',
+            borderRadius: '4px'
           }}>
             Upcoming Events
-          </p>
+          </div>
           <h2 style={{
-            fontSize: '38px',
-            fontWeight: '700',
-            color: '#1f2937',
+            fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+            fontWeight: '900',
+            color: '#0A2D6E',
             margin: '0'
           }}>
-            {hasData ? 'Events & Webinars' : 'No Events or Webinars'}
+            Events & <span style={{ color: '#0D9488' }}>Webinars</span>
           </h2>
         </div>
+
+        {!hasData && (
+          <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '560px', margin: '0 auto' }}>
+            <div style={{ fontSize: '56px', marginBottom: '24px' }}>📅</div>
+            <h3 style={{ fontSize: '24px', fontWeight: '800', color: '#0A2D6E', marginBottom: '12px' }}>
+              No upcoming events at this time
+            </h3>
+            <p style={{ color: '#6b7280', marginBottom: '32px', lineHeight: '1.6' }}>
+              Subscribe below and we'll notify you when new events, webinars, and workshops are announced.
+            </p>
+            {subscribed ? (
+              <div style={{ padding: '20px 32px', background: 'rgba(13,148,136,0.08)', borderRadius: '16px', color: '#0D9488', fontWeight: '700' }}>
+                ✓ You're on the list! We'll be in touch soon.
+              </div>
+            ) : (
+              <form
+                onSubmit={e => { e.preventDefault(); if (subscribeEmail) setSubscribed(true); }}
+                style={{ display: 'flex', gap: '12px', maxWidth: '420px', margin: '0 auto' }}
+              >
+                <input
+                  type="email"
+                  required
+                  value={subscribeEmail}
+                  onChange={e => setSubscribeEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  style={{
+                    flex: 1, padding: '14px 20px', borderRadius: '12px',
+                    border: '1px solid #e5e7eb', fontSize: '15px', outline: 'none',
+                    background: '#fff'
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    padding: '14px 24px', background: 'linear-gradient(135deg, #0A2D6E, #0D9488)',
+                    color: '#fff', border: 'none', borderRadius: '12px',
+                    fontWeight: '700', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap'
+                  }}
+                >
+                  Notify Me
+                </button>
+              </form>
+            )}
+          </div>
+        )}
 
         {hasData && (
           <div style={{

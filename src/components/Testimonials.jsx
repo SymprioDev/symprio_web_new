@@ -31,83 +31,26 @@ export default function Testimonials() {
     <section style={{
       width: '100%',
       margin: '0',
-      padding: '80px 20px',
-      background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
-      borderRadius: '24px',
-      borderTop: '3px solid #ffffff',
+      padding: '120px 20px',
+      background: '#ffffff',
       position: 'relative',
       overflow: 'hidden'
     }}>
-    {/* Bubbles */}
-    <div style={{
-      position: 'absolute',
-      width: '200px',
-      height: '200px',
-      background: 'rgba(255, 255, 255, 0.05)',
-      borderRadius: '50%',
-      top: '10%',
-      right: '5%',
-      zIndex: 1,
-      pointerEvents: 'none'
-    }} />
-    <div style={{
-      position: 'absolute',
-      width: '150px',
-      height: '150px',
-      background: 'rgba(59, 130, 246, 0.1)',
-      borderRadius: '50%',
-      bottom: '10%',
-      left: '10%',
-      zIndex: 1,
-      pointerEvents: 'none'
-    }} />
-    <div style={{
-      position: 'absolute',
-      width: '100px',
-      height: '100px',
-      background: 'rgba(139, 92, 246, 0.08)',
-      borderRadius: '50%',
-      top: '50%',
-      right: '15%',
-      zIndex: 1,
-      pointerEvents: 'none'
-    }} />
-    <div style={{
-      position: 'absolute',
-      width: '120px',
-      height: '120px',
-      background: 'rgba(59, 130, 246, 0.08)',
-      borderRadius: '50%',
-      top: '20%',
-      left: '15%',
-      zIndex: 1,
-      pointerEvents: 'none'
-    }} />
-    <div style={{
-      position: 'absolute',
-      width: '80px',
-      height: '80px',
-      background: 'rgba(139, 92, 246, 0.1)',
-      borderRadius: '50%',
-      bottom: '30%',
-      right: '25%',
-      zIndex: 1,
-      pointerEvents: 'none'
-    }} />
       <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
       {/* Testimonials */}
       <div style={{ marginBottom: '80px' }}>
+        <div className="section-tag" style={{ textAlign: 'center' }}>Client Stories</div>
         <h2 style={{
           fontSize: '36px',
-          fontWeight: '700',
-          color: '#ffffff',
+          fontWeight: '400',
+          color: '#010B1D',
           textAlign: 'center',
           margin: '0 0 60px 0'
         }}
         data-aos="fade-up"
         data-aos-duration="800"
         data-aos-once="false">
-          What Our Clients Say
+          Feedback from <strong>Real Teams</strong>
         </h2>
 
         <div style={{
@@ -125,32 +68,33 @@ export default function Testimonials() {
               data-aos-once="false"
               style={{
                 background: '#ffffff',
-                padding: '30px',
-                borderRadius: '0px',
-                border: '1px solid #e5e7eb',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                padding: '32px',
+                borderRadius: '20px',
+                border: '1px solid #DCDCDC',
                 transition: 'all 0.3s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = '0 8px 16px rgba(59, 130, 246, 0.15)';
-                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.borderColor = '#185ADB';
+                e.currentTarget.style.boxShadow = '0 15px 30px rgba(24,90,219,0.1)';
+                e.currentTarget.style.transform = 'translateY(-5px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                e.currentTarget.style.borderColor = '#DCDCDC';
+                e.currentTarget.style.boxShadow = 'none';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               <div style={{
-                color: '#fbbf24',
+                color: '#185ADB',
                 fontSize: '18px',
                 marginBottom: '15px'
               }}>
                 ★★★★★
               </div>
-              
+
               <p style={{
-                fontSize: '14px',
-                color: '#6b7280',
+                fontSize: '15px',
+                color: '#444444',
                 lineHeight: '1.8',
                 margin: '0 0 20px 0',
                 fontStyle: 'italic'
@@ -159,20 +103,20 @@ export default function Testimonials() {
               </p>
 
               <div style={{
-                borderTop: '1px solid #e5e7eb',
+                borderTop: '1px solid #DCDCDC',
                 paddingTop: '20px'
               }}>
                 <p style={{
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#1f2937',
+                  color: '#010B1D',
                   margin: '0'
                 }}>
                   {testimonial.author}
                 </p>
                 <p style={{
                   fontSize: '13px',
-                  color: '#9ca3af',
+                  color: '#6b7280',
                   margin: '5px 0 0 0'
                 }}>
                   {testimonial.company}
@@ -196,7 +140,7 @@ export default function Testimonials() {
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <h3 data-aos="fade-up" data-aos-duration="800" data-aos-offset="100" data-aos-once="false" style={{
           fontSize: '24px',
-          fontWeight: '700',
+          fontWeight: '400',
           color: '#1f2937',
           textAlign: 'center',
           margin: '0 0 50px 0'
@@ -237,8 +181,8 @@ export default function Testimonials() {
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
-              <img src={partner.logo} alt={partner.name} style={{ 
-                height: '100px', 
+              <img src={partner.logo} alt={partner.name} style={{
+                height: '100px',
                 objectFit: 'contain',
                 maxWidth: '100%'
               }} />

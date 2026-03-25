@@ -14,7 +14,7 @@ const chips = [
 const styles = {
   section: {
     width: "100%",
-    background: "linear-gradient(135deg, #0A2D6E 0%, #0D9488 100%)",
+    background: "linear-gradient(135deg, #010B1D 0%, #185ADB 100%)",
     padding: "100px 20px",
     boxSizing: "border-box",
   },
@@ -39,7 +39,7 @@ const styles = {
   heading: {
     color: "#ffffff",
     fontSize: "clamp(28px, 4vw, 42px)",
-    fontWeight: "700",
+    fontWeight: "600",
     lineHeight: "1.25",
     margin: "0 0 20px 0",
   },
@@ -64,13 +64,13 @@ const styles = {
     marginBottom: "40px",
   },
   chip: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     color: "#ffffff",
     fontSize: "13px",
     fontWeight: "500",
     padding: "7px 16px",
     borderRadius: "999px",
-    border: "1px solid rgba(255, 255, 255, 0.25)",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
     letterSpacing: "0.02em",
   },
   button: {
@@ -78,10 +78,10 @@ const styles = {
     padding: "14px 36px",
     fontSize: "15px",
     fontWeight: "600",
-    color: "#ffffff",
-    background: "transparent",
-    border: "2px solid rgba(255, 255, 255, 0.85)",
-    borderRadius: "8px",
+    color: "#010B1D",
+    background: "#ffffff",
+    border: "none",
+    borderRadius: "9999px",
     cursor: "pointer",
     letterSpacing: "0.03em",
     transition: "background 0.2s ease, color 0.2s ease",
@@ -93,8 +93,8 @@ export default function TrainingBanner() {
 
   const handleButtonHover = (e, isHover) => {
     e.currentTarget.style.background = isHover
-      ? "rgba(255, 255, 255, 0.15)"
-      : "transparent";
+      ? "rgba(255, 255, 255, 0.9)"
+      : "#ffffff";
   };
 
   return (

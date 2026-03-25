@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaYoutube, FaWhatsapp, FaFacebook, FaTwitter } from 'react-icons/fa';
 
 export default function SymprioFooter() {
   const navigate = useNavigate();
-  
+  const [email, setEmail] = useState('');
+
   const footerSections = [
     {
       title: 'SERVICES',
@@ -52,15 +53,79 @@ export default function SymprioFooter() {
     }
   ];
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    // Newsletter subscription logic here
+    setEmail('');
+  };
+
   return (
     <footer style={{
-      background: '#0a192f',
+      background: '#010B1D',
       color: '#e5e7eb',
       padding: '80px 20px 40px',
       borderTop: '1px solid rgba(255,255,255,0.05)'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Newsletter Row */}
         <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '24px',
+          marginBottom: '60px',
+          paddingBottom: '40px',
+          borderBottom: '1px solid rgba(255,255,255,0.08)'
+        }}>
+          <div>
+            <p style={{ fontSize: '18px', fontWeight: '600', color: '#fff', margin: 0 }}>
+              Subscribe to our Newsletter
+            </p>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', margin: '4px 0 0' }}>
+              Stay updated with our latest insights and news.
+            </p>
+          </div>
+          <form onSubmit={handleSubscribe} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                padding: '12px 20px',
+                color: '#fff',
+                fontSize: '14px',
+                minWidth: '260px',
+                outline: 'none'
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                background: '#185ADB',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '12px 28px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+        <div className="footer-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1.2fr repeat(4, 1fr)',
           gap: '40px',
@@ -68,18 +133,25 @@ export default function SymprioFooter() {
         }}>
           {/* Column 1 - Brand */}
           <div>
-            <img 
-              src="/symprio-logo.png" 
-              alt="Symprio" 
-              style={{ height: '32px', marginBottom: '24px', filter: 'brightness(0) invert(1)' }} 
+            <img
+              src="/symprio-logo.png"
+              alt="Symprio"
+              style={{ height: '32px', marginBottom: '24px', filter: 'brightness(0) invert(1)' }}
             />
             <p style={{
               fontSize: '14px',
               lineHeight: '1.6',
-              color: '#9ca3af',
-              marginBottom: '24px'
+              color: 'rgba(255,255,255,0.5)',
+              marginBottom: '16px'
             }}>
               Intelligent AI & Automation Solutions for the Modern Enterprise. Helping organizations automate intelligently, build AI-powered products, and transform digitally.
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(255,255,255,0.5)',
+              marginBottom: '24px'
+            }}>
+              Mon - Fri: 9am - 6pm
             </p>
             <div style={{ display: 'flex', gap: '12px' }}>
               <SocialIcon icon={<FaLinkedin />} url="https://www.linkedin.com/company/symprio/" />
@@ -95,17 +167,17 @@ export default function SymprioFooter() {
             <div key={idx}>
               <h5 style={{
                 fontSize: '14px',
-                fontWeight: '700',
+                fontWeight: '600',
                 color: '#fff',
                 marginBottom: '24px',
-                letterSpacing: '0.05em'
+                letterSpacing: '0.08em'
               }}>
                 {section.title}
               </h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {section.links.map((link, lIdx) => (
                   <li key={lIdx} style={{ marginBottom: '12px' }}>
-                    <a 
+                    <a
                       href={link.url}
                       onClick={(e) => {
                         if (!link.url.startsWith('http')) {
@@ -114,7 +186,7 @@ export default function SymprioFooter() {
                         }
                       }}
                       style={{
-                        color: '#9ca3af',
+                        color: 'rgba(255,255,255,0.5)',
                         textDecoration: 'none',
                         fontSize: '14px',
                         transition: 'all 0.3s ease'
@@ -124,7 +196,7 @@ export default function SymprioFooter() {
                         e.target.style.paddingLeft = '4px';
                       }}
                       onMouseLeave={e => {
-                        e.target.style.color = '#9ca3af';
+                        e.target.style.color = 'rgba(255,255,255,0.5)';
                         e.target.style.paddingLeft = '0';
                       }}
                     >
@@ -148,7 +220,7 @@ export default function SymprioFooter() {
           gap: '20px'
         }}>
           <p style={{ fontSize: '14px', color: '#6b7280' }}>
-            © 2025 Symprio. All Rights Reserved.
+            &copy; 2026 Symprio. All Rights Reserved.
           </p>
           <div style={{ display: 'flex', gap: '24px' }}>
             <a href="/privacy-policy" style={{ color: '#6b7280', fontSize: '14px', textDecoration: 'none' }}>Privacy Policy</a>
@@ -159,15 +231,24 @@ export default function SymprioFooter() {
           </p>
         </div>
       </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+      `}</style>
     </footer>
   );
 }
 
 function SocialIcon({ icon, url }) {
   return (
-    <a 
-      href={url} 
-      target="_blank" 
+    <a
+      href={url}
+      target="_blank"
       rel="noopener noreferrer"
       style={{
         width: '36px',
@@ -177,19 +258,19 @@ function SocialIcon({ icon, url }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#9ca3af',
+        color: 'rgba(255,255,255,0.5)',
         fontSize: '18px',
         transition: 'all 0.3s ease',
         textDecoration: 'none'
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.background = 'var(--primary)';
+        e.currentTarget.style.background = '#185ADB';
         e.currentTarget.style.color = '#fff';
         e.currentTarget.style.transform = 'translateY(-2px)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-        e.currentTarget.style.color = '#9ca3af';
+        e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
@@ -197,5 +278,3 @@ function SocialIcon({ icon, url }) {
     </a>
   );
 }
-
-

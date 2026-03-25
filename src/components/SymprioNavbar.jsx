@@ -66,7 +66,7 @@ export default function SymprioNavbar() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: scrolled ? '0 20px 40px rgba(10, 45, 110, 0.08)' : '0 10px 30px rgba(0,0,0,0.03)',
+        boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.06)' : '0 10px 30px rgba(0,0,0,0.03)',
         border: scrolled ? '1px solid rgba(10, 45, 110, 0.1)' : '1px solid rgba(0,0,0,0.05)',
         transition: 'all 0.4s ease'
       }}>
@@ -78,17 +78,17 @@ export default function SymprioNavbar() {
         {/* Links */}
         <div style={{ display: 'none', gap: '32px', alignItems: 'center', marginLeft: 'auto', marginRight: '32px' }} className="d-lg-flex">
           <NavLink label="Home" onClick={() => navigate('/')} />
-          
+
           {/* Services Dropdown */}
-          <div 
-            onMouseEnter={() => setActiveDropdown('services')} 
+          <div
+            onMouseEnter={() => setActiveDropdown('services')}
             onMouseLeave={() => setActiveDropdown(null)}
             style={{ position: 'relative' }}
           >
             <div style={{
               fontSize: '15px',
               fontWeight: '700',
-              color: 'var(--primary)',
+              color: '#010B1D',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -104,8 +104,8 @@ export default function SymprioNavbar() {
                 left: '-40px',
                 width: '320px',
                 background: '#ffffff',
-                borderRadius: '24px',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
+                borderRadius: '20px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
                 padding: '16px',
                 border: '1px solid rgba(0,0,0,0.05)',
                 display: 'flex',
@@ -121,15 +121,15 @@ export default function SymprioNavbar() {
           </div>
 
           {/* Training Dropdown */}
-          <div 
-            onMouseEnter={() => setActiveDropdown('training')} 
+          <div
+            onMouseEnter={() => setActiveDropdown('training')}
             onMouseLeave={() => setActiveDropdown(null)}
             style={{ position: 'relative' }}
           >
             <div style={{
               fontSize: '15px',
               fontWeight: '700',
-              color: 'var(--primary)',
+              color: '#010B1D',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -145,8 +145,8 @@ export default function SymprioNavbar() {
                 left: '-20px',
                 width: '240px',
                 background: '#ffffff',
-                borderRadius: '24px',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
+                borderRadius: '20px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
                 padding: '16px',
                 border: '1px solid rgba(0,0,0,0.05)',
                 display: 'flex',
@@ -163,11 +163,11 @@ export default function SymprioNavbar() {
 
           <NavLink label="About" onClick={() => navigate('/about')} />
           <NavLink label="Insights" onClick={() => navigate('/blog')} />
-          
+
           {/* Subtle Admin Link */}
           <Link to="/admin" style={{
-            color: 'var(--primary)',
-            opacity: 0.5,
+            color: '#010B1D',
+            opacity: 0.3,
             fontSize: '12px',
             textDecoration: 'none',
             fontWeight: '800',
@@ -185,7 +185,7 @@ export default function SymprioNavbar() {
             className="btn-pill btn-primary hide-on-mobile"
             style={{ padding: '12px 28px', fontSize: '14px' }}
           >
-            Connect Now
+            Let's Talk &rarr;
           </button>
           {/* Hamburger — mobile only */}
           <button
@@ -200,16 +200,16 @@ export default function SymprioNavbar() {
               gap: '5px',
               width: '44px',
               height: '44px',
-              background: 'rgba(10,45,110,0.07)',
+              background: 'rgba(1,11,29,0.07)',
               border: 'none',
               borderRadius: '12px',
               cursor: 'pointer',
               padding: '0'
             }}
           >
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(45deg) translate(5px,5px)' : 'none' }} />
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', opacity: mobileOpen ? 0 : 1 }} />
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(-45deg) translate(5px,-5px)' : 'none' }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#010B1D', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(45deg) translate(5px,5px)' : 'none' }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#010B1D', borderRadius: '2px', transition: 'all 0.3s ease', opacity: mobileOpen ? 0 : 1 }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#010B1D', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(-45deg) translate(5px,-5px)' : 'none' }} />
           </button>
         </div>
       </div>
@@ -244,7 +244,7 @@ export default function SymprioNavbar() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
               <img src="/symprio-logo.png" alt="Symprio" style={{ height: '28px' }} />
-              <button onClick={() => setMobileOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#0A2D6E', lineHeight: 1 }}>×</button>
+              <button onClick={() => setMobileOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#010B1D', lineHeight: 1 }}>×</button>
             </div>
 
             <MobileNavLink label="Home" onClick={() => { navigate('/'); setMobileOpen(false); }} />
@@ -253,7 +253,7 @@ export default function SymprioNavbar() {
             <div>
               <div
                 onClick={() => setMobileExpanded(e => e === 'services' ? null : 'services')}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#0A2D6E' }}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#010B1D' }}
               >
                 Solutions
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transform: mobileExpanded === 'services' ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}><polyline points="6 9 12 15 18 9"/></svg>
@@ -271,7 +271,7 @@ export default function SymprioNavbar() {
             <div>
               <div
                 onClick={() => setMobileExpanded(e => e === 'training' ? null : 'training')}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#0A2D6E' }}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#010B1D' }}
               >
                 Academy
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transform: mobileExpanded === 'training' ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}><polyline points="6 9 12 15 18 9"/></svg>
@@ -293,9 +293,9 @@ export default function SymprioNavbar() {
             <div style={{ marginTop: '24px' }}>
               <button
                 onClick={() => { navigate('/contact'); setMobileOpen(false); }}
-                style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #0A2D6E, #0D9488)', color: '#fff', border: 'none', borderRadius: '14px', fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}
+                style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #185ADB, #0D9488)', color: '#fff', border: 'none', borderRadius: '14px', fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}
               >
-                Get a Free Consultation →
+                Let's Talk &rarr;
               </button>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function SymprioNavbar() {
           .d-lg-flex { display: flex !important; }
           .hamburger-btn { display: none !important; }
         }
-        .hover-opacity-100:hover { opacity: 1 !important; color: var(--secondary) !important; }
+        .hover-opacity-100:hover { opacity: 1 !important; color: #185ADB !important; }
       `}</style>
     </nav>
   );
@@ -320,12 +320,12 @@ export default function SymprioNavbar() {
 
 function NavLink({ label, onClick }) {
   return (
-    <div 
+    <div
       onClick={onClick}
       style={{
         fontSize: '15px',
         fontWeight: '700',
-        color: 'var(--primary)',
+        color: '#010B1D',
         cursor: 'pointer',
         opacity: 0.8,
         transition: 'all 0.3s ease',
@@ -333,11 +333,11 @@ function NavLink({ label, onClick }) {
       }}
       onMouseEnter={e => {
         e.currentTarget.style.opacity = 1;
-        e.currentTarget.style.color = 'var(--secondary)';
+        e.currentTarget.style.color = '#185ADB';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.opacity = 0.8;
-        e.currentTarget.style.color = 'var(--primary)';
+        e.currentTarget.style.color = '#010B1D';
       }}
     >
       {label}
@@ -354,11 +354,11 @@ function MobileNavLink({ label, onClick, small }) {
         borderRadius: '12px',
         fontSize: small ? '14px' : '15px',
         fontWeight: '600',
-        color: small ? '#374151' : '#0A2D6E',
+        color: small ? '#374151' : '#010B1D',
         cursor: 'pointer',
         transition: 'background 0.2s'
       }}
-      onMouseEnter={e => e.currentTarget.style.background = 'rgba(10,45,110,0.06)'}
+      onMouseEnter={e => e.currentTarget.style.background = 'rgba(24,90,219,0.06)'}
       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
     >
       {label}
@@ -368,14 +368,14 @@ function MobileNavLink({ label, onClick, small }) {
 
 function DropdownLink({ label, onClick }) {
   return (
-    <div 
+    <div
       onClick={onClick}
       style={{
         padding: '12px 20px',
         borderRadius: '12px',
         fontSize: '14px',
         fontWeight: '600',
-        color: 'var(--primary)',
+        color: '#010B1D',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         display: 'flex',
@@ -383,17 +383,15 @@ function DropdownLink({ label, onClick }) {
         gap: '8px'
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.background = 'rgba(0, 119, 182, 0.08)';
-        e.currentTarget.style.color = 'var(--secondary)';
+        e.currentTarget.style.background = 'rgba(24, 90, 219, 0.06)';
+        e.currentTarget.style.color = '#185ADB';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.background = 'transparent';
-        e.currentTarget.style.color = 'var(--primary)';
+        e.currentTarget.style.color = '#010B1D';
       }}
     >
       {label}
     </div>
   );
 }
-
-

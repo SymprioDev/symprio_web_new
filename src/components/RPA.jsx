@@ -39,7 +39,7 @@ export default function RPA() {
     <div>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.7) 0%, rgba(0, 119, 182, 0.4) 100%), url(/assets/images/rpa.jpg)`,
+        backgroundImage: `linear-gradient(135deg, rgba(1, 11, 29, 0.85) 0%, rgba(24, 90, 219, 0.7) 100%), url(/assets/images/rpa.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -63,12 +63,11 @@ export default function RPA() {
             letterSpacing: '-0.02em',
             textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }} data-aos="fade-up">
-            Robotic Process <span style={{ color: 'var(--accent)' }}>Automation</span>
+            Robotic Process <span style={{ color: '#0D9488' }}>Automation</span>
           </h1>
           <p style={{
             fontSize: '22px',
             color: 'rgba(255,255,255,0.9)',
-            margin: 0,
             fontWeight: '500',
             maxWidth: '700px',
             margin: '0 auto'
@@ -88,13 +87,13 @@ export default function RPA() {
       }}>
 
         {/* Introduction Section */}
-        <section style={{ 
+        <section style={{
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '12px',
+          borderRadius: '20px',
           padding: '60px 50px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #0891b2'
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
+          border: '1px solid #DCDCDC'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
@@ -104,22 +103,19 @@ export default function RPA() {
             <h2
               style={{
                 fontSize: '48px',
-                fontWeight: '800',
-                background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                fontWeight: '400',
+                color: '#010B1D',
                 margin: '0 0 20px 0',
                 lineHeight: '1.3'
               }}
             >
-              Robotic Process Automation Services
+              Robotic Process <strong>Automation Services</strong>
             </h2>
             <div
               style={{
                 width: '100px',
-                height: '6px',
-                background: 'linear-gradient(90deg, #0f172a 0%, #0891b2 100%)',
+                height: '4px',
+                background: '#185ADB',
                 margin: '20px auto 30px',
                 borderRadius: '3px'
               }}
@@ -127,7 +123,7 @@ export default function RPA() {
             <p style={{
               fontSize: '16px',
               lineHeight: '1.8',
-              color: '#4b5563',
+              color: '#444444',
               margin: '0'
             }}>
               Symprio provides end-to-end RPA services from assessment through delivery, including ongoing support, training, and establishment of an RPA Center of Excellence. Our experienced architects and developers leverage leading platforms like UiPath and Microsoft Power Automate to deliver enterprise-grade automation solutions.
@@ -154,16 +150,16 @@ export default function RPA() {
             }}>
               <h2 style={{
                 fontSize: '32px',
-                fontWeight: '700',
-                color: '#1f2937',
+                fontWeight: '400',
+                color: '#010B1D',
                 marginBottom: '20px'
               }}>
-                About RPA
+                About <strong>RPA</strong>
               </h2>
               <p style={{
                 fontSize: '16px',
                 lineHeight: '1.8',
-                color: '#4b5563',
+                color: '#444444',
                 marginBottom: '20px'
               }}>
                 Robotic Process Automation (RPA) is the automation of repetitive, rules-based tasks across departments to boost accuracy, speed and compliance. By deploying intelligent software robots, organizations can eliminate manual work, reduce errors, and free up employees to focus on high-value strategic activities.
@@ -171,7 +167,7 @@ export default function RPA() {
               <p style={{
                 fontSize: '16px',
                 lineHeight: '1.8',
-                color: '#4b5563',
+                color: '#444444',
                 marginBottom: '30px'
               }}>
                 Symprio provides end-to-end RPA services from assessment through delivery, including ongoing support, training, and establishment of an RPA Center of Excellence. Our experienced architects and developers leverage leading platforms like UiPath and Microsoft Power Automate to deliver enterprise-grade automation solutions.
@@ -181,11 +177,12 @@ export default function RPA() {
         </section>
 
         {/* Services & Capabilities Section - Implementation Journey */}
-        <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '80px 20px', background: '#ffffff', marginBottom: '80px' }}>
+        <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '100px 20px', background: '#ffffff', marginBottom: '80px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>IMPLEMENTATION JOURNEY</div>
           <h2 style={{
             fontSize: '42px',
-            fontWeight: '700',
-            color: '#1f2937',
+            fontWeight: '400',
+            color: '#010B1D',
             marginBottom: '60px',
             textAlign: 'center',
             maxWidth: '1200px',
@@ -194,7 +191,7 @@ export default function RPA() {
           data-aos="fade-up"
           data-aos-duration="800"
           data-aos-once="false">
-            Your RPA Implementation Journey
+            Your RPA <strong>Implementation Journey</strong>
           </h2>
 
           {/* Connected Journey Timeline */}
@@ -271,7 +268,7 @@ export default function RPA() {
                   width: '70px',
                   height: '70px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #19b5fe 0%, #0891b2 100%)',
+                  background: '#185ADB',
                   margin: '0 auto 20px',
                   display: 'flex',
                   alignItems: 'center',
@@ -279,18 +276,17 @@ export default function RPA() {
                   color: 'white',
                   fontWeight: '800',
                   fontSize: '16px',
-                  boxShadow: '0 10px 30px rgba(25, 181, 254, 0.3)',
-                  border: '3px solid rgba(255,255,255,0.3)'
+                  boxShadow: '0 10px 30px rgba(24, 90, 219, 0.3)'
                 }}>
                   {stage.phase}
                 </div>
-                
+
                 {/* Content Box */}
                 <div style={{
                   padding: '20px',
-                  background: 'rgba(8, 145, 178, 0.08)',
-                  borderRadius: '12px',
-                  border: '2px solid #0891b2',
+                  background: '#ffffff',
+                  borderRadius: '20px',
+                  border: '1px solid #DCDCDC',
                   minHeight: '240px',
                   height: '240px',
                   display: 'flex',
@@ -300,29 +296,27 @@ export default function RPA() {
                   cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#0891b2';
-                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(8, 145, 178, 0.25)';
-                  e.currentTarget.style.background = 'rgba(8, 145, 178, 0.12)';
-                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(24, 90, 219, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#0891b2';
+                  e.currentTarget.style.borderColor = '#DCDCDC';
                   e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.background = 'rgba(8, 145, 178, 0.08)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}>
                   <div style={{ fontSize: '36px', marginBottom: '10px' }}>{stage.icon}</div>
                   <h4 style={{
                     fontSize: '16px',
                     fontWeight: '700',
-                    color: '#0891b2',
+                    color: '#185ADB',
                     margin: '0 0 10px 0'
                   }}>
                     {stage.title}
                   </h4>
                   <p style={{
                     fontSize: '12px',
-                    color: '#4b5563',
+                    color: '#444444',
                     margin: '0 0 12px 0',
                     lineHeight: '1.5'
                   }}>
@@ -333,7 +327,7 @@ export default function RPA() {
                     fontWeight: '700',
                     color: '#6b7280',
                     paddingTop: '10px',
-                    borderTop: '1px solid rgba(8, 145, 178, 0.2)'
+                    borderTop: '1px solid #DCDCDC'
                   }}>
                     {stage.duration}
                   </div>
@@ -345,40 +339,29 @@ export default function RPA() {
         </section>
 
         {/* Benefits Section - Before/After Comparison */}
-        <section style={{ marginBottom: '0', width: '100%', padding: '90px 20px', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}>
+        <section style={{ marginBottom: '0', width: '100%', padding: '100px 20px', background: '#f8f9fa' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <span style={{
-              display: 'inline-block',
-              padding: '8px 16px',
-              borderRadius: '999px',
-              background: 'rgba(8, 145, 178, 0.12)',
-              color: '#0891b2',
-              fontSize: '12px',
-              fontWeight: '700',
-              letterSpacing: '1px'
-            }}>
-              BUSINESS IMPACT
-            </span>
+            <div className="section-tag" style={{ textAlign: 'center' }}>BUSINESS IMPACT</div>
             <h2 style={{
               fontSize: '40px',
-              fontWeight: '800',
-              color: '#0f172a',
+              fontWeight: '400',
+              color: '#010B1D',
               margin: '16px 0 10px'
             }}>
-              Manual vs Automated
+              <strong>Manual</strong> vs <strong>Automated</strong>
             </h2>
             <p style={{
               margin: '0 auto',
               maxWidth: '720px',
-              color: '#475569',
-              fontSize: '15px',
+              color: '#444444',
+              fontSize: '16px',
               lineHeight: '1.7'
             }}>
-              A clear side‑by‑side comparison of outcomes before and after automation.
+              A clear side-by-side comparison of outcomes before and after automation.
             </p>
           </div>
-          
+
           {/* Before/After Comparison - Side by Side */}
           <div style={{
             display: 'grid',
@@ -394,34 +377,37 @@ export default function RPA() {
           data-aos-delay="100"
           data-aos-duration="800"
           data-aos-once="false">
-            
+
             {/* BEFORE - Manual Processes */}
             <div style={{
               padding: '36px',
               background: '#ffffff',
               borderRadius: '20px',
-              border: '1px solid #fee2e2',
-              boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
+              border: '1px solid #DCDCDC',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
               position: 'relative',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#185ADB';
+              e.currentTarget.style.transform = 'translateY(-5px)';
+              e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#DCDCDC';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                fontSize: '48px'
-              }}>
-                ❌
-              </div>
               <h3 style={{
                 fontSize: '26px',
-                fontWeight: '800',
+                fontWeight: '400',
                 color: '#991b1b',
                 marginBottom: '24px',
                 marginTop: '0'
               }}>
-                Before: Manual Processes
+                Before: <strong>Manual Processes</strong>
               </h3>
               <div style={{
                 display: 'grid',
@@ -468,28 +454,31 @@ export default function RPA() {
               padding: '36px',
               background: '#ffffff',
               borderRadius: '20px',
-              border: '1px solid #dcfce7',
-              boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
+              border: '1px solid #DCDCDC',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
               position: 'relative',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#185ADB';
+              e.currentTarget.style.transform = 'translateY(-5px)';
+              e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#DCDCDC';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                fontSize: '48px'
-              }}>
-                ✅
-              </div>
               <h3 style={{
                 fontSize: '26px',
-                fontWeight: '800',
+                fontWeight: '400',
                 color: '#166534',
                 marginBottom: '24px',
                 marginTop: '0'
               }}>
-                After: Automated Processes
+                After: <strong>Automated Processes</strong>
               </h3>
               <div style={{
                 display: 'grid',
@@ -543,21 +532,22 @@ export default function RPA() {
         </section>
 
         {/* Industry Use Cases Section - Process-Based Scenarios */}
-        <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '80px 20px', background: '#ffffff', marginBottom: '80px' }}>
+        <section style={{ width: '100vw', position: 'relative', left: '50%', right: '50%', marginLeft: 'calc(-50vw)', marginRight: 'calc(-50vw)', padding: '100px 20px', background: '#ffffff', marginBottom: '80px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>USE CASES</div>
             <h2 style={{
               fontSize: '42px',
-              fontWeight: '700',
-              color: '#1f2937',
+              fontWeight: '400',
+              color: '#010B1D',
               marginBottom: '80px',
               textAlign: 'center'
             }}
             data-aos="fade-up"
             data-aos-duration="800"
             data-aos-once="false">
-              Real-World Automation Scenarios
+              Real-World <strong>Automation Scenarios</strong>
             </h2>
-            
+
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr',
@@ -569,7 +559,7 @@ export default function RPA() {
                 {
                   industry: 'Finance & Accounting',
                   icon: '💰',
-                  color: '#fbbf24',
+                  color: '#185ADB',
                   scenario: 'Invoice Processing',
                   process: [
                     { step: 'Receive', desc: 'Bot captures invoices from email/portal' },
@@ -582,7 +572,7 @@ export default function RPA() {
                 {
                   industry: 'Human Resources',
                   icon: '👥',
-                  color: '#60a5fa',
+                  color: '#0D9488',
                   scenario: 'Employee Onboarding',
                   process: [
                     { step: 'Collect', desc: 'Bot gathers employee data & documents' },
@@ -595,7 +585,7 @@ export default function RPA() {
                 {
                   industry: 'Supply Chain',
                   icon: '📦',
-                  color: '#10b981',
+                  color: '#185ADB',
                   scenario: 'Order-to-Cash Process',
                   process: [
                     { step: 'Receive', desc: 'Bot retrieves orders from portals/APIs' },
@@ -608,7 +598,7 @@ export default function RPA() {
                 {
                   industry: 'Compliance & Audit',
                   icon: '⚖️',
-                  color: '#8b5cf6',
+                  color: '#0D9488',
                   scenario: 'Regulatory Reporting',
                   process: [
                     { step: 'Extract', desc: 'Bot pulls data from multiple systems' },
@@ -627,20 +617,19 @@ export default function RPA() {
                   data-aos-once="false"
                   style={{
                     padding: '40px',
-                    background: 'rgba(8, 145, 178, 0.05)',
-                    backdropFilter: 'blur(0px)',
-                    border: `3px solid ${useCase.color}`,
-                    borderRadius: '16px',
-                    transition: 'all 0.4s ease',
+                    background: '#ffffff',
+                    border: '1px solid #DCDCDC',
+                    borderRadius: '20px',
+                    transition: 'all 0.3s ease',
                     cursor: 'pointer'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = `rgba(${useCase.color === '#fbbf24' ? '251,191,36' : useCase.color === '#60a5fa' ? '96,165,250' : useCase.color === '#10b981' ? '16,185,129' : '139,92,246'},0.15)`;
-                    e.currentTarget.style.boxShadow = `0 20px 50px ${useCase.color}40`;
-                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.borderColor = '#185ADB';
+                    e.currentTarget.style.boxShadow = '0 15px 40px rgba(24, 90, 219, 0.12)';
+                    e.currentTarget.style.transform = 'translateY(-5px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(8, 145, 178, 0.05)';
+                    e.currentTarget.style.borderColor = '#DCDCDC';
                     e.currentTarget.style.boxShadow = 'none';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
@@ -659,7 +648,7 @@ export default function RPA() {
                           <div style={{ fontSize: '13px', fontWeight: '700', color: useCase.color, textTransform: 'uppercase', letterSpacing: '1px' }}>
                             {useCase.industry}
                           </div>
-                          <div style={{ fontSize: '24px', fontWeight: '800', color: '#1f2937', marginTop: '4px' }}>
+                          <div style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', marginTop: '4px' }}>
                             {useCase.scenario}
                           </div>
                         </div>
@@ -668,15 +657,15 @@ export default function RPA() {
                       {/* Impact Highlight */}
                       <div style={{
                         padding: '15px',
-                        background: `linear-gradient(135deg, ${useCase.color}20 0%, ${useCase.color}05 100%)`,
-                        borderRadius: '8px',
-                        border: `1px solid ${useCase.color}40`,
+                        background: '#f8f9fa',
+                        borderRadius: '12px',
+                        border: '1px solid #DCDCDC',
                         marginTop: '20px'
                       }}>
                         <div style={{ fontSize: '11px', fontWeight: '700', color: useCase.color, textTransform: 'uppercase', marginBottom: '8px' }}>
                           Business Impact
                         </div>
-                        <div style={{ fontSize: '13px', color: '#4b5563', lineHeight: '1.6' }}>
+                        <div style={{ fontSize: '13px', color: '#444444', lineHeight: '1.6' }}>
                           {useCase.impact}
                         </div>
                       </div>
@@ -694,8 +683,8 @@ export default function RPA() {
                               width: '40px',
                               height: '40px',
                               borderRadius: '50%',
-                              background: `${useCase.color}22`,
-                              border: `2px solid ${useCase.color}`,
+                              background: '#f8f9fa',
+                              border: '2px solid #DCDCDC',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -709,7 +698,7 @@ export default function RPA() {
                               <div style={{ fontSize: '13px', fontWeight: '700', color: useCase.color }}>
                                 {step.step}
                               </div>
-                              <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>
+                              <div style={{ fontSize: '12px', color: '#444444', marginTop: '2px' }}>
                                 {step.desc}
                               </div>
                             </div>
@@ -726,14 +715,15 @@ export default function RPA() {
 
         {/* Metrics & Proof Section */}
         <section style={{ marginBottom: '80px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TRACK RECORD</div>
           <h2 style={{
             fontSize: '36px',
-            fontWeight: '700',
-            color: '#1f2937',
+            fontWeight: '400',
+            color: '#010B1D',
             marginBottom: '50px',
             textAlign: 'center'
           }}>
-            Our Track Record
+            Our <strong>Track Record</strong>
           </h2>
           <div style={{
             display: 'grid',
@@ -763,26 +753,29 @@ export default function RPA() {
                 key={idx}
                 style={{
                   padding: '35px',
-                  background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-                  borderRadius: '12px',
+                  background: '#ffffff',
+                  borderRadius: '20px',
                   textAlign: 'center',
-                  boxShadow: '0 5px 15px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.4s ease',
+                  border: '1px solid #DCDCDC',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease',
                   animation: isVisible ? `slideUp 0.8s ease-out ${idx * 0.15}s both` : 'none'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.08)';
+                  e.currentTarget.style.borderColor = '#DCDCDC';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
                 <div style={{
                   fontSize: '48px',
                   fontWeight: '800',
-                  color: '#0c4a6e',
+                  color: '#185ADB',
                   margin: '0 0 10px 0'
                 }}>
                   {metric.number}
@@ -790,14 +783,14 @@ export default function RPA() {
                 <h4 style={{
                   fontSize: '18px',
                   fontWeight: '700',
-                  color: '#000000',
+                  color: '#010B1D',
                   margin: '0 0 12px 0'
                 }}>
                   {metric.label}
                 </h4>
                 <p style={{
-                  fontSize: '13px',
-                  color: '#374151',
+                  fontSize: '14px',
+                  color: '#444444',
                   lineHeight: '1.6',
                   margin: 0
                 }}>

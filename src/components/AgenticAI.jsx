@@ -16,7 +16,58 @@ const agenticFaqs = [
   },
   {
     q: 'What is "Human-in-the-loop" in Agentic AI?',
-    a: 'It’s a safety framework where agents pause for human approval before high-stakes actions, ensuring you maintain full control over the AI’s output.'
+    a: 'It\'s a safety framework where agents pause for human approval before high-stakes actions, ensuring you maintain full control over the AI\'s output.'
+  }
+];
+
+const whyMatters = [
+  {
+    icon: '🧠',
+    title: 'Autonomous Decision-Making',
+    description: 'Agents reason through complex scenarios, weighing options and making informed decisions without waiting for human input at every step.'
+  },
+  {
+    icon: '⚡',
+    title: 'End-to-End Task Execution',
+    description: 'Unlike chatbots that only suggest, agentic AI completes entire workflows—from data gathering to action—autonomously and reliably.'
+  },
+  {
+    icon: '🔄',
+    title: 'Continuous Learning',
+    description: 'Agents improve over time by learning from outcomes, adapting strategies, and becoming more effective with every interaction.'
+  }
+];
+
+const useCases = [
+  {
+    number: '01',
+    title: 'Intelligent Customer Service',
+    overview: 'AI agents that handle complex customer queries, escalate intelligently, and resolve issues end-to-end.',
+    benefits: ['80% reduction in response time', 'Seamless handoff to human agents', '24/7 multi-channel support']
+  },
+  {
+    number: '02',
+    title: 'Procurement Automation',
+    overview: 'Agents that manage vendor selection, negotiate contracts, and process purchase orders autonomously.',
+    benefits: ['40% cost savings on procurement', 'Automated compliance checks', 'Real-time spend analytics']
+  },
+  {
+    number: '03',
+    title: 'Supply Chain Orchestration',
+    overview: 'Intelligent agents monitoring inventory, predicting demand, and coordinating logistics in real time.',
+    benefits: ['30% reduction in stockouts', 'Predictive demand planning', 'Automated supplier coordination']
+  },
+  {
+    number: '04',
+    title: 'Financial Operations',
+    overview: 'Agents that reconcile accounts, detect anomalies, and generate regulatory reports without manual intervention.',
+    benefits: ['99.5% reconciliation accuracy', 'Real-time fraud detection', 'Automated regulatory filing']
+  },
+  {
+    number: '05',
+    title: 'HR & Talent Management',
+    overview: 'AI-driven screening, onboarding, and employee engagement workflows that run autonomously.',
+    benefits: ['5x faster candidate screening', 'Personalized onboarding journeys', 'Proactive retention insights']
   }
 ];
 
@@ -70,7 +121,7 @@ export default function AgenticAI() {
   return (
     <div style={{
       background: '#fff',
-      color: '#1f2937',
+      color: '#444444',
       fontFamily: "'Inter', sans-serif",
       position: 'relative',
       overflow: 'hidden'
@@ -78,7 +129,7 @@ export default function AgenticAI() {
       <div style={{ position: 'relative', zIndex: 1 }}>
       {/* Hero Section */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(0, 119, 182, 0.4) 100%), url('/assets/images/agentic-ai.jpg')`,
+        backgroundImage: `linear-gradient(135deg, rgba(1, 11, 29, 0.85) 0%, rgba(24, 90, 219, 0.7) 100%), url('/assets/images/agentic-ai.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -102,7 +153,7 @@ export default function AgenticAI() {
             textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }}
           data-aos="fade-up">
-            Agentic AI <span style={{ color: 'var(--accent)' }}>Solutions</span>
+            Agentic AI <span style={{ color: '#0D9488' }}>Solutions</span>
           </h1>
           <p style={{
             fontSize: '22px',
@@ -129,13 +180,13 @@ export default function AgenticAI() {
       }}>
 
         {/* Introduction Section */}
-        <section style={{ 
+        <section style={{
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '32px',
-          padding: '80px 60px',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
-          border: '1px solid rgba(0,0,0,0.05)'
+          borderRadius: '20px',
+          padding: '60px 50px',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
+          border: '1px solid #DCDCDC'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
@@ -145,31 +196,31 @@ export default function AgenticAI() {
             <h2
               style={{
                 fontSize: '48px',
-                fontWeight: '900',
+                fontWeight: '400',
                 margin: '0 0 24px 0',
                 lineHeight: '1.2',
-                color: 'var(--primary)'
+                color: '#010B1D'
               }}
             >
-              The Next Stage of <span className="gradient-text">Autonomous Enterprise</span>
+              The Next Stage of <strong>Autonomous Enterprise</strong>
             </h2>
             <div
               style={{
                 width: '80px',
-                height: '6px',
-                background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
+                height: '4px',
+                background: '#185ADB',
                 margin: '30px auto',
                 borderRadius: '3px'
               }}
             />
             <p style={{
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: '1.8',
-              color: '#4b5563',
+              color: '#444444',
               margin: '0',
               fontWeight: '400'
             }}>
-              Agentic AI represents a paradigm shift from tools that *respond* to tools that *act*. Our solutions enable organizations to deploy specialized agents that can browse the web, use internal tools, and collaborate to solve multi-stage problems autonomously.
+              Agentic AI represents a paradigm shift from tools that <em>respond</em> to tools that <em>act</em>. Our solutions enable organizations to deploy specialized agents that can browse the web, use internal tools, and collaborate to solve multi-stage problems autonomously.
             </p>
           </div>
         </section>
@@ -199,7 +250,7 @@ export default function AgenticAI() {
       `}</style>
 
       {/* What is Agentic AI Container - Overlapping Banner */}
-      <div 
+      <div
         id="agentic-container"
         style={{
           display: 'none',
@@ -221,21 +272,21 @@ export default function AgenticAI() {
         data-aos-once="false">
           <h2 style={{
             fontSize: '42px',
-            fontWeight: '700',
-            color: '#1f2937',
+            fontWeight: '400',
+            color: '#010B1D',
             margin: '0 0 15px 0',
             textAlign: 'center'
           }}
           data-aos="fade-up"
           data-aos-duration="800"
           data-aos-once="false">
-            What is Agentic AI?
+            What is <strong>Agentic AI</strong>?
           </h2>
 
           <div style={{
             textAlign: 'center',
             fontSize: '16px',
-            color: '#6b7280',
+            color: '#444444',
             marginBottom: '60px',
             maxWidth: '700px',
             margin: '0 auto 60px'
@@ -258,7 +309,7 @@ export default function AgenticAI() {
             <div>
               <p style={{
                 fontSize: '16px',
-                color: '#4b5563',
+                color: '#444444',
                 lineHeight: '1.9',
                 margin: '0 0 25px 0'
               }}
@@ -268,7 +319,7 @@ export default function AgenticAI() {
               </p>
 
               <div style={{
-                background: 'linear-gradient(135deg, #19b5fe, #0f8cc8)',
+                background: '#185ADB',
                 padding: '20px',
                 borderRadius: '12px',
                 marginBottom: '20px',
@@ -304,7 +355,7 @@ export default function AgenticAI() {
               </div>
 
               <div style={{
-                background: 'linear-gradient(135deg, #19b5fe, #0f8cc8)',
+                background: '#0D9488',
                 padding: '20px',
                 borderRadius: '12px',
                 border: 'none',
@@ -339,15 +390,15 @@ export default function AgenticAI() {
               </div>
             </div>
 
-            {/* Right Side - Visual - Hidden due to performance */}
+            {/* Right Side - Visual */}
             <div style={{
               position: 'relative',
               height: '400px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'linear-gradient(135deg, #0c4a6e 0%, #0891b2 100%)',
-              borderRadius: '12px'
+              background: 'linear-gradient(135deg, #010B1D 0%, #185ADB 100%)',
+              borderRadius: '20px'
             }}
             data-aos="zoom-in"
             data-aos-delay="100">
@@ -366,7 +417,7 @@ export default function AgenticAI() {
       {/* Comparison Table */}
       <div id="comparison-section" style={{
             marginTop: '20px',
-            padding: '60px 20px',
+            padding: '100px 20px',
             position: 'relative'
           }}>
             {/* Animated Title Section */}
@@ -374,32 +425,32 @@ export default function AgenticAI() {
               textAlign: 'center',
               marginBottom: '60px'
             }}>
+              <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>COMPARISON</div>
               <h2 style={{
                 fontSize: '42px',
-                fontWeight: '800',
-                color: '#1f2937',
+                fontWeight: '400',
+                color: '#010B1D',
                 margin: '0 0 15px 0',
                 lineHeight: '1.3'
               }}
               data-aos="fade-up">
-                Generative AI vs Agentic AI
+                <strong>Generative AI</strong> vs <strong>Agentic AI</strong>
               </h2>
               <div style={{
                 width: '80px',
-                height: '5px',
-                background: 'linear-gradient(90deg, #0078d4, #19b5fe)',
+                height: '4px',
+                background: '#185ADB',
                 margin: '20px auto 30px',
-                borderRadius: '3px',
-                transformOrigin: 'center'
+                borderRadius: '3px'
               }}
               data-aos="fade-up"
               data-aos-delay="100" />
               <p style={{
-                fontSize: '18px',
-                color: '#6b7280',
+                fontSize: '16px',
+                color: '#444444',
                 maxWidth: '700px',
                 margin: '0 auto',
-                lineHeight: '1.6'
+                lineHeight: '1.7'
               }}
               data-aos="fade-up"
               data-aos-delay="200">
@@ -419,31 +470,34 @@ export default function AgenticAI() {
                 width: '100%',
                 borderCollapse: 'collapse',
                 fontSize: '15px',
-                textAlign: 'left'
+                textAlign: 'left',
+                border: '1px solid #DCDCDC',
+                borderRadius: '20px',
+                overflow: 'hidden'
               }}>
                 <thead>
                   <tr style={{
-                    background: '#f5f5f5',
-                    borderBottom: '2px solid #e0e0e0'
+                    background: '#f8f9fa',
+                    borderBottom: '1px solid #DCDCDC'
                   }}>
                     <th style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '700',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
                       fontSize: '16px'
                     }}>Category</th>
                     <th style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '700',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
                       fontSize: '16px'
                     }}>Generative AI</th>
                     <th style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '700',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
                       fontSize: '16px'
                     }}>Agentic AI</th>
@@ -451,65 +505,65 @@ export default function AgenticAI() {
                 </thead>
                 <tbody>
                   <tr style={{
-                    borderBottom: '1px solid #e0e0e0'
+                    borderBottom: '1px solid #DCDCDC'
                   }}>
                     <td style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '600',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f9f9f9'
+                      background: '#f8f9fa'
                     }}>Autonomy</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>Requires human prompts & limited independent action</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>Self-directed execution with minimal intervention</td>
                   </tr>
                   <tr style={{
-                    borderBottom: '1px solid #e0e0e0'
+                    borderBottom: '1px solid #DCDCDC'
                   }}>
                     <td style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '600',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f9f9f9'
+                      background: '#f8f9fa'
                     }}>Decision Making</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>Suggests options for human approval</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>Makes autonomous decisions & executes</td>
                   </tr>
                   <tr style={{
-                    borderBottom: '1px solid #e0e0e0'
+                    borderBottom: '1px solid #DCDCDC'
                   }}>
                     <td style={{
-                      padding: '12px',
+                      padding: '16px',
                       fontWeight: '600',
-                      color: '#1f2937',
+                      color: '#010B1D',
                       textAlign: 'center',
-                      background: '#f9f9f9'
+                      background: '#f8f9fa'
                     }}>Control</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>User-driven operations & manual control</td>
                     <td style={{
-                      padding: '12px',
-                      color: '#666666',
+                      padding: '16px',
+                      color: '#444444',
                       textAlign: 'center'
                     }}>Goal-oriented with continuous learning</td>
                   </tr>
@@ -522,18 +576,15 @@ export default function AgenticAI() {
               maxWidth: '900px',
               margin: '30px auto 0',
               padding: '20px',
-              textAlign: 'center',
-              opacity: 1,
-              transform: 'translateY(0px)',
-              transition: 'all 0.4s ease-out'
+              textAlign: 'center'
             }}>
               <p style={{
                 fontSize: '16px',
-                color: '#666666',
-                lineHeight: '1.6',
+                color: '#444444',
+                lineHeight: '1.7',
                 margin: '0'
               }}>
-                <span style={{ fontWeight: '600', color: '#1f2937' }}>Generative AI</span> focuses on content creation and suggestions, requiring human guidance for every action. <span style={{ fontWeight: '600', color: '#1f2937' }}>Agentic AI</span> independently executes tasks and makes decisions with minimal human oversight, delivering faster results and higher efficiency.
+                <span style={{ fontWeight: '600', color: '#010B1D' }}>Generative AI</span> focuses on content creation and suggestions, requiring human guidance for every action. <span style={{ fontWeight: '600', color: '#010B1D' }}>Agentic AI</span> independently executes tasks and makes decisions with minimal human oversight, delivering faster results and higher efficiency.
               </p>
             </div>
           </div>
@@ -553,9 +604,9 @@ export default function AgenticAI() {
       <section id="why-matters-section" style={{
         width: '100%',
         margin: '0',
-        padding: '80px 20px',
+        padding: '100px 20px',
         position: 'relative',
-        background: '#f8fafc',
+        background: '#f8f9fa',
         overflow: 'hidden'
       }}>
         <div style={{
@@ -564,22 +615,23 @@ export default function AgenticAI() {
           maxWidth: '1200px',
           margin: '0 auto'
         }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>VALUE PILLARS</div>
           <h2 style={{
             fontSize: '44px',
-            fontWeight: '800',
-            color: '#1f2937',
+            fontWeight: '400',
+            color: '#010B1D',
             margin: '0 0 15px 0',
             textAlign: 'center'
           }}>
-            Why Agentic AI Matters
+            Why <strong>Agentic AI</strong> Matters
           </h2>
           <p style={{
             fontSize: '16px',
-            color: '#6b7280',
+            color: '#444444',
             textAlign: 'center',
             maxWidth: '700px',
             margin: '0 auto 60px',
-            lineHeight: '1.6'
+            lineHeight: '1.7'
           }} data-aos="fade-up">
             Three fundamental reasons why autonomous AI agents are reshaping enterprise automation.
           </p>
@@ -596,23 +648,23 @@ export default function AgenticAI() {
                 data-aos-delay={idx * 100}
                 style={{
                   padding: '40px',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(219, 234, 254, 0.3) 100%)',
-                  border: '2px solid #dbeafe',
-                  borderRadius: '12px',
-                  transition: 'all 0.4s ease',
+                  background: '#ffffff',
+                  border: '1px solid #DCDCDC',
+                  borderRadius: '20px',
+                  transition: 'all 0.3s ease',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-12px)';
-                  e.currentTarget.style.boxShadow = '0 20px 50px rgba(8, 145, 178, 0.2)';
-                  e.currentTarget.style.borderColor = '#0891b2';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+                  e.currentTarget.style.borderColor = '#185ADB';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.08)';
-                  e.currentTarget.style.borderColor = '#dbeafe';
+                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.borderColor = '#DCDCDC';
                 }}
               >
                 <div style={{
@@ -623,15 +675,15 @@ export default function AgenticAI() {
                 </div>
                 <h3 style={{
                   fontSize: '22px',
-                  fontWeight: '800',
-                  color: '#0c4a6e',
+                  fontWeight: '700',
+                  color: '#010B1D',
                   margin: '0 0 15px 0'
                 }}>
                   {item.title}
                 </h3>
                 <p style={{
-                  fontSize: '14px',
-                  color: '#4b5563',
+                  fontSize: '16px',
+                  color: '#444444',
                   lineHeight: '1.7',
                   margin: '0'
                 }}>
@@ -646,25 +698,26 @@ export default function AgenticAI() {
       {/* Enterprise Use Cases - Detailed Scenarios */}
       <section style={{
         width: '100%',
-        padding: '80px 20px',
+        padding: '100px 20px',
         backgroundColor: '#ffffff'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>USE CASES</div>
         <h2 style={{
           fontSize: '44px',
-          fontWeight: '800',
-          color: '#1f2937',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 15px 0',
           textAlign: 'center'
         }} data-aos="fade-up">
-          Enterprise Use Cases
+          Enterprise <strong>Use Cases</strong>
         </h2>
         <p style={{
           fontSize: '16px',
-          color: '#6b7280',
+          color: '#444444',
           textAlign: 'center',
           maxWidth: '700px',
           margin: '0 auto 60px',
-          lineHeight: '1.6'
+          lineHeight: '1.7'
         }} data-aos="fade-up">
           Five transformative scenarios where agentic AI delivers measurable business impact.
         </p>
@@ -677,14 +730,14 @@ export default function AgenticAI() {
         }}>
           {useCases.map((useCase, idx) => {
             const colors = [
-              { color: '#0891b2', bgColor: '#dbeafe', icon: '📞' },
-              { color: '#10b981', bgColor: '#dcfce7', icon: '💼' },
-              { color: '#f59e0b', bgColor: '#fef3c7', icon: '📦' },
-              { color: '#8b5cf6', bgColor: '#f3e8ff', icon: '💰' },
-              { color: '#ec4899', bgColor: '#ffe4e6', icon: '👥' }
+              { color: '#185ADB', bgColor: '#f8f9fa', icon: '📞' },
+              { color: '#0D9488', bgColor: '#f8f9fa', icon: '💼' },
+              { color: '#185ADB', bgColor: '#f8f9fa', icon: '📦' },
+              { color: '#0D9488', bgColor: '#f8f9fa', icon: '💰' },
+              { color: '#185ADB', bgColor: '#f8f9fa', icon: '👥' }
             ];
             const colorScheme = colors[idx];
-            
+
             return (
               <div
                 key={idx}
@@ -696,16 +749,18 @@ export default function AgenticAI() {
                   gap: '40px',
                   alignItems: 'center',
                   padding: '40px',
-                  background: colorScheme.bgColor,
-                  border: `3px solid ${colorScheme.color}`,
-                  borderRadius: '12px',
-                  transition: 'all 0.4s ease'
+                  background: '#ffffff',
+                  border: '1px solid #DCDCDC',
+                  borderRadius: '20px',
+                  transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = `0 20px 50px ${colorScheme.color}33`;
-                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
                 }}
                 onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#DCDCDC';
                   e.currentTarget.style.boxShadow = 'none';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
@@ -732,18 +787,18 @@ export default function AgenticAI() {
                       </div>
                       <h3 style={{
                         fontSize: '24px',
-                        fontWeight: '800',
-                        color: '#1f2937',
+                        fontWeight: '700',
+                        color: '#010B1D',
                         margin: '0 0 12px 0'
                       }}>
                         {useCase.title}
                       </h3>
                       <p style={{
-                        fontSize: '15px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#444444',
                         margin: '0 0 20px 0',
-                        lineHeight: '1.6',
-                        fontWeight: '600'
+                        lineHeight: '1.7',
+                        fontWeight: '500'
                       }}>
                         {useCase.overview}
                       </p>
@@ -761,8 +816,8 @@ export default function AgenticAI() {
                         <ul style={{
                           margin: 0,
                           paddingLeft: '20px',
-                          fontSize: '13px',
-                          color: '#4b5563',
+                          fontSize: '14px',
+                          color: '#444444',
                           lineHeight: '1.8'
                         }}>
                           {useCase.benefits.map((benefit, i) => (
@@ -773,9 +828,9 @@ export default function AgenticAI() {
                     </div>
                     <div style={{
                       padding: '30px',
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      borderRadius: '8px',
-                      border: `2px solid ${colorScheme.color}33`,
+                      background: '#f8f9fa',
+                      borderRadius: '16px',
+                      border: '1px solid #DCDCDC',
                       textAlign: 'center'
                     }}>
                       <div style={{
@@ -787,9 +842,9 @@ export default function AgenticAI() {
                         {colorScheme.icon}
                       </div>
                       <p style={{
-                        fontSize: '13px',
-                        color: '#6b7280',
-                        fontWeight: '600',
+                        fontSize: '14px',
+                        color: '#444444',
+                        fontWeight: '500',
                         margin: 0
                       }}>
                         {useCase.overview}
@@ -800,9 +855,9 @@ export default function AgenticAI() {
                   <>
                     <div style={{
                       padding: '30px',
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      borderRadius: '8px',
-                      border: `2px solid ${colorScheme.color}33`,
+                      background: '#f8f9fa',
+                      borderRadius: '16px',
+                      border: '1px solid #DCDCDC',
                       textAlign: 'center'
                     }}>
                       <div style={{
@@ -814,9 +869,9 @@ export default function AgenticAI() {
                         {colorScheme.icon}
                       </div>
                       <p style={{
-                        fontSize: '13px',
-                        color: '#6b7280',
-                        fontWeight: '600',
+                        fontSize: '14px',
+                        color: '#444444',
+                        fontWeight: '500',
                         margin: 0
                       }}>
                         {useCase.overview}
@@ -842,18 +897,18 @@ export default function AgenticAI() {
                       </div>
                       <h3 style={{
                         fontSize: '24px',
-                        fontWeight: '800',
-                        color: '#1f2937',
+                        fontWeight: '700',
+                        color: '#010B1D',
                         margin: '0 0 12px 0'
                       }}>
                         {useCase.title}
                       </h3>
                       <p style={{
-                        fontSize: '15px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#444444',
                         margin: '0 0 20px 0',
-                        lineHeight: '1.6',
-                        fontWeight: '600'
+                        lineHeight: '1.7',
+                        fontWeight: '500'
                       }}>
                         {useCase.overview}
                       </p>
@@ -871,8 +926,8 @@ export default function AgenticAI() {
                         <ul style={{
                           margin: 0,
                           paddingLeft: '20px',
-                          fontSize: '13px',
-                          color: '#4b5563',
+                          fontSize: '14px',
+                          color: '#444444',
                           lineHeight: '1.8'
                         }}>
                           {useCase.benefits.map((benefit, i) => (
@@ -893,17 +948,18 @@ export default function AgenticAI() {
       <section style={{
         maxWidth: '1100px',
         margin: '0 auto',
-        padding: '80px 20px'
+        padding: '100px 20px'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TECHNOLOGY</div>
         <h2 style={{
           fontSize: '42px',
-          fontWeight: '700',
-          color: '#1f2937',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 60px 0',
           textAlign: 'center'
         }}
         data-aos="fade-up">
-          Technology & Platforms
+          Technology & <strong>Platforms</strong>
         </h2>
 
         <div style={{
@@ -913,24 +969,35 @@ export default function AgenticAI() {
         }}>
           <div style={{
             padding: '40px',
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-            borderRadius: '8px',
-            border: '1px solid #bfdbfe'
+            background: '#ffffff',
+            borderRadius: '20px',
+            border: '1px solid #DCDCDC',
+            transition: 'all 0.3s ease'
           }}
           data-aos="fade-right"
-          data-aos-delay="100">
+          data-aos-delay="100"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#185ADB';
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#DCDCDC';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}>
             <h3 style={{
               fontSize: '20px',
-              fontWeight: '600',
-              color: '#3b82f6',
+              fontWeight: '700',
+              color: '#185ADB',
               margin: '0 0 15px 0'
             }}>
               Leading Partnerships
             </h3>
             <p style={{
-              fontSize: '15px',
-              color: '#1f2937',
-              lineHeight: '1.6',
+              fontSize: '16px',
+              color: '#444444',
+              lineHeight: '1.7',
               margin: '0'
             }}>
               Symprio partners with leading agentic AI platforms, including custom LLMs and workflow orchestration tools. We emphasise integration with your existing ERP, CRM and HR systems.
@@ -939,24 +1006,35 @@ export default function AgenticAI() {
 
           <div style={{
             padding: '40px',
-            background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-            borderRadius: '8px',
-            border: '1px solid #fcd34d'
+            background: '#ffffff',
+            borderRadius: '20px',
+            border: '1px solid #DCDCDC',
+            transition: 'all 0.3s ease'
           }}
           data-aos="fade-left"
-          data-aos-delay="200">
+          data-aos-delay="200"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#185ADB';
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#DCDCDC';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}>
             <h3 style={{
               fontSize: '20px',
-              fontWeight: '600',
-              color: '#b45309',
+              fontWeight: '700',
+              color: '#0D9488',
               margin: '0 0 15px 0'
             }}>
               Customization & Governance
             </h3>
             <p style={{
-              fontSize: '15px',
-              color: '#1f2937',
-              lineHeight: '1.6',
+              fontSize: '16px',
+              color: '#444444',
+              lineHeight: '1.7',
               margin: '0'
             }}>
               We tailor agentic AI agents to your processes and governance frameworks, ensuring security, compliance and alignment with your business objectives.
@@ -968,18 +1046,19 @@ export default function AgenticAI() {
       {/* Implementation Approach Section */}
       <section style={{
         width: '100%',
-        padding: '60px 10px',
-        backgroundColor: '#f9fafb'
+        padding: '100px 20px',
+        backgroundColor: '#f8f9fa'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>IMPLEMENTATION</div>
         <h2 style={{
           fontSize: '42px',
-          fontWeight: '700',
-          color: '#1f2937',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 50px 0',
           textAlign: 'center'
         }}
         data-aos="fade-up">
-          Our Implementation Approach
+          Our <strong>Implementation Approach</strong>
         </h2>
 
         <div style={{
@@ -995,31 +1074,31 @@ export default function AgenticAI() {
             marginBottom: '60px'
           }}>
             <div data-aos="fade-right" data-aos-delay="0">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#3b82f6', marginBottom: '10px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
                 Week 1-2
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: '0 0 15px 0' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
                 Assessment & Readiness
               </h3>
-              <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', margin: '0' }}>
+              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
                 Evaluate current automation maturity, data quality and AI readiness. Understand your organization's digital infrastructure and capability gaps.
               </p>
             </div>
             <div data-aos="zoom-in" data-aos-delay="100" style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              background: '#ffffff',
               padding: '30px',
-              borderRadius: '12px',
-              border: '2px solid #3b82f6',
+              borderRadius: '20px',
+              border: '1px solid #DCDCDC',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#3b82f6' }}>01</div>
-              <div style={{ fontSize: '13px', color: '#3b82f6', fontWeight: '600', marginTop: '10px' }}>ASSESSMENT</div>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>01</div>
+              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>ASSESSMENT</div>
             </div>
           </div>
 
           {/* Connector Line */}
           <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="150">
-            <div style={{ fontSize: '24px', color: '#3b82f6' }}>↓</div>
+            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
           </div>
 
           {/* Step 2 */}
@@ -1031,24 +1110,24 @@ export default function AgenticAI() {
             marginBottom: '60px'
           }}>
             <div data-aos="zoom-in" data-aos-delay="200" style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              background: '#ffffff',
               padding: '30px',
-              borderRadius: '12px',
-              border: '2px solid #3b82f6',
+              borderRadius: '20px',
+              border: '1px solid #DCDCDC',
               textAlign: 'center',
               order: -1
             }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#3b82f6' }}>02</div>
-              <div style={{ fontSize: '13px', color: '#3b82f6', fontWeight: '600', marginTop: '10px' }}>PRIORITISATION</div>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>02</div>
+              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>PRIORITISATION</div>
             </div>
             <div data-aos="fade-left" data-aos-delay="250">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#3b82f6', marginBottom: '10px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
                 Week 2-3
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: '0 0 15px 0' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
                 Use Case Prioritisation
               </h3>
-              <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', margin: '0' }}>
+              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
                 Identify high-impact processes and define success metrics. Prioritize use cases based on business value and implementation feasibility.
               </p>
             </div>
@@ -1056,7 +1135,7 @@ export default function AgenticAI() {
 
           {/* Connector Line */}
           <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="300">
-            <div style={{ fontSize: '24px', color: '#3b82f6' }}>↓</div>
+            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
           </div>
 
           {/* Step 3 */}
@@ -1068,31 +1147,31 @@ export default function AgenticAI() {
             marginBottom: '60px'
           }}>
             <div data-aos="fade-right" data-aos-delay="350">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#3b82f6', marginBottom: '10px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
                 Week 4-6
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: '0 0 15px 0' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
                 Pilot & Validation
               </h3>
-              <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', margin: '0' }}>
+              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
                 Develop proof of concept, validate ROI and ensure ethical & regulatory compliance. Test agent performance in controlled environment.
               </p>
             </div>
             <div data-aos="zoom-in" data-aos-delay="400" style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              background: '#ffffff',
               padding: '30px',
-              borderRadius: '12px',
-              border: '2px solid #3b82f6',
+              borderRadius: '20px',
+              border: '1px solid #DCDCDC',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#3b82f6' }}>03</div>
-              <div style={{ fontSize: '13px', color: '#3b82f6', fontWeight: '600', marginTop: '10px' }}>PILOT</div>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>03</div>
+              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>PILOT</div>
             </div>
           </div>
 
           {/* Connector Line */}
           <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="450">
-            <div style={{ fontSize: '24px', color: '#3b82f6' }}>↓</div>
+            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
           </div>
 
           {/* Step 4 */}
@@ -1104,24 +1183,24 @@ export default function AgenticAI() {
             marginBottom: '60px'
           }}>
             <div data-aos="zoom-in" data-aos-delay="500" style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              background: '#ffffff',
               padding: '30px',
-              borderRadius: '12px',
-              border: '2px solid #3b82f6',
+              borderRadius: '20px',
+              border: '1px solid #DCDCDC',
               textAlign: 'center',
               order: -1
             }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#3b82f6' }}>04</div>
-              <div style={{ fontSize: '13px', color: '#3b82f6', fontWeight: '600', marginTop: '10px' }}>DEPLOYMENT</div>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>04</div>
+              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>DEPLOYMENT</div>
             </div>
             <div data-aos="fade-left" data-aos-delay="550">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#3b82f6', marginBottom: '10px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
                 Week 7-10
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: '0 0 15px 0' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
                 Deployment & Scaling
               </h3>
-              <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', margin: '0' }}>
+              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
                 Integrate agents into production systems with secure access controls. Deploy with proper monitoring and rollback capabilities.
               </p>
             </div>
@@ -1129,7 +1208,7 @@ export default function AgenticAI() {
 
           {/* Connector Line */}
           <div style={{ textAlign: 'center', marginBottom: '60px' }} data-aos="fade-up" data-aos-delay="600">
-            <div style={{ fontSize: '24px', color: '#3b82f6' }}>↓</div>
+            <div style={{ fontSize: '24px', color: '#185ADB' }}>↓</div>
           </div>
 
           {/* Step 5 */}
@@ -1141,25 +1220,25 @@ export default function AgenticAI() {
             marginBottom: '60px'
           }}>
             <div data-aos="fade-right" data-aos-delay="650">
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#3b82f6', marginBottom: '10px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#185ADB', marginBottom: '10px' }}>
                 Ongoing
               </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', margin: '0 0 15px 0' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', margin: '0 0 15px 0' }}>
                 Monitoring & Improvement
               </h3>
-              <p style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.6', margin: '0' }}>
+              <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: '0' }}>
                 Monitor agent performance, gather user feedback and continuously iterate. Optimize processes based on real-world data and outcomes.
               </p>
             </div>
             <div data-aos="zoom-in" data-aos-delay="700" style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              background: '#ffffff',
               padding: '30px',
-              borderRadius: '12px',
-              border: '2px solid #3b82f6',
+              borderRadius: '20px',
+              border: '1px solid #DCDCDC',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: '700', color: '#3b82f6' }}>05</div>
-              <div style={{ fontSize: '13px', color: '#3b82f6', fontWeight: '600', marginTop: '10px' }}>MONITOR</div>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: '#185ADB' }}>05</div>
+              <div style={{ fontSize: '13px', color: '#185ADB', fontWeight: '600', marginTop: '10px' }}>MONITOR</div>
             </div>
           </div>
         </div>

@@ -62,23 +62,34 @@ export default function AIApplicationDevelopment() {
   ];
 
   return (
-    <div className="bg-white">
-      <PageBanner 
-        title="AI Application Development" 
-        breadcrumb={[{ label: 'Services', url: '/services' }, { label: 'AI Development' }]} 
+    <div style={{ background: '#fff' }}>
+      <PageBanner
+        title="AI Application Development"
+        breadcrumb={[{ label: 'Services', url: '/services' }, { label: 'AI Development' }]}
         backgroundImage="/assets/images/ai-development.jpg"
       />
 
       {/* Intro Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-5xl font-extrabold text-[#0A2D6E] mb-8" data-aos="fade-up">
-              Future-Proof Your Business with <span className="gradient-text">Intelligent AI</span>
+      <section style={{ padding: '110px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>AI SOLUTIONS</div>
+            <h2 style={{
+              fontSize: '48px',
+              fontWeight: '400',
+              color: '#010B1D',
+              marginBottom: '32px'
+            }} data-aos="fade-up">
+              Future-Proof Your Business with <strong>Intelligent AI</strong>
             </h2>
-            <p className="text-xl text-gray-600 leading-relaxed mb-12" data-aos="fade-up" data-aos-delay="100">
-              Symprio specializes in building custom AI applications that solve real-world business challenges. 
-              From intelligent chatbots to autonomous agents, we help you leverage the power of Generative AI 
+            <p style={{
+              fontSize: '18px',
+              color: '#444444',
+              lineHeight: '1.8',
+              marginBottom: '48px'
+            }} data-aos="fade-up" data-aos-delay="100">
+              Symprio specializes in building custom AI applications that solve real-world business challenges.
+              From intelligent chatbots to autonomous agents, we help you leverage the power of Generative AI
               and Machine Learning to drive efficiency and innovation.
             </p>
           </div>
@@ -86,21 +97,53 @@ export default function AIApplicationDevelopment() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section style={{ padding: '110px 0', background: '#f8f9fa' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '32px'
+          }}>
             {features.map((f, i) => (
-              <div 
-                key={i} 
-                className="p-12 rounded-[2rem] bg-white shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 group"
+              <div
+                key={i}
+                style={{
+                  padding: '48px',
+                  borderRadius: '20px',
+                  background: '#ffffff',
+                  border: '1px solid #DCDCDC',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
                 data-aos="fade-up"
                 data-aos-delay={i * 100}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(24, 90, 219, 0.12)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#DCDCDC';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
-                <div className="text-5xl mb-8 transform group-hover:scale-110 transition-transform">{f.icon}</div>
-                <h3 className="text-2xl font-bold text-[#0A2D6E] mb-4 group-hover:text-[#0077B6] transition-colors">
+                <div style={{ fontSize: '48px', marginBottom: '24px' }}>{f.icon}</div>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '700',
+                  color: '#010B1D',
+                  marginBottom: '12px',
+                  marginTop: '0'
+                }}>
                   {f.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
+                <p style={{
+                  fontSize: '16px',
+                  color: '#444444',
+                  lineHeight: '1.7',
+                  margin: '0'
+                }}>
                   {f.description}
                 </p>
               </div>
@@ -110,10 +153,24 @@ export default function AIApplicationDevelopment() {
       </section>
 
       {/* AI Journey Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16" data-aos="fade-up">Our AI Development Lifecycle</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <section style={{ padding: '110px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>DEVELOPMENT LIFECYCLE</div>
+          <h2 style={{
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
+            textAlign: 'center',
+            marginBottom: '60px',
+            marginTop: '0'
+          }} data-aos="fade-up">
+            Our AI <strong>Development Lifecycle</strong>
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, 1fr)',
+            gap: '24px'
+          }}>
             {[
               { step: '01', title: 'Discovery', icon: '🎯', desc: 'Identifying high-ROI AI use cases.' },
               { step: '02', title: 'Data Prep', icon: '📊', desc: 'Cleaning and structuring your data.' },
@@ -122,12 +179,31 @@ export default function AIApplicationDevelopment() {
               { step: '05', title: 'Test', icon: '✅', desc: 'Validation and user acceptance labs.' },
               { step: '06', title: 'Scale', icon: '🚀', desc: 'Deployment and ongoing optimization.' }
             ].map((s, i) => (
-              <div key={i} className="text-center" data-aos="fade-up" data-aos-delay={i * 100}>
-                <div className="w-16 h-16 rounded-full bg-[#0A2D6E] text-white flex items-center justify-center mx-auto mb-6 font-bold text-xl shadow-lg border-4 border-white">
+              <div key={i} style={{ textAlign: 'center' }} data-aos="fade-up" data-aos-delay={i * 100}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: '#185ADB',
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 24px',
+                  fontWeight: '700',
+                  fontSize: '18px',
+                  boxShadow: '0 8px 24px rgba(24, 90, 219, 0.3)'
+                }}>
                   {s.step}
                 </div>
-                <h4 className="font-bold text-[#0A2D6E] mb-2">{s.title}</h4>
-                <p className="text-sm text-gray-500">{s.desc}</p>
+                <h4 style={{
+                  fontWeight: '700',
+                  color: '#010B1D',
+                  marginBottom: '8px',
+                  marginTop: '0',
+                  fontSize: '16px'
+                }}>{s.title}</h4>
+                <p style={{ fontSize: '14px', color: '#444444', margin: '0', lineHeight: '1.6' }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -135,28 +211,68 @@ export default function AIApplicationDevelopment() {
       </section>
 
       {/* Integration Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2" data-aos="fade-right">
-              <h2 className="text-4xl font-bold text-[#0A2D6E] mb-6">
-                Seamless <span className="gradient-text">Integrations</span>
+      <section style={{ padding: '110px 0', background: '#f8f9fa' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '64px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ flex: '1 1 400px' }} data-aos="fade-right">
+              <div className="section-tag" style={{ marginBottom: '16px' }}>INTEGRATIONS</div>
+              <h2 style={{
+                fontSize: '40px',
+                fontWeight: '400',
+                color: '#010B1D',
+                marginBottom: '24px',
+                marginTop: '0'
+              }}>
+                Seamless <strong>Integrations</strong>
               </h2>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              <p style={{
+                fontSize: '16px',
+                color: '#444444',
+                marginBottom: '32px',
+                lineHeight: '1.8'
+              }}>
                 Our AI solutions are built to talk to your existing stack. We don't just build models; we build production-ready systems that drive value from day one.
               </p>
-              <ul className="space-y-4">
+              <ul style={{ listStyle: 'none', padding: '0', margin: '0', display: 'grid', gap: '16px' }}>
                 {['WhatsApp & Messaging Channels', 'Microsoft 365 & Teams', 'SAP, Oracle & Salesforce', 'Enterprise Data Warehouses'].map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-gray-700 font-semibold text-lg">
-                    <div className="w-6 h-6 rounded-full bg-[#00F5D4] flex items-center justify-center text-[#0A2D6E]">✓</div>
+                  <li key={idx} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    color: '#444444',
+                    fontWeight: '600',
+                    fontSize: '16px'
+                  }}>
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      background: '#0D9488',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: '12px',
+                      flexShrink: 0
+                    }}>✓</div>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="lg:w-1/2" data-aos="fade-left">
-              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
-                <img src="/assets/images/custom-dev.jpg" alt="AI Integration" className="w-full h-auto" />
+            <div style={{ flex: '1 1 400px' }} data-aos="fade-left">
+              <div style={{
+                borderRadius: '20px',
+                overflow: 'hidden',
+                border: '1px solid #DCDCDC',
+                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)'
+              }}>
+                <img src="/assets/images/custom-dev.jpg" alt="AI Integration" style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
             </div>
           </div>
@@ -167,18 +283,46 @@ export default function AIApplicationDevelopment() {
       <FAQSection faqs={aiFaqs} />
 
       {/* CTA */}
-      <section className="py-24 bg-[#0A2D6E] text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-5xl font-black mb-8">Ready to Unleash AI?</h2>
-          <p className="text-xl mb-12 opacity-80 max-w-2xl mx-auto">
+      <section style={{
+        padding: '110px 0',
+        background: 'linear-gradient(135deg, #010B1D 0%, #185ADB 100%)',
+        color: '#fff',
+        overflow: 'hidden',
+        position: 'relative'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 24px',
+          textAlign: 'center',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <h2 style={{
+            fontSize: '48px',
+            fontWeight: '400',
+            marginBottom: '24px',
+            marginTop: '0',
+            color: '#fff'
+          }}>
+            Ready to <strong>Unleash AI</strong>?
+          </h2>
+          <p style={{
+            fontSize: '18px',
+            marginBottom: '40px',
+            opacity: 0.85,
+            maxWidth: '640px',
+            margin: '0 auto 40px',
+            lineHeight: '1.7'
+          }}>
             Book a discovery call today and let our experts show you how AI can transform your bottom line.
           </p>
-          <button 
+          <button
             onClick={() => navigate('/contact')}
-            className="btn-pill btn-primary text-lg !px-12 !py-5"
+            className="btn-pill btn-primary"
+            style={{ fontSize: '16px', padding: '16px 48px' }}
           >
-            Start Your Discovery Phase 🚀
+            Start Your Discovery Phase
           </button>
         </div>
       </section>

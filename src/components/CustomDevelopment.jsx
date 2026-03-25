@@ -1,3 +1,7 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
 
 const customDevFaqs = [
@@ -31,7 +35,7 @@ export default function CustomDevelopment() {
     <div style={{ backgroundColor: '#fff', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(0, 119, 182, 0.4) 100%), url('/assets/images/custom-dev.jpg')`,
+        backgroundImage: `linear-gradient(135deg, rgba(1,11,29,0.75) 0%, rgba(1,11,29,0.75) 100%), url('/assets/images/custom-dev.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -39,28 +43,26 @@ export default function CustomDevelopment() {
         padding: '120px 20px 160px',
         textAlign: 'center',
         color: '#fff',
-        minHeight: '600px',
+        minHeight: '500px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
-            fontWeight: '900',
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontWeight: '700',
             color: '#ffffff',
             margin: '0 0 24px 0',
-            lineHeight: '1.1',
-            letterSpacing: '-0.02em',
-            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            lineHeight: '1.15'
           }} data-aos="fade-up">
-            Custom <span style={{ color: 'var(--accent)' }}>Software</span> Development
+            Custom <span style={{ color: '#0D9488' }}>Software</span> Development
           </h1>
           <p style={{
-            fontSize: '22px',
-            color: 'rgba(255,255,255,0.9)',
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.85)',
             margin: '0 auto',
-            fontWeight: '500',
+            fontWeight: '400',
             maxWidth: '750px'
           }} data-aos="fade-up" data-aos-delay="100">
             Full-stack excellence from initial concept to global scale.
@@ -78,41 +80,33 @@ export default function CustomDevelopment() {
       }}>
 
         {/* Introduction Section - Overlapping Container */}
-        <section style={{ 
+        <section style={{
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '32px',
-          padding: '80px 60px',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
-          border: '1px solid rgba(0,0,0,0.05)'
+          borderRadius: '20px',
+          padding: '60px 50px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+          border: '1px solid #DCDCDC'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
             margin: '0 auto',
             textAlign: 'center'
           }}>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>DEVELOPMENT</div>
             <h2 style={{
-              fontSize: '48px',
-              fontWeight: '900',
-              color: 'var(--primary)',
+              fontSize: '40px',
+              fontWeight: '400',
+              color: '#010B1D',
               margin: '0 0 24px 0',
               lineHeight: '1.2'
             }}>
-              Agile & <span className="gradient-text">DevOps</span> Excellence
+              Agile & <strong>DevOps Excellence</strong>
             </h2>
-            <div
-              style={{
-                width: '80px',
-                height: '6px',
-                background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
-                margin: '30px auto',
-                borderRadius: '3px'
-              }}
-            />
             <p style={{
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: '1.8',
-              color: '#4b5563',
+              color: '#444444',
               marginBottom: '20px',
               fontWeight: '400'
             }}>
@@ -123,16 +117,17 @@ export default function CustomDevelopment() {
 
         {/* Services Section - Timeline/Process Flow */}
         <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>PROCESS</div>
           <h2 style={{
-            fontSize: '44px',
-            fontWeight: '800',
-            color: '#1f2937',
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
             marginBottom: '80px',
             textAlign: 'center'
           }} data-aos="fade-up">
-            Development <span className="gradient-text">Lifecycle</span>
+            Development <strong>Lifecycle</strong>
           </h2>
-          
+
           <div style={{
             position: 'relative',
             paddingBottom: '40px'
@@ -143,10 +138,10 @@ export default function CustomDevelopment() {
               left: '50px',
               right: '50px',
               height: '3px',
-              background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
+              background: 'linear-gradient(90deg, #010B1D 0%, #185ADB 100%)',
               zIndex: 0
             }}/>
-            
+
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(6, 1fr)',
@@ -155,48 +150,56 @@ export default function CustomDevelopment() {
               zIndex: 1
             }}>
               {[
-                { step: '01', title: 'Discovery', icon: '🎨', description: 'Requirements & roadmap' },
-                { step: '02', title: 'Development', icon: '💻', description: 'Full-stack implementation' },
-                { step: '03', title: 'QA', icon: '✓', description: 'Testing & optimization' },
-                { step: '04', title: 'DevOps', icon: '🚀', description: 'CI/CD & release' },
-                { step: '05', title: 'Support', icon: '🔧', description: 'Maintenance & monitoring' },
-                { step: '06', title: 'Scale', icon: '☁️', description: 'Growth & optimization' }
+                { step: '01', title: 'Discovery', icon: '\uD83C\uDFA8', description: 'Requirements & roadmap' },
+                { step: '02', title: 'Development', icon: '\uD83D\uDCBB', description: 'Full-stack implementation' },
+                { step: '03', title: 'QA', icon: '\u2713', description: 'Testing & optimization' },
+                { step: '04', title: 'DevOps', icon: '\uD83D\uDE80', description: 'CI/CD & release' },
+                { step: '05', title: 'Support', icon: '\uD83D\uDD27', description: 'Maintenance & monitoring' },
+                { step: '06', title: 'Scale', icon: '\u2601\uFE0F', description: 'Growth & optimization' }
               ].map((item, idx) => (
                 <div key={idx} data-aos="fade-up" data-aos-delay={idx * 100} style={{ textAlign: 'center' }}>
                   <div style={{
                     width: '60px',
                     height: '60px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
+                    background: '#185ADB',
                     margin: '0 auto 20px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'white',
-                    fontWeight: '800',
+                    fontWeight: '700',
                     fontSize: '18px',
-                    boxShadow: '0 8px 20px rgba(10, 45, 110, 0.3)',
+                    boxShadow: '0 8px 20px rgba(24, 90, 219, 0.25)',
                     border: '3px solid white'
                   }}>
                     {item.step}
                   </div>
-                  
+
                   <div style={{
                     padding: '20px',
                     background: 'white',
-                    borderRadius: '24px',
-                    border: '1px solid rgba(0,0,0,0.05)',
+                    borderRadius: '20px',
+                    border: '1px solid #DCDCDC',
                     minHeight: '180px',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.02)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    transition: 'all 0.3s ease'
                   }}
-                  className="hover-card">
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#185ADB';
+                    e.currentTarget.style.transform = 'translateY(-5px)';
+                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#DCDCDC';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}>
                     <div style={{ fontSize: '32px', marginBottom: '10px' }}>{item.icon}</div>
-                    <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--primary)', margin: '0 0 8px 0' }}>{item.title}</h4>
-                    <p style={{ fontSize: '13px', color: '#6b7280', margin: 0, lineHeight: '1.4' }}>{item.description}</p>
+                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#010B1D', margin: '0 0 8px 0' }}>{item.title}</h4>
+                    <p style={{ fontSize: '14px', color: '#444444', margin: 0, lineHeight: '1.5' }}>{item.description}</p>
                   </div>
                 </div>
               ))}
@@ -204,41 +207,42 @@ export default function CustomDevelopment() {
           </div>
         </section>
 
-        {/* Typical Projects Section - Staggered Showcase */}
-        <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+        {/* Typical Projects Section */}
+        <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto', padding: '100px 20px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>PROJECTS</div>
           <h2 style={{
-            fontSize: '44px',
-            fontWeight: '900',
-            color: 'var(--primary)',
-            marginBottom: '80px',
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
+            marginBottom: '60px',
             textAlign: 'center'
           }} data-aos="fade-up">
-            Projects We <span className="gradient-text">Deliver</span>
+            Projects We <strong>Deliver</strong>
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '30px' }}>
             {[
               {
                 num: '01',
                 title: 'Custom Portals & Dashboards',
-                icon: '📊',
+                icon: '\uD83D\uDCCA',
                 description: 'Executive dashboards and customer portals with real-time analytics and intuitive UX.',
               },
               {
                 num: '02',
                 title: 'API & Integration Platforms',
-                icon: '🔗',
+                icon: '\uD83D\uDD17',
                 description: 'RESTful and GraphQL APIs connecting disparate systems for seamless data flow.',
               },
               {
                 num: '03',
                 title: 'Cloud Migrations',
-                icon: '☁️',
+                icon: '\u2601\uFE0F',
                 description: 'Seamless migration from on-premises systems to Oracle Cloud, AWS, or Azure.',
               },
               {
                 num: '04',
                 title: 'Mobile Applications',
-                icon: '📱',
+                icon: '\uD83D\uDCF1',
                 description: 'iOS and Android applications with native performance and offline capabilities.',
               }
             ].map((project, idx) => (
@@ -248,33 +252,42 @@ export default function CustomDevelopment() {
                 style={{
                   padding: '40px',
                   background: '#fff',
-                  borderRadius: '32px',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.05)',
+                  borderRadius: '20px',
+                  border: '1px solid #DCDCDC',
                   transition: 'all 0.3s ease'
                 }}
-                className="hover-card"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#DCDCDC';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <div style={{ fontSize: '48px', marginBottom: '20px' }}>{project.icon}</div>
-                <h3 style={{ fontSize: '24px', fontWeight: '900', color: 'var(--primary)', marginBottom: '15px' }}>{project.title}</h3>
-                <p style={{ fontSize: '16px', color: '#6b7280', lineHeight: '1.6', margin: 0 }}>{project.description}</p>
+                <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', marginBottom: '15px' }}>{project.title}</h3>
+                <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', margin: 0 }}>{project.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Technology Stack Section - Layered Architecture */}
-        <section style={{ marginBottom: '120px', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+        {/* Technology Stack Section */}
+        <section style={{ marginBottom: '120px', maxWidth: '1200px', margin: '0 auto', padding: '0 20px 100px' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TECH STACK</div>
           <h2 style={{
-            fontSize: '44px',
-            fontWeight: '900',
-            color: 'var(--primary)',
-            marginBottom: '80px',
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
+            marginBottom: '60px',
             textAlign: 'center'
           }} data-aos="fade-up">
-            Technology <span className="gradient-text">Expertise</span>
+            Technology <strong>Expertise</strong>
           </h2>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
             {[
               {
@@ -296,15 +309,15 @@ export default function CustomDevelopment() {
             ].map((stack, idx) => (
               <div key={idx} style={{
                 padding: '30px',
-                background: idx % 2 === 0 ? 'var(--primary)' : 'var(--secondary)',
-                borderRadius: '24px',
+                background: idx % 2 === 0 ? '#010B1D' : '#185ADB',
+                borderRadius: '20px',
                 color: '#fff',
                 textAlign: 'center'
               }} data-aos="fade-up" data-aos-delay={idx * 100}>
-                <h3 style={{ fontSize: '20px', fontWeight: '900', marginBottom: '20px' }}>{stack.layer}</h3>
+                <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>{stack.layer}</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {stack.technologies.map((tech, tidx) => (
-                    <span key={tidx} style={{ opacity: '0.8', fontWeight: '500' }}>{tech}</span>
+                    <span key={tidx} style={{ opacity: '0.85', fontWeight: '400', fontSize: '16px' }}>{tech}</span>
                   ))}
                 </div>
               </div>

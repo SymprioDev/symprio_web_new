@@ -1,9 +1,13 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
 
 const erpFaqs = [
   {
     q: 'Why should we choose Oracle Cloud ERP over our legacy on-premise system?',
-    a: 'Oracle Cloud ERP offers automatic quarterly updates, superior mobile access, and advanced AI-driven analytics that on-premise systems can’t match, all while reducing total cost of ownership by up to 40%.'
+    a: 'Oracle Cloud ERP offers automatic quarterly updates, superior mobile access, and advanced AI-driven analytics that on-premise systems can\u2019t match, all while reducing total cost of ownership by up to 40%.'
   },
   {
     q: 'How does Symprio accelerate ERP implementation?',
@@ -31,7 +35,7 @@ export default function ERP() {
     <div style={{ backgroundColor: '#fff', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(184, 134, 11, 0.4) 100%), url('/assets/images/erp-oracle.jpg')`,
+        backgroundImage: `linear-gradient(135deg, rgba(1,11,29,0.75) 0%, rgba(1,11,29,0.75) 100%), url('/assets/images/erp-oracle.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -39,28 +43,26 @@ export default function ERP() {
         padding: '120px 20px 160px',
         textAlign: 'center',
         color: '#fff',
-        minHeight: '600px',
+        minHeight: '500px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
-            fontWeight: '900',
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontWeight: '700',
             color: '#ffffff',
             margin: '0 0 24px 0',
-            lineHeight: '1.1',
-            letterSpacing: '-0.02em',
-            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            lineHeight: '1.15'
           }} data-aos="fade-up">
-            ERP & <span style={{ color: '#FFD700' }}>Oracle</span> Solutions
+            ERP & <span style={{ color: '#0D9488' }}>Oracle</span> Solutions
           </h1>
           <p style={{
-            fontSize: '22px',
-            color: 'rgba(255,255,255,0.9)',
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.85)',
             margin: '0 auto',
-            fontWeight: '500',
+            fontWeight: '400',
             maxWidth: '750px'
           }} data-aos="fade-up" data-aos-delay="100">
             Transforming complex business operations into streamlined, cloud-native powerhouses.
@@ -76,39 +78,33 @@ export default function ERP() {
         position: 'relative',
         zIndex: 10
       }}>
-        <section style={{ 
+        <section style={{
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '32px',
-          padding: '80px 60px',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
-          border: '1px solid rgba(0,0,0,0.05)'
+          borderRadius: '20px',
+          padding: '60px 50px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+          border: '1px solid #DCDCDC'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
             margin: '0 auto',
             textAlign: 'center'
           }}>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>ORACLE CLOUD</div>
             <h2 style={{
-              fontSize: '48px',
-              fontWeight: '900',
-              color: 'var(--primary)',
+              fontSize: '40px',
+              fontWeight: '400',
+              color: '#010B1D',
               margin: '0 0 24px 0',
               lineHeight: '1.2'
             }}>
-              Oracle Cloud <span className="gradient-text">Excellence</span>
+              Oracle Cloud <strong>Excellence</strong>
             </h2>
-            <div style={{
-              width: '80px',
-              height: '6px',
-              background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
-              margin: '30px auto',
-              borderRadius: '3px'
-            }}/>
             <p style={{
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: '1.8',
-              color: '#4b5563',
+              color: '#444444',
               margin: '0',
               fontWeight: '400'
             }}>
@@ -122,24 +118,25 @@ export default function ERP() {
       <section style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '80px 20px'
+        padding: '100px 20px'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>MODULE STACK</div>
         <h2 style={{
-          fontSize: '44px',
-          fontWeight: '800',
-          color: '#1f2937',
+          fontSize: '40px',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 15px 0',
           textAlign: 'center'
         }} data-aos="fade-up">
-          Oracle ERP Module Stack
+          Oracle ERP <strong>Module Stack</strong>
         </h2>
         <p style={{
           fontSize: '16px',
-          color: '#6b7280',
+          color: '#444444',
           textAlign: 'center',
           maxWidth: '700px',
           margin: '0 auto 60px',
-          lineHeight: '1.6'
+          lineHeight: '1.7'
         }} data-aos="fade-up">
           Complete integration across core business processes, from financial management to supply chain optimization.
         </p>
@@ -153,38 +150,33 @@ export default function ERP() {
           {[
             {
               layer: 'Core Platform',
-              icon: '⚙️',
+              icon: '\u2699\uFE0F',
               modules: ['Oracle Cloud Infrastructure', 'Multi-Entity Consolidation', 'Global Consolidation System'],
-              color: '#0891b2',
-              bgColor: '#dbeafe'
+              color: '#185ADB'
             },
             {
               layer: 'Financial Management',
-              icon: '💰',
+              icon: '\uD83D\uDCB0',
               modules: ['General Ledger', 'Accounts Payable', 'Accounts Receivable', 'Cash Management'],
-              color: '#10b981',
-              bgColor: '#dcfce7'
+              color: '#0D9488'
             },
             {
               layer: 'Supply Chain',
-              icon: '📦',
+              icon: '\uD83D\uDCE6',
               modules: ['Inventory', 'Procurement', 'Logistics', 'Demand Planning'],
-              color: '#f59e0b',
-              bgColor: '#fef3c7'
+              color: '#185ADB'
             },
             {
               layer: 'Human Capital',
-              icon: '👥',
+              icon: '\uD83D\uDC65',
               modules: ['Payroll', 'Talent Management', 'HR Analytics', 'Workforce Planning'],
-              color: '#8b5cf6',
-              bgColor: '#f3e8ff'
+              color: '#0D9488'
             },
             {
               layer: 'Manufacturing & Analytics',
-              icon: '🏭',
+              icon: '\uD83C\uDFED',
               modules: ['Manufacturing Cloud', 'Business Analytics', 'Advanced Reporting', 'BI Integration'],
-              color: '#ec4899',
-              bgColor: '#ffe4e6'
+              color: '#185ADB'
             }
           ].map((layer, idx) => (
             <div
@@ -193,21 +185,23 @@ export default function ERP() {
               data-aos-delay={idx * 100}
               style={{
                 padding: '30px 40px',
-                background: layer.bgColor,
-                border: `3px solid ${layer.color}`,
-                borderRadius: '12px',
-                transition: 'all 0.4s ease',
+                background: '#ffffff',
+                border: '1px solid #DCDCDC',
+                borderRadius: '20px',
+                transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateX(20px)';
-                e.currentTarget.style.boxShadow = `0 20px 50px ${layer.color}33`;
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                e.currentTarget.style.borderColor = '#185ADB';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateX(0)';
+                e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = '#DCDCDC';
               }}
             >
               <div style={{
@@ -224,8 +218,8 @@ export default function ERP() {
                 <div style={{ flex: 1 }}>
                   <h3 style={{
                     fontSize: '20px',
-                    fontWeight: '800',
-                    color: layer.color,
+                    fontWeight: '700',
+                    color: '#010B1D',
                     margin: '0 0 12px 0'
                   }}>
                     {layer.layer}
@@ -240,11 +234,11 @@ export default function ERP() {
                         key={i}
                         style={{
                           fontSize: '12px',
-                          fontWeight: '700',
+                          fontWeight: '600',
                           color: '#ffffff',
-                          background: layer.color,
+                          background: '#185ADB',
                           padding: '6px 14px',
-                          borderRadius: '12px',
+                          borderRadius: '9999px',
                           transition: 'all 0.3s ease'
                         }}
                       >
@@ -263,25 +257,26 @@ export default function ERP() {
       <section style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '80px 20px',
-        marginBottom: '80px'
+        padding: '100px 20px',
+        marginBottom: '0'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>COMPARISON</div>
         <h2 style={{
-          fontSize: '44px',
-          fontWeight: '800',
-          color: '#1f2937',
+          fontSize: '40px',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 15px 0',
           textAlign: 'center'
         }} data-aos="fade-up">
-          Legacy vs. Oracle ERP
+          Legacy vs. <strong>Oracle ERP</strong>
         </h2>
         <p style={{
           fontSize: '16px',
-          color: '#6b7280',
+          color: '#444444',
           textAlign: 'center',
           maxWidth: '700px',
           margin: '0 auto 60px',
-          lineHeight: '1.6'
+          lineHeight: '1.7'
         }} data-aos="fade-up">
           See the dramatic improvements when you modernize to Oracle Cloud ERP.
         </p>
@@ -297,22 +292,22 @@ export default function ERP() {
           <div>
             <h3 style={{
               fontSize: '24px',
-              fontWeight: '800',
+              fontWeight: '700',
               color: '#ef4444',
               marginBottom: '40px',
               paddingBottom: '20px',
-              borderBottom: '3px solid #fee2e2'
+              borderBottom: '2px solid #DCDCDC'
             }} data-aos="fade-right">
               Legacy ERP Systems
             </h3>
-            <div style={{ display: 'grid', gap: '20px' }}>
+            <div style={{ display: 'grid', gap: '16px' }}>
               {[
-                { metric: '15-20 days', label: 'Financial Close Cycle', icon: '⏱️' },
-                { metric: '30-40% Manual', label: 'Reconciliation Work', icon: '📝' },
-                { metric: 'Siloed Data', label: 'No Real-time Visibility', icon: '🔒' },
-                { metric: 'High Cost', label: 'Maintenance & Support', icon: '💸' },
-                { metric: 'Limited Scale', label: 'Multi-entity Challenges', icon: '📊' },
-                { metric: 'Slow Updates', label: 'Delayed Business Insights', icon: '⚠️' }
+                { metric: '15-20 days', label: 'Financial Close Cycle', icon: '\u23F1\uFE0F' },
+                { metric: '30-40% Manual', label: 'Reconciliation Work', icon: '\uD83D\uDCDD' },
+                { metric: 'Siloed Data', label: 'No Real-time Visibility', icon: '\uD83D\uDD12' },
+                { metric: 'High Cost', label: 'Maintenance & Support', icon: '\uD83D\uDCB8' },
+                { metric: 'Limited Scale', label: 'Multi-entity Challenges', icon: '\uD83D\uDCCA' },
+                { metric: 'Slow Updates', label: 'Delayed Business Insights', icon: '\u26A0\uFE0F' }
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -321,8 +316,8 @@ export default function ERP() {
                   style={{
                     padding: '20px',
                     background: '#fef2f2',
-                    border: '2px solid #fee2e2',
-                    borderRadius: '8px'
+                    border: '1px solid #DCDCDC',
+                    borderRadius: '20px'
                   }}
                 >
                   <div style={{
@@ -334,14 +329,14 @@ export default function ERP() {
                     <div>
                       <div style={{
                         fontSize: '16px',
-                        fontWeight: '800',
+                        fontWeight: '700',
                         color: '#dc2626'
                       }}>
                         {item.metric}
                       </div>
                       <div style={{
-                        fontSize: '12px',
-                        color: '#991b1b'
+                        fontSize: '13px',
+                        color: '#444444'
                       }}>
                         {item.label}
                       </div>
@@ -356,22 +351,22 @@ export default function ERP() {
           <div>
             <h3 style={{
               fontSize: '24px',
-              fontWeight: '800',
-              color: '#10b981',
+              fontWeight: '700',
+              color: '#0D9488',
               marginBottom: '40px',
               paddingBottom: '20px',
-              borderBottom: '3px solid #dcfce7'
+              borderBottom: '2px solid #DCDCDC'
             }} data-aos="fade-left">
               Oracle Cloud ERP
             </h3>
-            <div style={{ display: 'grid', gap: '20px' }}>
+            <div style={{ display: 'grid', gap: '16px' }}>
               {[
-                { metric: '3-5 days', label: 'Financial Close Cycle', icon: '⚡', improvement: '-75%' },
-                { metric: '98%+ Automated', label: 'Reconciliation Accuracy', icon: '✓', improvement: '+98%' },
-                { metric: 'Real-time Data', label: 'Live Business Visibility', icon: '👁️', improvement: '24/7' },
-                { metric: 'Optimized Cost', label: 'Cloud-based Efficiency', icon: '💰', improvement: '-40%' },
-                { metric: 'Global Scale', label: 'Multi-entity Consolidation', icon: '🌍', improvement: 'Yes' },
-                { metric: 'Instant Updates', label: 'Predictive Analytics', icon: '📈', improvement: 'Live' }
+                { metric: '3-5 days', label: 'Financial Close Cycle', icon: '\u26A1', improvement: '-75%' },
+                { metric: '98%+ Automated', label: 'Reconciliation Accuracy', icon: '\u2713', improvement: '+98%' },
+                { metric: 'Real-time Data', label: 'Live Business Visibility', icon: '\uD83D\uDC41\uFE0F', improvement: '24/7' },
+                { metric: 'Optimized Cost', label: 'Cloud-based Efficiency', icon: '\uD83D\uDCB0', improvement: '-40%' },
+                { metric: 'Global Scale', label: 'Multi-entity Consolidation', icon: '\uD83C\uDF0D', improvement: 'Yes' },
+                { metric: 'Instant Updates', label: 'Predictive Analytics', icon: '\uD83D\uDCC8', improvement: 'Live' }
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -380,8 +375,8 @@ export default function ERP() {
                   style={{
                     padding: '20px',
                     background: '#f0fdf4',
-                    border: '2px solid #dcfce7',
-                    borderRadius: '8px'
+                    border: '1px solid #DCDCDC',
+                    borderRadius: '20px'
                   }}
                 >
                   <div style={{
@@ -393,25 +388,26 @@ export default function ERP() {
                     <div style={{ flex: 1 }}>
                       <div style={{
                         fontSize: '16px',
-                        fontWeight: '800',
-                        color: '#059669'
+                        fontWeight: '700',
+                        color: '#0D9488'
                       }}>
                         {item.metric}
                       </div>
                       <div style={{
-                        fontSize: '12px',
-                        color: '#047857'
+                        fontSize: '13px',
+                        color: '#444444'
                       }}>
                         {item.label}
                       </div>
                     </div>
                     <div style={{
                       fontSize: '13px',
-                      fontWeight: '700',
-                      color: '#10b981',
-                      background: '#dcfce7',
+                      fontWeight: '600',
+                      color: '#0D9488',
+                      background: '#f0fdf4',
                       padding: '4px 10px',
-                      borderRadius: '6px',
+                      borderRadius: '9999px',
+                      border: '1px solid #DCDCDC',
                       whiteSpace: 'nowrap'
                     }}>
                       {item.improvement}
@@ -428,16 +424,17 @@ export default function ERP() {
       <section style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '80px 20px'
+        padding: '100px 20px'
       }}>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>INDUSTRIES</div>
         <h2 style={{
-          fontSize: '44px',
-          fontWeight: '800',
-          color: '#1f2937',
+          fontSize: '40px',
+          fontWeight: '400',
+          color: '#010B1D',
           margin: '0 0 60px 0',
           textAlign: 'center'
         }} data-aos="fade-up">
-          Industry Solutions
+          Industry <strong>Solutions</strong>
         </h2>
 
         <div style={{
@@ -447,33 +444,25 @@ export default function ERP() {
           {[
             {
               industry: 'Manufacturing',
-              icon: '🏭',
-              color: '#f59e0b',
-              bgColor: '#fef3c7',
+              icon: '\uD83C\uDFED',
               challenges: ['Multi-site Operations', 'Complex BOM Management', 'Production Planning'],
               solution: 'Oracle Manufacturing Cloud with integrated planning, costing, and supply chain optimization across global facilities.'
             },
             {
               industry: 'Distribution & Logistics',
-              icon: '📦',
-              color: '#3b82f6',
-              bgColor: '#dbeafe',
+              icon: '\uD83D\uDCE6',
               challenges: ['Inventory Across Locations', 'Order Fulfillment', 'Demand Forecasting'],
               solution: 'SCM modules with real-time inventory visibility, automated replenishment, and demand-driven planning.'
             },
             {
               industry: 'Financial Services',
-              icon: '🏦',
-              color: '#10b981',
-              bgColor: '#dcfce7',
+              icon: '\uD83C\uDFE6',
               challenges: ['Regulatory Compliance', 'Multi-entity Consolidation', 'Real-time Reporting'],
               solution: 'Oracle ERP with GCS, multi-dimensional accounting, and integrated compliance/audit workflows.'
             },
             {
               industry: 'Healthcare',
-              icon: '🏥',
-              color: '#8b5cf6',
-              bgColor: '#f3e8ff',
+              icon: '\uD83C\uDFE5',
               challenges: ['Patient Billing', 'Supply Chain', 'Budget Management'],
               solution: 'Healthcare-specific ERP with patient accounting, materials management, and outcome-based analytics.'
             }
@@ -488,18 +477,20 @@ export default function ERP() {
                 gap: '40px',
                 alignItems: 'center',
                 padding: '40px',
-                background: useCase.bgColor,
-                border: `3px solid ${useCase.color}`,
-                borderRadius: '12px',
-                transition: 'all 0.4s ease'
+                background: '#ffffff',
+                border: '1px solid #DCDCDC',
+                borderRadius: '20px',
+                transition: 'all 0.3s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = `0 20px 50px ${useCase.color}33`;
-                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.borderColor = '#185ADB';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = 'none';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = '#DCDCDC';
               }}
             >
               {idx % 2 === 0 ? (
@@ -513,9 +504,9 @@ export default function ERP() {
                     }}>
                       <div style={{ fontSize: '44px' }}>{useCase.icon}</div>
                       <h3 style={{
-                        fontSize: '26px',
-                        fontWeight: '800',
-                        color: useCase.color,
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: '#010B1D',
                         margin: 0
                       }}>
                         {useCase.industry}
@@ -525,7 +516,7 @@ export default function ERP() {
                       <p style={{
                         fontSize: '12px',
                         fontWeight: '700',
-                        color: useCase.color,
+                        color: '#185ADB',
                         margin: '0 0 8px 0',
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
@@ -535,8 +526,8 @@ export default function ERP() {
                       <ul style={{
                         margin: 0,
                         paddingLeft: '20px',
-                        fontSize: '14px',
-                        color: '#4b5563',
+                        fontSize: '16px',
+                        color: '#444444',
                         lineHeight: '1.8'
                       }}>
                         {useCase.challenges.map((challenge, i) => (
@@ -547,18 +538,17 @@ export default function ERP() {
                   </div>
                   <div style={{
                     padding: '25px',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '8px',
-                    border: `2px solid ${useCase.color}33`
+                    background: '#f8f9fa',
+                    borderRadius: '20px',
+                    border: '1px solid #DCDCDC'
                   }}>
                     <p style={{
-                      fontSize: '14px',
-                      color: '#1f2937',
+                      fontSize: '16px',
+                      color: '#444444',
                       lineHeight: '1.8',
-                      margin: 0,
-                      fontWeight: '600'
+                      margin: 0
                     }}>
-                      <span style={{ color: useCase.color, fontWeight: '800' }}>Our Solution:</span> {useCase.solution}
+                      <span style={{ color: '#185ADB', fontWeight: '700' }}>Our Solution:</span> {useCase.solution}
                     </p>
                   </div>
                 </>
@@ -566,18 +556,17 @@ export default function ERP() {
                 <>
                   <div style={{
                     padding: '25px',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '8px',
-                    border: `2px solid ${useCase.color}33`
+                    background: '#f8f9fa',
+                    borderRadius: '20px',
+                    border: '1px solid #DCDCDC'
                   }}>
                     <p style={{
-                      fontSize: '14px',
-                      color: '#1f2937',
+                      fontSize: '16px',
+                      color: '#444444',
                       lineHeight: '1.8',
-                      margin: 0,
-                      fontWeight: '600'
+                      margin: 0
                     }}>
-                      <span style={{ color: useCase.color, fontWeight: '800' }}>Our Solution:</span> {useCase.solution}
+                      <span style={{ color: '#185ADB', fontWeight: '700' }}>Our Solution:</span> {useCase.solution}
                     </p>
                   </div>
                   <div>
@@ -589,9 +578,9 @@ export default function ERP() {
                     }}>
                       <div style={{ fontSize: '44px' }}>{useCase.icon}</div>
                       <h3 style={{
-                        fontSize: '26px',
-                        fontWeight: '800',
-                        color: useCase.color,
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: '#010B1D',
                         margin: 0
                       }}>
                         {useCase.industry}
@@ -601,7 +590,7 @@ export default function ERP() {
                       <p style={{
                         fontSize: '12px',
                         fontWeight: '700',
-                        color: useCase.color,
+                        color: '#185ADB',
                         margin: '0 0 8px 0',
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
@@ -611,8 +600,8 @@ export default function ERP() {
                       <ul style={{
                         margin: 0,
                         paddingLeft: '20px',
-                        fontSize: '14px',
-                        color: '#4b5563',
+                        fontSize: '16px',
+                        color: '#444444',
                         lineHeight: '1.8'
                       }}>
                         {useCase.challenges.map((challenge, i) => (
@@ -632,38 +621,37 @@ export default function ERP() {
       <section style={{
         maxWidth: '1000px',
         margin: '0 auto',
-        padding: '80px 20px'
+        padding: '0 20px 100px'
       }}>
         <div
           data-aos="fade-up"
           style={{
             padding: '50px 40px',
-            background: 'linear-gradient(135deg, rgba(219, 234, 254, 0.5) 0%, rgba(191, 219, 254, 0.3) 100%)',
-            borderRadius: '16px',
-            border: '2px solid #0891b2',
-            boxShadow: '0 10px 30px rgba(8, 145, 178, 0.1)'
+            background: '#f8f9fa',
+            borderRadius: '20px',
+            border: '1px solid #DCDCDC'
           }}
         >
           <h3 style={{
             fontSize: '28px',
-            fontWeight: '800',
-            color: '#0c4a6e',
+            fontWeight: '700',
+            color: '#010B1D',
             margin: '0 0 20px 0'
           }}>
-            ✨ Case Study: Digital Finance Transformation
+            Case Study: Digital Finance Transformation
           </h3>
           <p style={{
-            fontSize: '15px',
+            fontSize: '16px',
             lineHeight: '1.8',
-            color: '#374151',
+            color: '#444444',
             margin: '0 0 20px 0'
           }}>
             A global manufacturing company with operations across 8 countries faced challenges with legacy ERP systems causing:
           </p>
           <ul style={{
-            fontSize: '14px',
+            fontSize: '16px',
             lineHeight: '2',
-            color: '#374151',
+            color: '#444444',
             margin: '0 0 25px 0',
             paddingLeft: '20px'
           }}>
@@ -672,11 +660,11 @@ export default function ERP() {
             <li>Limited real-time visibility into cash flow</li>
             <li>Compliance challenges across regions</li>
           </ul>
-          
+
           <p style={{
-            fontSize: '15px',
+            fontSize: '16px',
             fontWeight: '700',
-            color: '#0891b2',
+            color: '#185ADB',
             margin: '0 0 15px 0'
           }}>
             Results After Oracle ERP Implementation:
@@ -694,20 +682,21 @@ export default function ERP() {
             ].map((result, idx) => (
               <div key={idx} style={{
                 padding: '15px',
-                backgroundColor: 'rgba(8, 145, 178, 0.1)',
-                borderRadius: '8px',
-                borderLeft: '4px solid #0891b2'
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                border: '1px solid #DCDCDC',
+                borderLeft: '4px solid #185ADB'
               }}>
                 <div style={{
                   fontSize: '20px',
-                  fontWeight: '800',
-                  color: '#0891b2'
+                  fontWeight: '700',
+                  color: '#185ADB'
                 }}>
                   {result.value}
                 </div>
                 <div style={{
-                  fontSize: '13px',
-                  color: '#4b5563',
+                  fontSize: '14px',
+                  color: '#444444',
                   marginTop: '5px'
                 }}>
                   {result.label}

@@ -1,3 +1,7 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
 
 const workforceFaqs = [
@@ -31,7 +35,7 @@ export default function DigitalWorkforce() {
     <div style={{ backgroundColor: '#fff', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(13, 148, 136, 0.4) 100%), url('/assets/images/digital-workforce.jpg')`,
+        backgroundImage: `linear-gradient(135deg, rgba(1,11,29,0.75) 0%, rgba(1,11,29,0.75) 100%), url('/assets/images/digital-workforce.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -39,28 +43,26 @@ export default function DigitalWorkforce() {
         padding: '120px 20px 160px',
         textAlign: 'center',
         color: '#fff',
-        minHeight: '600px',
+        minHeight: '500px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
-            fontWeight: '900',
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontWeight: '700',
             color: '#ffffff',
             margin: '0 0 24px 0',
-            lineHeight: '1.1',
-            letterSpacing: '-0.02em',
-            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            lineHeight: '1.15'
           }} data-aos="fade-up">
-            Digital <span style={{ color: 'var(--accent)' }}>Workforce</span> Solutions
+            Digital <span style={{ color: '#0D9488' }}>Workforce</span> Solutions
           </h1>
           <p style={{
-            fontSize: '22px',
-            color: 'rgba(255,255,255,0.9)',
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.85)',
             margin: '0 auto',
-            fontWeight: '500',
+            fontWeight: '400',
             maxWidth: '750px'
           }} data-aos="fade-up" data-aos-delay="100">
             Augmenting your success with elite, vetted global talent.
@@ -78,41 +80,33 @@ export default function DigitalWorkforce() {
       }}>
 
         {/* Introduction Section - Overlapping Container */}
-        <section style={{ 
+        <section style={{
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '32px',
-          padding: '80px 60px',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
-          border: '1px solid rgba(0,0,0,0.05)'
+          borderRadius: '20px',
+          padding: '60px 50px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+          border: '1px solid #DCDCDC'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
             margin: '0 auto',
             textAlign: 'center'
           }}>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TALENT SOLUTIONS</div>
             <h2 style={{
-              fontSize: '48px',
-              fontWeight: '900',
-              color: 'var(--primary)',
+              fontSize: '40px',
+              fontWeight: '400',
+              color: '#010B1D',
               margin: '0 0 24px 0',
               lineHeight: '1.2'
             }}>
-              Flexible Talent <span className="gradient-text">Augmentation</span>
+              Flexible Talent <strong>Augmentation</strong>
             </h2>
-            <div
-              style={{
-                width: '80px',
-                height: '6px',
-                background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
-                margin: '30px auto',
-                borderRadius: '3px'
-              }}
-            />
             <p style={{
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: '1.8',
-              color: '#4b5563',
+              color: '#444444',
               marginBottom: '24px',
               fontWeight: '400'
             }}>
@@ -123,38 +117,39 @@ export default function DigitalWorkforce() {
 
         {/* Offerings Section */}
         <section style={{ marginBottom: '100px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>CATEGORIES</div>
           <h2 style={{
-            fontSize: '44px',
-            fontWeight: '900',
-            color: 'var(--primary)',
-            marginBottom: '80px',
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
+            marginBottom: '60px',
             textAlign: 'center'
           }} data-aos="fade-up">
-            Talent <span className="gradient-text">Categories</span>
+            Talent <strong>Categories</strong>
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '30px' }}>
             {[
               {
                 title: 'IT & Infrastructure',
-                icon: '🔒',
+                icon: '\uD83D\uDD12',
                 description: 'Security consultants, cloud architects, and Oracle DBAs.',
                 roles: ['IT Support Engineer', 'Security Consultant', 'Cloud Architect']
               },
               {
                 title: 'Software Excellence',
-                icon: '💻',
+                icon: '\uD83D\uDCBB',
                 description: 'Full-stack developers and technical leads with modern expertise.',
                 roles: ['Full-Stack Developer', 'Node.js Expert', 'Frontend Lead']
               },
               {
                 title: 'Project Leadership',
-                icon: '📊',
+                icon: '\uD83D\uDCCA',
                 description: 'Scrum masters and PMs who deliver high-impact results.',
                 roles: ['Scrum Master', 'Project Manager', 'Agile Coach']
               },
               {
                 title: 'Business Functions',
-                icon: '🎯',
+                icon: '\uD83C\uDFAF',
                 description: 'Strategic roles in HR, digital marketing, and operations.',
                 roles: ['Digital Marketer', 'HR Operations', 'SEO Strategist']
               }
@@ -165,19 +160,35 @@ export default function DigitalWorkforce() {
                 style={{
                   padding: '40px',
                   background: '#fff',
-                  borderRadius: '32px',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.05)',
+                  borderRadius: '20px',
+                  border: '1px solid #DCDCDC',
                   transition: 'all 0.3s ease'
                 }}
-                className="hover-card"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#DCDCDC';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <div style={{ fontSize: '48px', marginBottom: '20px' }}>{offering.icon}</div>
-                <h3 style={{ fontSize: '24px', fontWeight: '900', color: 'var(--primary)', marginBottom: '15px' }}>{offering.title}</h3>
-                <p style={{ fontSize: '16px', color: '#6b7280', lineHeight: '1.6', marginBottom: '20px' }}>{offering.description}</p>
+                <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#010B1D', marginBottom: '15px' }}>{offering.title}</h3>
+                <p style={{ fontSize: '16px', color: '#444444', lineHeight: '1.7', marginBottom: '20px' }}>{offering.description}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {offering.roles.map((role, i) => (
-                    <span key={i} className="btn-pill" style={{ fontSize: '12px', padding: '6px 14px' }}>{role}</span>
+                    <span key={i} style={{
+                      fontSize: '12px',
+                      padding: '6px 14px',
+                      borderRadius: '9999px',
+                      background: '#f8f9fa',
+                      border: '1px solid #DCDCDC',
+                      color: '#010B1D',
+                      fontWeight: '600'
+                    }}>{role}</span>
                   ))}
                 </div>
               </div>
@@ -186,47 +197,63 @@ export default function DigitalWorkforce() {
         </section>
 
         {/* Engagement Models */}
-        <section style={{ marginBottom: '120px' }}>
+        <section style={{ padding: '100px 0' }}>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>ENGAGEMENT</div>
           <h2 style={{
-            fontSize: '44px',
-            fontWeight: '900',
-            color: 'var(--primary)',
-            marginBottom: '80px',
+            fontSize: '40px',
+            fontWeight: '400',
+            color: '#010B1D',
+            marginBottom: '60px',
             textAlign: 'center'
           }} data-aos="fade-up">
-            Engagement <span className="gradient-text">Models</span>
+            Engagement <strong>Models</strong>
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px' }}>
             {[
               {
                 title: 'Talent Augmentation',
-                icon: '🤝',
+                icon: '\uD83E\uDD1D',
                 desc: 'Quickly scale your internal teams with specialized external expertise.'
               },
               {
                 title: 'Managed Teams',
-                icon: '👥',
+                icon: '\uD83D\uDC65',
                 desc: 'Dedicated Symprio teams managing end-to-end delivery of your roadmap.',
                 highlight: true
               },
               {
                 title: 'Strategic Outsourcing',
-                icon: '🏢',
+                icon: '\uD83C\uDFE2',
                 desc: 'Complete ownership of business functions for long-term operational success.'
               }
             ].map((model, idx) => (
               <div key={idx} style={{
                 padding: '40px',
-                background: model.highlight ? 'var(--primary)' : '#fff',
+                background: model.highlight ? 'linear-gradient(135deg, #010B1D 0%, #185ADB 100%)' : '#fff',
                 color: model.highlight ? '#fff' : 'inherit',
-                borderRadius: '32px',
+                borderRadius: '20px',
                 textAlign: 'center',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.05)',
-                border: model.highlight ? 'none' : '1px solid rgba(0,0,0,0.05)'
-              }} data-aos="zoom-in" data-aos-delay={idx * 100}>
+                border: model.highlight ? 'none' : '1px solid #DCDCDC',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (!model.highlight) {
+                  e.currentTarget.style.borderColor = '#185ADB';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!model.highlight) {
+                  e.currentTarget.style.borderColor = '#DCDCDC';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }
+              }}
+              data-aos="zoom-in" data-aos-delay={idx * 100}>
                 <div style={{ fontSize: '48px', marginBottom: '24px' }}>{model.icon}</div>
-                <h3 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '15px' }}>{model.title}</h3>
-                <p style={{ fontSize: '16px', opacity: '0.8', margin: 0 }}>{model.desc}</p>
+                <h3 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px' }}>{model.title}</h3>
+                <p style={{ fontSize: '16px', color: model.highlight ? 'rgba(255,255,255,0.85)' : '#444444', margin: 0, lineHeight: '1.7' }}>{model.desc}</p>
               </div>
             ))}
           </div>

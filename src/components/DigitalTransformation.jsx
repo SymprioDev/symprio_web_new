@@ -300,140 +300,69 @@ const ZigzagFeatures = () => {
   );
 };
 
-const DigitalTransformation = () => {
+import FAQSection from './FAQSection';
+
+const dtFaqs = [
+  {
+    q: 'How long does a typical digital transformation take?',
+    a: 'While quick wins can be achieved in 3-6 months, a full enterprise-wide transformation usually spans 12-24 months, depending on the scope and organizational maturity.'
+  },
+  {
+    q: 'What is the "Digital Maturity Assessment"?',
+    a: 'It’s our proprietary framework to evaluate your current technology, culture, and processes, resulting in a colored-coded scorecard and a prioritized roadmap.'
+  },
+  {
+    q: 'Can you work with our existing legacy systems?',
+    a: 'Absolutely. We specialize in bridged transformation—modernizing your workflows while ensuring your legacy core systems remain stable and integrated.'
+  }
+];
+
+export default function DigitalTransformation() {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
-  const [containerVisible, setContainerVisible] = useState(false);
-  const [coverageItemsScroll, setCoverageItemsScroll] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const container = document.getElementById('dt-container');
-      if (container) {
-        const rect = container.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.75) {
-          setContainerVisible(true);
-          window.removeEventListener('scroll', handleScroll);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleCoverageScroll = () => {
-      const coverageSection = document.getElementById('coverage-section');
-      if (coverageSection) {
-        const rect = coverageSection.getBoundingClientRect();
-        const sectionTop = rect.top;
-        const sectionHeight = rect.height;
-        
-        // Calculate progress: 0 when section is below, 1 when fully visible
-        const progress = Math.max(0, Math.min(1, (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight * 0.5)));
-        setCoverageItemsScroll(progress);
-      }
-    };
-
-    window.addEventListener('scroll', handleCoverageScroll);
-    return () => window.removeEventListener('scroll', handleCoverageScroll);
-  }, []);
-
-  const keyAreas = [
-    {
-      title: 'Enterprise Platform',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_1.png',
-      description: 'Building scalable enterprise solutions'
-    },
-    {
-      title: 'Hyper Automation',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_2.png',
-      description: 'Advanced automation capabilities'
-    },
-    {
-      title: 'Design and Build',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_3.png',
-      description: 'Custom solution development'
-    },
-    {
-      title: 'Upskilling and Reskilling Workforce',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/04/why_3_3.png',
-      description: 'Team development and training'
-    },
-    {
-      title: 'Improving Customer Experience',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/counter_2_4.png',
-      description: 'Enhanced user satisfaction'
-    },
-    {
-      title: 'Enhancing Operational Efficiency',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_3.png',
-      description: 'Streamlined operations'
-    },
-    {
-      title: 'Increasing Service Accessibility',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_4.png',
-      description: 'Better service availability'
-    },
-    {
-      title: 'Ensuring Data Security',
-      icon: 'https://www.symprio.com/wp-content/uploads/2024/01/process_box_1.png',
-      description: 'Comprehensive security measures'
-    }
-  ];
-
-  const coverageAreas = [
-    { title: 'Ecosystem', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_1.png' },
-    { title: 'Organization Culture', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_3.png' },
-    { title: 'Change Management', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_4.png' },
-    { title: 'Data & Insights', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_1.png' },
-    { title: 'Customer Experience', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_2.png' },
-    { title: 'Innovation', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_1.png' },
-    { title: 'Technology', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_2.png' },
-    { title: 'People & Skillset', icon: 'https://www.symprio.com/wp-content/uploads/2024/01/service_3d_4.png' }
-  ];
-
   return (
-    <div style={{ background: '#fff', minHeight: '100vh' }}>
+    <div style={{ background: '#fff', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `url('/digitaltransformation/banner.jpg')`,
+        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(0, 245, 212, 0.3) 100%), url('/assets/images/digital-transformation.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         color: '#fff',
-        padding: '100px 20px 140px',
+        padding: '120px 20px 160px',
         textAlign: 'center',
         position: 'relative',
-        minHeight: '500px',
+        minHeight: '600px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: '64px',
-            fontWeight: '800',
-            margin: '0 0 20px 0',
+            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
+            fontWeight: '900',
+            margin: '0 0 24px 0',
             color: '#ffffff',
-            lineHeight: '1.2',
-            letterSpacing: '-2px'
+            lineHeight: '1.1',
+            letterSpacing: '-0.02em',
+            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }} data-aos="fade-up">
-            Digital Transformation
+            Digital <span style={{ color: 'var(--accent)' }}>Transformation</span>
           </h1>
           <p style={{
             fontSize: '22px',
-            color: '#e0e0e0',
-            margin: 0,
-            fontWeight: '300'
+            color: 'rgba(255,255,255,0.9)',
+            margin: '0 auto',
+            fontWeight: '500',
+            maxWidth: '700px'
           }} data-aos="fade-up" data-aos-delay="100">
-            Your Partners to Digital Transformation
+            Partnering with enterprise leaders to evolve their culture, technology, and operations for the digital age.
           </p>
         </div>
       </section>
@@ -951,8 +880,7 @@ const DigitalTransformation = () => {
           }
         }
       `}</style>
+      <FAQSection faqs={dtFaqs} />
     </div>
   );
-};
-
-export default DigitalTransformation;
+}

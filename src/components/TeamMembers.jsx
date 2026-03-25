@@ -10,33 +10,33 @@ const TeamMembers = () => {
   const team = [
     {
       name: 'Vilhelm Bjermeland',
-      position: 'COO, USA',
+      position: 'CEO',
       image: '/vilhelm_New.jpg',
-      color: '#3b82f6',
+      color: '#0a2d6e',
       id: 1,
       linkedin: 'https://www.linkedin.com/in/get2vil/'
     },
     {
       name: 'Prabin Vijay',
-      position: 'Practice Lead, APAC',
+      position: 'CTO',
       image: '/prabin_New.jpg',
-      color: '#8b5cf6',
+      color: '#0077b6',
       id: 2,
       linkedin: 'https://www.linkedin.com/in/prabin-vijay-89a2758/'
     },
     {
       name: 'Vivek Krishna',
-      position: 'Director - Automation Services, APAC',
+      position: 'Director - AI/Automation',
       image: '/vivek_New.jpg',
-      color: '#ec4899',
+      color: '#00f5d4',
       id: 3,
       linkedin: 'https://www.linkedin.com/in/vivekkkrishna/'
     },
     {
       name: 'Ramalingam Dushyanth',
-      position: 'Practice Head - Automation',
+      position: 'Regional Director - APAC',
       image: '/dushy.jpeg',
-      color: '#f59e0b',
+      color: '#3b82f6',
       id: 4,
       linkedin: 'https://www.linkedin.com/in/ddr-dushy/'
     }

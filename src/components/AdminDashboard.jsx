@@ -778,15 +778,15 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 flex flex-col h-screen overflow-hidden`}>
         {/* Logo */}
-        <div className="p-4 border-b border-gray-200 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-white font-bold text-lg">S</span>
+        <div className="p-6 border-b border-gray-100 shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#0a2d6e] to-[#0d9488] rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/20">
+              <span className="text-white font-black text-xl">S</span>
             </div>
             {sidebarOpen && (
               <div>
-                <h1 className="font-bold text-gray-800">Symprio</h1>
-                <p className="text-xs text-gray-500">Admin Panel</p>
+                <h1 className="font-extrabold text-[#0a2d6e] text-lg tracking-tight">Symprio</h1>
+                <p className="text-[10px] font-bold text-teal-600 uppercase letter-spacing-widest">Admin Control</p>
               </div>
             )}
           </div>
@@ -802,18 +802,18 @@ const AdminDashboard = () => {
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
                 className={`
-                  w-full flex items-center gap-3 p-3 rounded-lg transition-all
+                  w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300
                   ${isActive 
-                    ? 'bg-blue-100 text-blue-600 font-medium' 
-                    : 'hover:bg-gray-100 text-gray-600'}
+                    ? 'bg-[#0a2d6e] text-white font-bold shadow-lg shadow-[#0a2d6e]/20' 
+                    : 'hover:bg-[#0a2d6e]/5 text-gray-500 hover:text-[#0a2d6e]'}
                 `}
               >
-                <Icon size={20} className="shrink-0" />
+                <Icon size={20} className={`shrink-0 ${isActive ? 'text-teal-400' : ''}`} />
                 {sidebarOpen && (
                   <>
                     <span className="flex-1 text-left truncate">{item.label}</span>
                     {item.badge > 0 && (
-                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shrink-0">
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${isActive ? 'bg-white text-[#0a2d6e]' : 'bg-red-500 text-white'}`}>
                         {item.badge}
                       </span>
                     )}
@@ -863,8 +863,8 @@ const AdminDashboard = () => {
               <p className="text-sm font-medium text-gray-800">{user?.name || user?.email}</p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shrink-0">
-              <span className="text-white font-medium">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#0a2d6e] to-[#0d9488] rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/10">
+              <span className="text-white font-black text-xs">
                 {(user?.name || user?.email || 'A')[0].toUpperCase()}
               </span>
             </div>
@@ -882,28 +882,28 @@ const AdminDashboard = () => {
                   title="Total Enquiries" 
                   value={enquiries.length} 
                   icon={MessageSquare}
-                  color="bg-blue-500"
+                  color="bg-[#0a2d6e]"
                   trend={`${pendingEnquiries} pending`}
                 />
                 <StatCard 
                   title="Job Applications" 
                   value={jobApplications.length} 
                   icon={Briefcase}
-                  color="bg-purple-500"
+                  color="bg-[#0d9488]"
                   trend={`${pendingApplications} pending`}
                 />
                 <StatCard 
                   title="Subscriptions" 
                   value={subscriptions.length} 
                   icon={Users}
-                  color="bg-green-500"
+                  color="bg-[#0a2d6e]"
                   trend={`${pendingSubscriptions} pending`}
                 />
                 <StatCard 
                   title="Upcoming Events" 
                   value={events.length} 
                   icon={Calendar}
-                  color="bg-orange-500"
+                  color="bg-[#0d9488]"
                 />
               </div>
 

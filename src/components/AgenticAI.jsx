@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import ReadyToStartCTA from './ReadyToStartCTA';
+import FAQSection from './FAQSection';
+
+const agenticFaqs = [
+  {
+    q: 'How does Agentic AI differ from traditional RPA?',
+    a: 'While RPA follows fixed rules, Agentic AI uses reasoning to handle semi-structured data and changing environments. It can decide *how* to achieve a goal rather than just following steps.'
+  },
+  {
+    q: 'Can AI agents work with my existing software?',
+    a: 'Yes. Our agents are designed to use tools (APIs, web browsers, databases) just like a human would, allowing them to integrate with any legacy or modern system.'
+  },
+  {
+    q: 'What is "Human-in-the-loop" in Agentic AI?',
+    a: 'It’s a safety framework where agents pause for human approval before high-stakes actions, ensuring you maintain full control over the AI’s output.'
+  }
+];
 
 export default function AgenticAI() {
-  const [expandedUseCase, setExpandedUseCase] = useState(null);
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -15,105 +32,38 @@ export default function AgenticAI() {
       once: false,
       offset: 100
     });
-    return () => AOS.refresh();
   }, []);
-
-  const whyMatters = [
-    {
-      icon: '⚡',
-      title: 'Autonomy & Efficiency',
-      description: 'Unlike rule‑based RPA scripts, agentic AI handles complex, semi‑structured workflows, reason about goals and adapt in real time.'
-    },
-    {
-      icon: '🔗',
-      title: 'Scalability & Collaboration',
-      description: 'Multiple AI agents can collaborate, negotiate and collectively solve multi‑step problems.'
-    },
-    {
-      icon: '👥',
-      title: 'Augmentation of Human Roles',
-      description: 'Agentic AI frees people from repetitive tasks, allowing them to focus on innovation, strategy and relationships.'
-    }
-  ];
-
-  const useCases = [
-    {
-      number: '01',
-      title: 'Autonomous Customer Support Agents',
-      overview: 'Provide 24/7 support across voice and digital channels with intelligent resolution',
-      benefits: [
-        'Provide 24/7 support across voice and digital channels. These agents interpret intent, adapt to tone and resolve complex issues without human involvement.',
-        'They maintain context across channels, offering seamless multichannel engagement.',
-        'Case outcomes: faster resolution times, reduced call centre overhead and improved customer satisfaction scores.'
-      ]
-    },
-    {
-      number: '02',
-      title: 'AI‑Powered Sales & Marketing Agents',
-      overview: 'Autonomous lead qualification, personalization, and dynamic pricing',
-      benefits: [
-        'Lead Qualification & Nurturing: Agents autonomously score leads, monitor engagement and send personalised follow‑ups.',
-        'Personalised Campaigns: They analyse behavioural signals and demographic data to craft hyper‑personalised outreach.',
-        'Dynamic Pricing: AI agents optimise pricing and offers based on demand fluctuations, competitor movements and customer intent.'
-      ]
-    },
-    {
-      number: '03',
-      title: 'Procurement & Supply Chain Agents',
-      overview: 'Autonomous negotiation, demand planning, and logistics optimization',
-      benefits: [
-        'Autonomous Negotiation: Agents negotiate prices, delivery terms and contract clauses within set parameters.',
-        'Predictive Demand Planning: They combine internal and external data to forecast demand and adapt continuously.',
-        'Smart Logistics: AI reconfigures routes, balances loads and optimises shipping based on real‑time data.'
-      ]
-    },
-    {
-      number: '04',
-      title: 'Financial & Compliance Agents',
-      overview: 'Automated auditing, compliance monitoring, and financial forecasting',
-      benefits: [
-        'Automated Auditing & Fraud Detection: Agents monitor transactions, detect anomalies and trigger corrective actions.',
-        'Compliance Monitoring: They scan operations for regulatory breaches and generate audit‑ready documentation.',
-        'Real‑Time Financial Forecasting: Agents integrate ERP data, market indicators and external signals to produce continuous forecasts.'
-      ]
-    },
-    {
-      number: '05',
-      title: 'HR & Talent Agents',
-      overview: 'Autonomous recruitment, employee analytics, and talent management',
-      benefits: [
-        'Agents automate candidate sourcing, screening and onboarding.',
-        'They analyse employee sentiment, predict turnover and recommend retention initiatives.',
-        'Additional domains include risk management, product innovation, legal & governance and sustainability reporting.'
-      ]
-    }
-  ];
 
   const implementationSteps = [
     {
       step: '01',
-      title: 'Assessment & Readiness',
-      description: 'Evaluate current automation maturity, data quality and AI readiness.'
+      title: 'AI Assessment',
+      icon: '🔍',
+      description: 'Audit of your current data landscape and automation potential.'
     },
     {
       step: '02',
-      title: 'Use Case Prioritisation',
-      description: 'Identify high‑impact processes and define success metrics.'
+      title: 'Strategy Design',
+      icon: '🗺️',
+      description: 'Defining agent roles, toolsets, and human-in-the-loop protocols.'
     },
     {
       step: '03',
-      title: 'Pilot & Validation',
-      description: 'Develop a proof of concept, validate ROI and ensure ethical & regulatory compliance.'
+      title: 'Agent Building',
+      icon: '🛠️',
+      description: 'Developing autonomous agents with reasoning capabilities.'
     },
     {
       step: '04',
-      title: 'Deployment & Scaling',
-      description: 'Integrate agents into production systems with secure access controls.'
+      title: 'Pilot Deployment',
+      icon: '🧪',
+      description: 'Live testing in a sandboxed environment with real-world scenarios.'
     },
     {
       step: '05',
-      title: 'Monitoring & Improvement',
-      description: 'Monitor agent performance, gather feedback and iterate.'
+      title: 'Enterprise Scale',
+      icon: '🚀',
+      description: 'Full rollout across departments with continuous learning.'
     }
   ];
 
@@ -121,53 +71,50 @@ export default function AgenticAI() {
     <div style={{
       background: '#fff',
       color: '#1f2937',
-      fontFamily: "'Poppins', sans-serif",
+      fontFamily: "'Inter', sans-serif",
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Animated Background Elements - REMOVED for performance */}
-
-      {/* Content Wrapper */}
       <div style={{ position: 'relative', zIndex: 1 }}>
       {/* Hero Section */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 100%), url('/agentic-ai-banner.png')`,
+        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(0, 119, 182, 0.4) 100%), url('/assets/images/agentic-ai.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         color: '#fff',
-        padding: '100px 20px 140px',
+        padding: '120px 20px 160px',
         textAlign: 'center',
         position: 'relative',
-        minHeight: '500px',
+        minHeight: '600px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: '64px',
-            fontWeight: '800',
-            margin: '0 0 20px 0',
-            lineHeight: '1.2',
+            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
+            fontWeight: '900',
+            margin: '0 0 24px 0',
+            lineHeight: '1.1',
             color: '#ffffff',
-            letterSpacing: '-2px'
+            letterSpacing: '-0.02em',
+            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }}
-          data-aos="fade-up"
-          data-aos-duration="800">
-            Agentic AI Solutions
+          data-aos="fade-up">
+            Agentic AI <span style={{ color: 'var(--accent)' }}>Solutions</span>
           </h1>
           <p style={{
             fontSize: '22px',
-            color: '#e0e0e0',
-            lineHeight: '1.8',
-            margin: '0',
-            fontWeight: '300'
+            color: 'rgba(255,255,255,0.9)',
+            lineHeight: '1.6',
+            margin: '0 auto',
+            fontWeight: '500',
+            maxWidth: '750px'
           }}
           data-aos="fade-up"
-          data-aos-delay="100"
-          data-aos-duration="800">
-            The next evolution of AI: autonomous digital agents that reason, decide and execute
+          data-aos-delay="100">
+            The next evolution of AI: autonomous digital agents that reason, decide, and execute complex workflows without constant oversight.
           </p>
         </div>
       </section>
@@ -185,10 +132,10 @@ export default function AgenticAI() {
         <section style={{ 
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '12px',
-          padding: '60px 50px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #0891b2'
+          borderRadius: '32px',
+          padding: '80px 60px',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
+          border: '1px solid rgba(0,0,0,0.05)'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
@@ -198,33 +145,31 @@ export default function AgenticAI() {
             <h2
               style={{
                 fontSize: '48px',
-                fontWeight: '800',
-                background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                margin: '0 0 20px 0',
-                lineHeight: '1.3'
+                fontWeight: '900',
+                margin: '0 0 24px 0',
+                lineHeight: '1.2',
+                color: 'var(--primary)'
               }}
             >
-              Agentic AI Solutions
+              The Next Stage of <span className="gradient-text">Autonomous Enterprise</span>
             </h2>
             <div
               style={{
-                width: '100px',
+                width: '80px',
                 height: '6px',
-                background: 'linear-gradient(90deg, #0f172a 0%, #0891b2 100%)',
-                margin: '20px auto 30px',
+                background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
+                margin: '30px auto',
                 borderRadius: '3px'
               }}
             />
             <p style={{
-              fontSize: '16px',
+              fontSize: '18px',
               lineHeight: '1.8',
               color: '#4b5563',
-              margin: '0'
+              margin: '0',
+              fontWeight: '400'
             }}>
-              The next evolution of AI: autonomous digital agents that reason, decide and execute. Our agentic AI solutions enable organizations to automate complex workflows, improve decision-making, and drive intelligent business outcomes.
+              Agentic AI represents a paradigm shift from tools that *respond* to tools that *act*. Our solutions enable organizations to deploy specialized agents that can browse the web, use internal tools, and collaborate to solve multi-stage problems autonomously.
             </p>
           </div>
         </section>

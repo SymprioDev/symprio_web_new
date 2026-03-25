@@ -1,8 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import ReadyToStartCTA from './ReadyToStartCTA';
+import FAQSection from './FAQSection';
+
+const erpFaqs = [
+  {
+    q: 'Why should we choose Oracle Cloud ERP over our legacy on-premise system?',
+    a: 'Oracle Cloud ERP offers automatic quarterly updates, superior mobile access, and advanced AI-driven analytics that on-premise systems can’t match, all while reducing total cost of ownership by up to 40%.'
+  },
+  {
+    q: 'How does Symprio accelerate ERP implementation?',
+    a: 'We use our proprietary "RapidPath" methodology, which includes pre-configured industry templates and automated data migration tools to reduce implementation timelines by 30%.'
+  },
+  {
+    q: 'Do you provide post-implementation support?',
+    a: 'Yes. Our Managed Services team provides 24/7 global support, ensuring your systems are always optimized, secure, and compliant with local regulations.'
+  }
+];
 
 export default function ERP() {
   const navigate = useNavigate();
@@ -14,44 +25,45 @@ export default function ERP() {
       once: false,
       offset: 100
     });
-    return () => AOS.refresh();
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#f8fafc' }}>
+    <div style={{ backgroundColor: '#fff', fontFamily: "'Inter', sans-serif" }}>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%), url(/digitaltransformation/banner.jpg)`,
+        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.8) 0%, rgba(184, 134, 11, 0.4) 100%), url('/assets/images/erp-oracle.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         position: 'relative',
-        padding: '100px 20px 140px',
+        padding: '120px 20px 160px',
         textAlign: 'center',
         color: '#fff',
-        minHeight: '500px',
+        minHeight: '600px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: '64px',
-            fontWeight: '800',
+            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
+            fontWeight: '900',
             color: '#ffffff',
-            margin: '0 0 20px 0',
-            lineHeight: '1.2',
-            letterSpacing: '-2px'
+            margin: '0 0 24px 0',
+            lineHeight: '1.1',
+            letterSpacing: '-0.02em',
+            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }} data-aos="fade-up">
-            Enterprise Resource Planning
+            ERP & <span style={{ color: '#FFD700' }}>Oracle</span> Solutions
           </h1>
           <p style={{
             fontSize: '22px',
-            color: '#e0e0e0',
-            margin: 0,
-            fontWeight: '300'
+            color: 'rgba(255,255,255,0.9)',
+            margin: '0 auto',
+            fontWeight: '500',
+            maxWidth: '750px'
           }} data-aos="fade-up" data-aos-delay="100">
-            Transforming Business Operations with Oracle Expertise
+            Transforming complex business operations into streamlined, cloud-native powerhouses.
           </p>
         </div>
       </section>
@@ -67,10 +79,10 @@ export default function ERP() {
         <section style={{ 
           marginBottom: '80px',
           background: '#ffffff',
-          borderRadius: '12px',
-          padding: '60px 50px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-          border: '2px solid #0891b2'
+          borderRadius: '32px',
+          padding: '80px 60px',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
+          border: '1px solid rgba(0,0,0,0.05)'
         }} data-aos="fade-up">
           <div style={{
             maxWidth: '900px',
@@ -79,28 +91,26 @@ export default function ERP() {
           }}>
             <h2 style={{
               fontSize: '48px',
-              fontWeight: '800',
-              background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              margin: '0 0 20px 0',
-              lineHeight: '1.3'
+              fontWeight: '900',
+              color: 'var(--primary)',
+              margin: '0 0 24px 0',
+              lineHeight: '1.2'
             }}>
-              Enterprise ERP Solutions
+              Oracle Cloud <span className="gradient-text">Excellence</span>
             </h2>
             <div style={{
-              width: '100px',
+              width: '80px',
               height: '6px',
-              background: 'linear-gradient(90deg, #0f172a 0%, #0891b2 100%)',
-              margin: '20px auto 30px',
+              background: 'linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%)',
+              margin: '30px auto',
               borderRadius: '3px'
             }}/>
             <p style={{
-              fontSize: '16px',
+              fontSize: '18px',
               lineHeight: '1.8',
               color: '#4b5563',
-              margin: '0'
+              margin: '0',
+              fontWeight: '400'
             }}>
               As an Oracle partner, Symprio delivers end-to-end ERP implementations and cloud transformations. We combine certified expertise with deep industry knowledge to maximize ROI and minimize disruption across your enterprise systems.
             </p>
@@ -708,8 +718,7 @@ export default function ERP() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <ReadyToStartCTA />
+      <FAQSection faqs={erpFaqs} />
     </div>
   );
 }

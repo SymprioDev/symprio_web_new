@@ -41,6 +41,10 @@ import AIGenAITraining from './components/AIGenAITraining';
 import CorporateWorkshops from './components/CorporateWorkshops';
 import CaseStudiesLanding from './components/CaseStudiesLanding';
 
+import FeaturesGrid from './components/FeaturesGrid';
+import Pricing from './components/Pricing';
+import FAQSection from './components/FAQSection';
+
 const HomePage = () => {
   return (
     <div style={{ 
@@ -52,18 +56,19 @@ const HomePage = () => {
     }}>
       <SymprioNavbar />
       <SymprioHero />
-      <KeyBenefits />
-      <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={150} curve="smooth" />
-      <SymprioStats />
-      <CurvedDivider topColor="#f3f4f6" bottomColor="#ffffff" height={150} curve="smooth" />
-      <EventsAndTrainings />
       <CurvedDivider topColor="#ffffff" bottomColor="#f9fafb" height={150} curve="smooth" />
-      <Services />
+      <FeaturesGrid />
       <CurvedDivider topColor="#f9fafb" bottomColor="#ffffff" height={150} curve="smooth" />
-      <FeaturedCaseStudy />
+      <KeyBenefits />
+      <SymprioStats />
+      <Pricing />
       <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={150} curve="smooth" />
+      <EventsAndTrainings />
+      <Services />
+      <CurvedDivider topColor="#ffffff" bottomColor="#ffffff" height={150} curve="smooth" />
+      <FeaturedCaseStudy />
+      <FAQSection />
       <Testimonials />
-      <CurvedDivider topColor="#f3f4f6" bottomColor="#ffffff" height={150} curve="smooth" />
       <TeamMembers />
       <CurvedDivider topColor="#ffffff" bottomColor="#87CEEB" height={150} curve="smooth" />
       <TransformCTA />

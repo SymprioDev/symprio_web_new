@@ -39,38 +39,41 @@ export default function RPA() {
     <div>
       {/* Hero Banner */}
       <section style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%), url(/rpa/banner.jpg)`,
+        backgroundImage: `linear-gradient(135deg, rgba(10, 45, 110, 0.7) 0%, rgba(0, 119, 182, 0.4) 100%), url(/assets/images/rpa.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         position: 'relative',
-        padding: '100px 20px 140px',
+        padding: '120px 20px 160px',
         textAlign: 'center',
         color: '#fff',
-        minHeight: '500px',
+        minHeight: '600px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         {/* Banner content */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '900px' }}>
           <h1 style={{
-            fontSize: '64px',
-            fontWeight: '800',
+            fontSize: 'clamp(3rem, 8vw, 4.5rem)',
+            fontWeight: '900',
             color: '#ffffff',
-            margin: '0 0 20px 0',
-            lineHeight: '1.2',
-            letterSpacing: '-2px'
+            margin: '0 0 24px 0',
+            lineHeight: '1.1',
+            letterSpacing: '-0.02em',
+            textShadow: '0 10px 30px rgba(0,0,0,0.3)'
           }} data-aos="fade-up">
-            Robotic Process Automation
+            Robotic Process <span style={{ color: 'var(--accent)' }}>Automation</span>
           </h1>
           <p style={{
             fontSize: '22px',
-            color: '#e0e0e0',
+            color: 'rgba(255,255,255,0.9)',
             margin: 0,
-            fontWeight: '300'
+            fontWeight: '500',
+            maxWidth: '700px',
+            margin: '0 auto'
           }} data-aos="fade-up" data-aos-delay="100">
-            Automate Repetitive Tasks, Boost Accuracy & Compliance
+            Intelligent bots created to automate high-volume, repetitive tasks—enhancing accuracy and scaling your digital workforce.
           </p>
         </div>
       </section>

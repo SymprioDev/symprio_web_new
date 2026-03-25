@@ -85,7 +85,7 @@ export default function Industries() {
     <section style={{ padding: '100px 20px', background: '#F1F7F3' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <div className="section-tag">Industries</div>
+          <div className="section-tag">Industries We Serve</div>
           <h2 style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             color: '#010B1D',

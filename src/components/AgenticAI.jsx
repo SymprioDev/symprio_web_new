@@ -223,7 +223,7 @@ export default function AgenticAI() {
         padding: '120px 20px 160px',
         textAlign: 'center',
         position: 'relative',
-        minHeight: '600px',
+        minHeight: '500px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -510,7 +510,7 @@ export default function AgenticAI() {
       }}>
         {/* Title */}
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>COMPARISON</div>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Comparison</div>
           <h2 style={{
             fontSize: '42px',
             fontWeight: '400',
@@ -658,7 +658,7 @@ export default function AgenticAI() {
           maxWidth: '1200px',
           margin: '0 auto'
         }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>VALUE PILLARS</div>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Why It Matters</div>
           <h2 style={{
             fontSize: '44px',
             fontWeight: '400',
@@ -751,7 +751,7 @@ export default function AgenticAI() {
         padding: '100px 20px',
         backgroundColor: '#ffffff'
       }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>USE CASES</div>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Use Cases</div>
         <h2 style={{
           fontSize: '44px',
           fontWeight: '400',
@@ -888,7 +888,7 @@ export default function AgenticAI() {
         padding: '100px 20px',
         background: '#F1F7F3'
       }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>TECHNOLOGY</div>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Technology Stack</div>
         <h2 style={{
           fontSize: '42px',
           fontWeight: '400',
@@ -987,7 +987,7 @@ export default function AgenticAI() {
         padding: '100px 20px',
         backgroundColor: '#ffffff'
       }}>
-        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>IMPLEMENTATION</div>
+        <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Implementation</div>
         <h2 style={{
           fontSize: '42px',
           fontWeight: '400',

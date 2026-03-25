@@ -132,7 +132,7 @@ export default function AboutSnippet() {
       <div style={styles.container}>
         {/* Left Column */}
         <div style={styles.leftCol} data-aos="fade-up">
-          <div className="section-tag">About Our Company</div>
+          <div className="section-tag" style={{ textAlign: 'center' }}>About Us</div>
 
           <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="100">
             We Study Your Business. We Deliver{' '}

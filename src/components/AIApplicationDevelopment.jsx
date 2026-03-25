@@ -128,7 +128,7 @@ export default function AIApplicationDevelopment() {
       <section style={{ padding: '100px 20px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>AI SOLUTIONS</div>
+            <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>AI Solutions</div>
             <h2 style={{
               fontSize: '48px',
               fontWeight: '400',
@@ -222,7 +222,7 @@ export default function AIApplicationDevelopment() {
       {/* AI Journey Section - 3 col grid (2 rows of 3) */}
       <section style={{ padding: '100px 20px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>DEVELOPMENT LIFECYCLE</div>
+          <div className="section-tag" style={{ textAlign: 'center', marginBottom: '16px' }}>Development Lifecycle</div>
           <h2 style={{
             fontSize: '40px',
             fontWeight: '400',
@@ -296,7 +296,7 @@ export default function AIApplicationDevelopment() {
             flexWrap: 'wrap'
           }}>
             <div style={{ flex: '1 1 400px' }} data-aos="fade-right">
-              <div className="section-tag" style={{ marginBottom: '16px' }}>INTEGRATIONS</div>
+              <div className="section-tag" style={{ marginBottom: '16px' }}>Integrations</div>
               <h2 style={{
                 fontSize: '40px',
                 fontWeight: '400',

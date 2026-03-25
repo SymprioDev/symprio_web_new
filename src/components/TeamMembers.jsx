@@ -212,9 +212,9 @@ const TeamMembers = () => {
                   style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'contain',
-                    objectPosition: 'center',
-                    backgroundColor: '#000000',
+                    objectFit: 'cover',
+                    objectPosition: 'center top',
+                    backgroundColor: '#1f2937',
                     transition: 'transform 0.5s ease',
                     animation: isVisible ? `zoomIn 0.8s ease-out ${idx * 0.15}s both` : 'none'
                   }}

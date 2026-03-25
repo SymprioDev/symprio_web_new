@@ -101,144 +101,149 @@ export default function SymprioHero() {
           </div>
         </div>
 
-        {/* Right — 3D Rotating Partner Logos */}
+        {/* Right — 3D Sphere Rotating Partner Logos */}
         <div style={{
           position: 'relative',
           opacity: showAnimation ? 1 : 0,
-          transform: showAnimation ? 'scale(1)' : 'scale(0.8)',
-          transition: 'all 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s',
+          transform: showAnimation ? 'scale(1)' : 'scale(0.85)',
+          transition: 'all 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '420px'
+          minHeight: '460px',
+          perspective: '900px'
         }}>
-          {/* Orbit ring glow */}
+          {/* Soft glow behind sphere */}
           <div style={{
             position: 'absolute',
-            width: '340px',
-            height: '340px',
+            width: '300px',
+            height: '300px',
             borderRadius: '50%',
-            border: '1px solid rgba(24, 90, 219, 0.08)',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-          }} />
-          <div style={{
-            position: 'absolute',
-            width: '260px',
-            height: '260px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.04) 0%, transparent 70%)',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-          }} />
-
-          {/* Center Symprio logo */}
-          <div style={{
-            position: 'absolute',
+            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.06) 0%, transparent 70%)',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            zIndex: 5,
-            width: '80px',
-            height: '80px',
-            background: '#fff',
-            borderRadius: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 15px 40px rgba(10, 45, 110, 0.12)',
-            border: '1px solid rgba(0,0,0,0.04)'
-          }}>
-            <img src="/symprio-logo.png" alt="Symprio" style={{ width: '52px', objectFit: 'contain' }} />
-          </div>
+            pointerEvents: 'none'
+          }} />
 
-          {/* Rotating orbit */}
-          <div className="orbit-container" style={{
-            width: '340px',
-            height: '340px',
-            position: 'relative'
+          {/* 3D Sphere container */}
+          <div className="sphere" style={{
+            width: '360px',
+            height: '360px',
+            position: 'relative',
+            transformStyle: 'preserve-3d'
           }}>
+            {/* Partner logos positioned on sphere surface */}
             {partners.map((p, i) => {
-              const angle = (i * 360) / partners.length;
+              // Distribute on sphere: 2 rows, staggered
+              const rows = [
+                { rotateX: -20, items: [0, 1] },
+                { rotateX: 20, items: [2, 3] }
+              ];
+              const row = i < 2 ? 0 : 1;
+              const col = i % 2;
+              const rotateY = col * 180 + (row * 90);
+              const rotateX = rows[row].rotateX;
+
               return (
                 <div
                   key={p.name}
-                  className="orbit-item"
+                  className="sphere-item"
                   style={{
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    width: '80px',
-                    height: '80px',
-                    marginLeft: '-40px',
-                    marginTop: '-40px',
-                    transform: `rotate(${angle}deg) translateX(170px) rotate(-${angle}deg)`,
+                    width: '88px',
+                    height: '88px',
+                    marginLeft: '-44px',
+                    marginTop: '-44px',
+                    transformStyle: 'preserve-3d',
+                    transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateZ(180px)`
                   }}
                 >
-                  <div style={{
-                    width: '80px',
-                    height: '80px',
+                  <div className="sphere-logo-card" style={{
+                    width: '88px',
+                    height: '88px',
                     background: '#fff',
-                    borderRadius: '20px',
+                    borderRadius: '22px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
                     border: '1px solid rgba(0,0,0,0.04)',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-                  }}
-                  className="orbit-logo-card"
-                  >
-                    <img src={p.logo} alt={p.name} style={{ width: '48px', height: '48px', objectFit: 'contain' }} />
+                    backfaceVisibility: 'hidden'
+                  }}>
+                    <img src={p.logo} alt={p.name} style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
                   </div>
                 </div>
               );
             })}
+
+            {/* Center Symprio logo — stays fixed */}
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '90px',
+              height: '90px',
+              marginLeft: '-45px',
+              marginTop: '-45px',
+              background: '#fff',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 20px 50px rgba(10, 45, 110, 0.15)',
+              border: '1px solid rgba(0,0,0,0.04)',
+              zIndex: 10,
+              transform: 'translateZ(0px)'
+            }}>
+              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '56px', objectFit: 'contain' }} />
+            </div>
           </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes orbitSpin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        @keyframes sphereRotate {
+          0% { transform: rotateY(0deg) rotateX(5deg); }
+          100% { transform: rotateY(360deg) rotateX(5deg); }
         }
 
-        .orbit-container {
-          animation: orbitSpin 20s linear infinite;
+        .sphere {
+          animation: sphereRotate 18s linear infinite;
+          transform-style: preserve-3d;
         }
 
-        /* Counter-rotate each item so logos stay upright */
-        .orbit-item {
-          animation: orbitSpinReverse 20s linear infinite;
+        .sphere-item {
+          transform-style: preserve-3d;
         }
 
-        @keyframes orbitSpinReverse {
-          from { transform: rotate(var(--start-angle)) translateX(170px) rotate(calc(-1 * var(--start-angle) + 0deg)); }
-          to { transform: rotate(calc(var(--start-angle) - 360deg)) translateX(170px) rotate(calc(-1 * var(--start-angle) + 360deg)); }
+        /* Keep the center logo from rotating */
+        .sphere > div:last-child {
+          animation: sphereRotateReverse 18s linear infinite;
         }
 
-        /* Simpler approach: counter-rotate items */
-        .orbit-item > .orbit-logo-card {
-          animation: counterSpin 20s linear infinite;
+        @keyframes sphereRotateReverse {
+          0% { transform: translateZ(0) rotateX(-5deg) rotateY(0deg); }
+          100% { transform: translateZ(0) rotateX(-5deg) rotateY(-360deg); }
         }
 
-        @keyframes counterSpin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(-360deg); }
+        .sphere-logo-card {
+          transition: box-shadow 0.3s ease;
         }
 
-        .orbit-logo-card:hover {
-          transform: rotate(0deg) scale(1.15) !important;
-          box-shadow: 0 16px 40px rgba(24, 90, 219, 0.15) !important;
+        .sphere-logo-card:hover {
+          box-shadow: 0 20px 50px rgba(24, 90, 219, 0.2) !important;
         }
 
         @media (max-width: 768px) {
-          .orbit-container {
-            width: 260px !important;
-            height: 260px !important;
+          .sphere {
+            width: 280px !important;
+            height: 280px !important;
+          }
+          .sphere-item {
+            transform: rotateY(var(--ry)) rotateX(var(--rx)) translateZ(140px) !important;
           }
         }
       `}</style>

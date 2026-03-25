@@ -45,54 +45,6 @@ const HomePage = () => {
     }}>
       <SymprioNavbar />
       <SymprioHero />
-      <div style={{
-        width: '100%',
-        height: '600px',
-        backgroundImage: 'url(/boder.png)',
-        backgroundSize: '100% 150px',
-        backgroundPosition: 'center bottom',
-        backgroundRepeat: 'no-repeat',
-        marginTop: '-600px',
-        position: 'relative',
-        zIndex: 10,
-        transform: 'scaleX(-1)',
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        paddingBottom: '60px'
-      }}>
-        <button 
-          onClick={() => {
-            const enquirySection = document.querySelector('[id="enquiry-form"]');
-            if (enquirySection) enquirySection.scrollIntoView({ behavior: 'smooth' });
-            else window.location.href = '/enquiry';
-          }}
-          style={{
-          background: '#3b82f6',
-          color: '#fff',
-          border: 'none',
-          padding: '12px 30px',
-          fontSize: '14px',
-          fontWeight: '600',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          transform: 'scaleX(-1)'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = '#2563eb';
-          e.target.style.boxShadow = '0 10px 20px rgba(59, 130, 246, 0.3)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = '#3b82f6';
-          e.target.style.boxShadow = 'none';
-        }}
-        >
-          Talk to an Expert
-        </button>
-      </div>
       <KeyBenefits />
       <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={150} curve="smooth" />
       <SymprioStats />

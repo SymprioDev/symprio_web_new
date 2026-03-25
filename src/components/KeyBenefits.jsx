@@ -18,25 +18,25 @@ export default function KeyBenefits() {
       id: 1,
       icon: '🚀',
       title: "End-to-End Digital Transformation",
-      subtitle: "From Assessment to Execution",
-      description: "From assessment to execution, we guide your organisation through every stage of its digital journey. We combine domain expertise with proven methodologies to optimize processes, integrate modern technologies and align solutions with your business goals.",
-      highlights: ["Assessment & Strategy", "Process Optimization", "Technology Integration", "Business Alignment"]
+      subtitle: "Accelerate Growth from Strategy to Execution",
+      description: "We guide your organization through every stage of its digital journey, turning complex roadmaps into high-performance realities. Modernize your tech stack and align your operations with global digital standards.",
+      highlights: ["Strategic Growth Assessment", "Process Optimization", "Modern Tech Integration", "Operational Excellence"]
     },
     {
       id: 2,
       icon: '🤖',
-      title: "AI & Agentic AI Solutions",
-      subtitle: "Autonomous Digital Team Members",
-      description: "Unlike traditional AI assistants, agentic AI solutions act as autonomous digital team members capable of reasoning, planning and acting with minimal oversight. Symprio delivers autonomous agents for customer service, sales, supply chain and more.",
-      highlights: ["Autonomous Agents", "Customer Service AI", "Sales Automation", "Supply Chain Intelligence"]
+      title: "Intelligent Agentic AI Solutions",
+      subtitle: "Future-Proof Your Team with Autonomous AI",
+      description: "Step beyond simple chatbots. Our Agentic AI solutions act as autonomous team members capable of complex reasoning and independent action, revolutionizing customer service and supply chain efficiency.",
+      highlights: ["Autonomous Digital Agents", "AI-Powered Customer Success", "Predictive Sales Automation", "Intelligent Supply Chain"]
     },
     {
       id: 3,
       icon: '🌐',
-      title: "Trusted Industry Expertise",
-      subtitle: "Global Know-how, Local Insight",
-      description: "Our consultants have deep experience across sectors such as banking, public sector, telecom, healthcare and manufacturing. With offices in Silicon Valley and the Indo-Pacific region, we combine global know-how with local insight.",
-      highlights: ["Banking & Finance", "Healthcare", "Telecom", "Manufacturing & Public Sector"]
+      title: "Global Expertise, Local Insight",
+      subtitle: "Industry-Leading Consulting for Enterprise",
+      description: "Our consultants bring deep experience from Banking, Telecom, and Healthcare. With deep roots in the Silicon Valley and Indo-Pacific, we bridge the gap between global innovation and regional needs.",
+      highlights: ["Banking & Fintech Experts", "Healthcare Digitalization", "Telecom Infrastructure", "Public Sector Innovation"]
     }
   ];
 

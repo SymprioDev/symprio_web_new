@@ -1,550 +1,236 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReadyToStartCTA from './ReadyToStartCTA';
+import SEO from './SEO';
+import PageBanner from './PageBanner';
 
 export default function ServicesLanding() {
   const navigate = useNavigate();
-  const [expandedIndex, setExpandedIndex] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const bannerTitleRef = useRef(null);
-  const bannerDescRef = useRef(null);
-  const [showBannerAnimation, setShowBannerAnimation] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowBannerAnimation(entry.isIntersecting);
-      },
-      { threshold: 0.2 }
-    );
-
-    if (bannerTitleRef.current) {
-      observer.observe(bannerTitleRef.current);
-    }
-
-    return () => {
-      if (bannerTitleRef.current) {
-        observer.unobserve(bannerTitleRef.current);
-      }
-    };
-  }, []);
-
   const services = [
     {
-      number: '01',
       title: 'Digital Transformation',
-      description: 'Strategy, assessment and change management for enterprise‑wide digital journeys.',
-      points: [
-        'Assessment & Strategy: Evaluate your organisation\'s maturity, processes and technology landscape. Provide a digital roadmap and prioritised initiatives.',
-        'Change Management: Drive adoption through training, communication and stakeholder engagement.',
-        'Process Improvement: Redesign workflows for efficiency and effectiveness.',
-        'Technology Enablement: Select and integrate technologies such as ERP, RPA, AI and cloud platforms.'
-      ],
+      description: 'Accelerate your business evolution with expert strategy and change management.',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ),
       link: '/digital-transformation'
     },
     {
-      number: '02',
-      title: 'Agentic AI & AI‑Powered Solutions',
-      description: 'Autonomous AI agents, generative AI and conversational AI to drive productivity.',
-      points: [
-        'Agentic AI Agents: Autonomous agents that plan, act and learn with minimal human intervention. Use cases include customer support, finance & compliance, sales & marketing, procurement & supply chain and HR & talent acquisition.',
-        'Generative AI & LLM Services: Custom language models, content generation, summarisation, translation and creative AI services for marketing, documentation and knowledge management.',
-        'Conversational AI & Chatbots: SaaS‑based conversational platforms supporting multiple languages, guided responses, live chat integration and auditing. Trigger automation flows through AI.',
-        'AI‑Driven Analytics & Insights: Predictive analytics, anomaly detection and real‑time forecasting across finance, operations and customer behaviour.'
-      ],
+      title: 'Agentic AI Solutions',
+      description: 'Deploy autonomous AI agents that handle complex tasks and boost team productivity.',
+      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
       link: '/agentic-ai'
     },
     {
-      number: '03',
-      title: 'Robotic Process Automation (RPA)',
-      description: 'Comprehensive RPA services from assessment and CoE setup to bot development and support.',
-      points: [
-        'End‑to‑End RPA Services: From assessment and opportunity identification to bot development, deployment and support.',
-        'Center of Excellence Setup: Processes, templates, governance and training to build internal automation capabilities.',
-        'RPA Licenses & Tools: Assist clients in selecting and managing RPA platforms (UiPath, Microsoft Power Automate).',
-        'RPA Training & Support: Provide custom training and ongoing bot monitoring.'
-      ],
+      title: 'Intelligent RPA',
+      description: 'Eliminate manual errors and slash operational costs with Robotic Process Automation.',
+      image: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
       link: '/rpa'
     },
     {
-      number: '04',
-      title: 'ERP & Enterprise Platforms',
-      description: 'Oracle Cloud/R12 implementations, integrations and upgrades with deep APAC expertise.',
-      points: [
-        'Oracle Cloud & R12 Implementations: Business transformation rollouts and implementations. Emphasise localisations, program leadership and deep APAC expertise.',
-        'Integrations & Extensions: Integrate ERP with AI, RPA and custom applications. Provide extensibility through REST APIs, PL/SQL and workflow customisation.',
-        'Analytics & Reporting: Leverage BI, analytics and automation for real‑time insights.',
-        'Support & Enhancement: Continuous support for Oracle Cloud and R12, including upgrades and automation.'
-      ],
+      title: 'ERP & Platforms',
+      description: 'Optimize your core operations with seamless Oracle and enterprise platform solutions.',
+      image: 'https://images.unsplash.com/photo-1551288049-bbdac8a28a1e?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        </svg>
+      ),
       link: '/erp'
     },
     {
-      number: '05',
-      title: 'Digital Workforce Services',
-      description: 'Skilled IT and non‑IT professionals with flexible engagement models.',
-      points: [
-        'Talent Solutions: Offer skilled resources across IT and non‑IT roles (IT support engineer, security consultant, software developer, project manager, testers, recruiters and marketing specialists).',
-        'Flexible Engagement Models: Provide on‑demand staffing, managed teams or full outsourcing.',
-        'Talent Development: Upskilling and reskilling programs to ensure teams stay current.'
-      ],
+      title: 'Digital Workforce',
+      description: 'Access elite IT talent and flexible staff augmentation for your enterprise.',
+      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
       link: '/digital-workforce'
     },
     {
-      number: '06',
-      title: 'Custom Software Development',
-      description: 'Full‑stack development, mobile apps and cloud‑native solutions.',
-      points: [
-        'Full‑Stack Development: Web, mobile and cloud‑native applications using modern frameworks and languages.',
-        'Agile & Hybrid Methodologies: Deliver software through agile, waterfall or hybrid approaches to match client needs.',
-        'DevOps & CI/CD: End‑to‑end lifecycle management, from assessment to DevOps and deployment.',
-        'Technology Expertise: Front‑end frameworks (React, Angular), back‑end services (Node.js, .NET), databases and API design.'
-      ],
+      title: 'Custom Development',
+      description: 'Build bespoke, scalable software tailored to your unique business needs.',
+      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      ),
       link: '/custom-development'
     }
   ];
 
   return (
-    <div style={{
-      background: 'linear-gradient(135deg, #f8f9fa 0%, #f0f4f8 100%)',
-      backgroundAttachment: 'fixed',
-      color: '#1f2937',
-      fontFamily: "'Poppins', sans-serif",
-      position: 'relative'
-    }}>
-      {/* Background Pattern */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: `
-          radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)
-        `,
-        pointerEvents: 'none',
-        zIndex: 0
-      }}></div>
+    <div className="bg-white text-[#0A192F] font-sans">
+      <SEO 
+        title="Our Services" 
+        description="Comprehensive automation, AI, and digital transformation services. From RPA to Agentic AI, Symprio delivers tailored solutions for enterprise success."
+        keywords="automation services, AI consulting, digital workforce, ERP implementation, software development"
+      />
 
-      {/* Content Wrapper */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
-      {/* Banner Section */}
-      <section style={{
-        maxWidth: '100%',
-        margin: '0',
-        padding: '0',
-        background: 'linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2))',
-        backgroundImage: `url('/services-banner.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        minHeight: '350px',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        paddingTop: '40px'
-      }}>
-        <div style={{
-          maxWidth: '900px',
-          margin: '0',
-          padding: '30px 60px',
-          textAlign: 'left',
-          color: '#fff'
-        }}>
-          <h2 style={{
-            fontSize: '44px',
-            fontWeight: '700',
-            margin: '0 0 15px 0',
-            lineHeight: '1.3',
-            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-            color: '#000000',
-            animation: showBannerAnimation ? 'bannerSlideIn 1.2s cubic-bezier(0.13, 0.53, 0.13, 0.96) 0s both' : 'none'
-          }}
-          ref={bannerTitleRef}>
-            Transform Your Business with Our Services
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            color: '#e5e7eb',
-            lineHeight: '1.8',
-            margin: '0',
-            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
-            animation: showBannerAnimation ? 'bannerSlideIn 1.2s cubic-bezier(0.13, 0.53, 0.13, 0.96) 0.4s both' : 'none'
-          }}
-          ref={bannerDescRef}>
-            Partner with Symprio to unlock digital transformation, automation, and innovation
-          </p>
+      {/* Hero Banner */}
+      <PageBanner 
+        title="Our Services" 
+        breadcrumb={[{ label: 'Services' }]} 
+        backgroundImage="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1600"
+      />
+
+      {/* Services Grid Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-orange-500 font-bold tracking-widest text-sm uppercase mb-3 block">
+              What We Do
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0A192F] mb-6 font-primary">
+              Innovative <span className="text-[#185ADB] font-serif-italic">Solutions</span> for Your Business
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              We provide a suite of intelligent services designed to streamline your operations 
+              and drive sustainable digital growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {services.map((service, idx) => (
+              <div 
+                key={idx} 
+                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 flex flex-col h-full"
+                onClick={() => navigate(service.link)}
+              >
+                {/* Card Image Wrapper */}
+                <div className="relative h-64 overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* Icon Overlay Badge */}
+                  <div className="absolute top-6 right-6 w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-[#185ADB] group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300">
+                    {service.icon}
+                  </div>
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                </div>
+
+                {/* Card Content */}
+                <div className="p-8 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-bold text-[#0A192F] mb-4 group-hover:text-[#185ADB] transition-colors font-primary">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-500 leading-relaxed mb-8 flex-grow">
+                    {service.description}
+                  </p>
+                  
+                  {/* Explore Link */}
+                  <div className="flex items-center text-[#185ADB] font-bold uppercase tracking-wider text-sm group-hover:text-orange-500 transition-colors">
+                    <span>Explore More</span>
+                    <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section style={{
-        maxWidth: '1200px',
-        margin: '-150px auto 0 auto',
-        padding: '80px 20px',
-        backgroundColor: 'transparent',
-        position: 'relative',
-        zIndex: 10
-      }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '30px',
-          justifyItems: 'center',
-          maxWidth: '1100px',
-          margin: '0 auto'
-        }}>
-          {services.map((service, idx) => (
-            <div
-              key={idx}
-              style={{
-                padding: '30px',
-                background: expandedIndex === idx ? 'rgba(59, 130, 246, 0.95)' : '#ffffff',
-                border: expandedIndex === idx ? '1px solid #3b82f6' : '1px solid #e5e7eb',
-                borderRadius: '8px',
-                transition: 'all 0.3s ease',
-                textAlign: 'left',
-                boxShadow: expandedIndex === idx ? '0 8px 16px rgba(0, 0, 0, 0.15)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-                position: 'relative',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                animation: isVisible ? `slideUp 0.8s ease-out ${idx * 0.1}s both` : 'none',
-                minHeight: '380px',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-              onMouseEnter={(e) => {
-                if (expandedIndex !== idx) {
-                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.borderColor = '#3b82f6';
-                  e.currentTarget.style.backgroundColor = '#3b82f6';
-                  // Change text colors on hover
-                  const numberDiv = e.currentTarget.querySelector('div.service-number');
-                  const titleH3 = e.currentTarget.querySelector('h3');
-                  const paragraphP = e.currentTarget.querySelector('p:first-of-type');
-                  const spanArrow = e.currentTarget.querySelector('span.expand-arrow');
-                  if (numberDiv) numberDiv.style.color = '#ffffff';
-                  if (titleH3) titleH3.style.color = '#ffffff';
-                  if (paragraphP) paragraphP.style.color = '#e0e7ff';
-                  if (spanArrow) {
-                    spanArrow.style.color = '#ffffff';
-                  }
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (expandedIndex !== idx) {
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = '#e5e7eb';
-                  e.currentTarget.style.backgroundColor = '#ffffff';
-                  // Reset text colors
-                  const numberDiv = e.currentTarget.querySelector('div.service-number');
-                  const titleH3 = e.currentTarget.querySelector('h3');
-                  const paragraphP = e.currentTarget.querySelector('p:first-of-type');
-                  const spanArrow = e.currentTarget.querySelector('span.expand-arrow');
-                  if (numberDiv) numberDiv.style.color = '#3b82f6';
-                  if (titleH3) titleH3.style.color = '#1f2937';
-                  if (paragraphP) paragraphP.style.color = '#6b7280';
-                  if (spanArrow) {
-                    spanArrow.style.color = '#3b82f6';
-                  }
-                }
-              }}
-              onClick={() => {
-                // Navigate to service page if link is available
-                if (service.link) {
-                  navigate(service.link);
-                } else {
-                  setExpandedIndex(expandedIndex === idx ? null : idx);
-                }
-              }}
-            >
-              {/* Large watermark number in bottom right */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '-20px',
-                  right: '-20px',
-                  fontSize: '100px',
-                  fontWeight: '800',
-                  color: '#3b82f6',
-                  opacity: '0.08',
-                  pointerEvents: 'none'
-                }}
-              >
-                {service.number}
-              </div>
-
-              {/* Icon logo in top right */}
-              <div style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                width: '100px',
-                height: '100px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                opacity: expandedIndex === idx ? 0.15 : 0.08,
-                zIndex: 0,
-                pointerEvents: 'none',
-                transition: 'opacity 0.3s ease'
-              }}>
-                {idx === 0 ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                  </svg>
-                ) : idx === 1 ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <rect x="6" y="8" width="12" height="12" rx="2"/>
-                    <path d="M9 8V6c0-1 .5-2 1-2h4c.5 0 1 1 1 2v2"/>
-                    <circle cx="10" cy="13" r="1" fill="currentColor"/>
-                    <circle cx="14" cy="13" r="1" fill="currentColor"/>
-                    <path d="M9 16h6"/>
-                    <path d="M7 11h1M16 11h1"/>
-                  </svg>
-                ) : idx === 2 ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9.5" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                ) : idx === 3 ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <path d="M16 2v4M8 2v4M3 10h18"/>
-                  </svg>
-                ) : idx === 4 ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <path d="M12 2v20M2 12h20"/>
-                    <path d="M6 6h12v12H6z"/>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width: '100%', height: '100%', color: '#3b82f6'}}>
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                )}
-              </div>
-
-              {/* Content */}
-              <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                <div>
-                  <div className="service-number" style={{
-                    fontSize: '32px',
-                    fontWeight: '700',
-                    color: expandedIndex === idx ? '#ffffff' : '#3b82f6',
-                    marginBottom: '15px',
-                    animation: isVisible ? `scaleIn 0.8s ease-out ${idx * 0.1 + 0.1}s both` : 'none'
-                  }}>
-                    {service.number}
+      {/* Why Choose Us Section - Added for richness */}
+      <section className="py-24 bg-[#0A192F] text-white">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="text-orange-500 font-bold tracking-widest text-sm uppercase mb-3 block">
+                Our Advantage
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 font-primary">
+                Why Partner with <span className="text-[#185ADB] font-serif-italic">Symprio?</span>
+              </h2>
+              <div className="space-y-8">
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-orange-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                  <h3 style={{
-                    fontSize: '20px',
-                    fontWeight: '600',
-                    color: expandedIndex === idx ? '#ffffff' : '#1f2937',
-                    margin: '0 0 15px 0',
-                    animation: isVisible ? `fadeInUp 0.8s ease-out ${idx * 0.1 + 0.15}s both` : 'none'
-                  }}>
-                    {service.title}
-                  </h3>
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '3px',
-                      background: expandedIndex === idx ? 'linear-gradient(90deg, #ffffff, #e0e7ff)' : 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
-                      marginBottom: '15px',
-                      borderRadius: '2px',
-                      animation: isVisible ? `expandLine 0.8s ease-out ${idx * 0.1 + 0.2}s both` : 'none'
-                    }}
-                  />
-                  <p style={{
-                    fontSize: '14px',
-                    color: expandedIndex === idx ? '#e0e7ff' : '#6b7280',
-                    margin: '0 0 20px 0',
-                    lineHeight: '1.6',
-                    animation: isVisible ? `fadeInUp 0.8s ease-out ${idx * 0.1 + 0.25}s both` : 'none',
-                    display: '-webkit-box',
-                    WebkitLineClamp: expandedIndex === idx ? 'unset' : '3',
-                    WebkitBoxOrient: 'vertical',
-                    overflow: expandedIndex === idx ? 'visible' : 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
-                    {service.description}
-                  </p>
-
-                  {/* Expandable Points */}
-                  {expandedIndex === idx && (
-                    <div style={{
-                      marginTop: '25px',
-                      paddingTop: '25px',
-                      borderTop: '2px solid rgba(255, 255, 255, 0.3)',
-                      animation: `fadeIn 0.4s ease-out`
-                    }}>
-                      <h4 style={{
-                        fontSize: '14px',
-                        fontWeight: '700',
-                        color: '#e0e7ff',
-                        margin: '0 0 15px 0',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        Key Capabilities:
-                      </h4>
-                      <ul style={{
-                        margin: '0',
-                        padding: '0',
-                        listStyle: 'none'
-                      }}>
-                        {service.points.map((point, pointIdx) => (
-                          <li key={pointIdx} style={{
-                            fontSize: '13px',
-                            color: '#e0e7ff',
-                            marginBottom: '12px',
-                            paddingLeft: '20px',
-                            position: 'relative',
-                            lineHeight: '1.5'
-                          }}>
-                            <span style={{
-                              position: 'absolute',
-                              left: '0',
-                              color: '#ffffff',
-                              fontWeight: '700'
-                            }}>•</span>
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Proven Track Record</h4>
+                    <p className="text-gray-400">Over a decade of experience delivering enterprise-grade automation solutions globally.</p>
+                  </div>
                 </div>
-
-                {/* Expand/Collapse Button */}
-                <span 
-                  className="expand-arrow"
-                  style={{
-                    color: expandedIndex === idx ? '#ffffff' : '#3b82f6',
-                    textDecoration: 'none',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    display: 'inline-block',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer',
-                    marginTop: '15px',
-                    padding: '10px 16px',
-                    borderRadius: '4px',
-                    userSelect: 'none',
-                    backgroundColor: expandedIndex === idx ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-                    border: expandedIndex === idx ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid #e5e7eb',
-                    width: 'fit-content'
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setExpandedIndex(expandedIndex === idx ? null : idx);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = '0.8';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '1';
-                  }}
-                >
-                  {expandedIndex === idx ? '− Show Less' : '+ Show More'}
-                </span>
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-orange-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Cutting-Edge AI</h4>
+                    <p className="text-gray-400">Pioneers in Agentic AI and autonomous workforce deployment for future-proof growth.</p>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+              <img 
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000" 
+                alt="Tech Innovation" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-[#185ADB]/20 backdrop-overlay"></div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <ReadyToStartCTA />
-
-      <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(15px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes scaleIn {
-          from {
-            transform: scale(0.8);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-        @keyframes expandLine {
-          from {
-            width: 0;
-            opacity: 0;
-          }
-          to {
-            width: 40px;
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideInFromRight {
-          from {
-            opacity: 0;
-            transform: translateX(150px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes bannerSlideIn {
-          0% {
-            opacity: 0;
-            transform: translateX(-80px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
-      </div>
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="bg-[#185ADB] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 font-primary italic">
+                Ready to <span className="text-orange-400 font-serif-italic not-italic">Automate</span> Your Future?
+              </h2>
+              <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-10">
+                Contact us today for a free consultation and discover how our solutions can transform your organization.
+              </p>
+              <button 
+                onClick={() => navigate('/enquiry')}
+                className="bg-white text-[#185ADB] font-bold px-12 py-5 rounded-2xl hover:bg-orange-500 hover:text-white transition-all transform hover:-translate-y-1 shadow-lg text-lg uppercase tracking-wider"
+              >
+                Get Started Now
+              </button>
+            </div>
+            {/* Background Decorations */}
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/10 rounded-full"></div>
+            <div className="absolute -top-12 -left-12 w-48 h-48 bg-white/5 rounded-full"></div>
+          </div>
+        </div>
+      </section>
     </div>
+  );
+}
   );
 }

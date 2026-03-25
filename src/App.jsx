@@ -11,7 +11,6 @@ import EventsAndTrainings from './components/EventsAndTrainings';
 import Services from './components/Services';
 import FeaturedCaseStudy from './components/FeaturedCaseStudy';
 import Testimonials from './components/Testimonials';
-import FooterCTA from './components/FooterCTA';
 import TeamMembers from './components/TeamMembers';
 import TransformCTA from './components/TransformCTA';
 import SymprioFooter from './components/SymprioFooter';
@@ -24,7 +23,6 @@ import AboutUs from './components/AboutUs';
 import AdminAuth from './components/AdminAuth';
 import AdminDashboard from './components/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Clients from './components/Clients';
 import ServicesLanding from './components/ServicesLanding';
 import AgenticAI from './components/AgenticAI';
 import Careers from './components/Careers';
@@ -42,12 +40,16 @@ import CorporateWorkshops from './components/CorporateWorkshops';
 import CaseStudiesLanding from './components/CaseStudiesLanding';
 
 import FeaturesGrid from './components/FeaturesGrid';
-import Pricing from './components/Pricing';
 import FAQSection from './components/FAQSection';
+import ClientsMarquee from './components/ClientsMarquee';
+import AboutSnippet from './components/AboutSnippet';
+import TrainingBanner from './components/TrainingBanner';
+import BlogLatestPosts from './components/BlogLatestPosts';
+import Industries from './components/Industries';
 
 const HomePage = () => {
   return (
-    <div style={{ 
+    <div style={{
       background: '#fff',
       color: '#1f2937',
       fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
@@ -56,21 +58,25 @@ const HomePage = () => {
     }}>
       <SymprioNavbar />
       <SymprioHero />
-      <CurvedDivider topColor="#ffffff" bottomColor="#f9fafb" height={150} curve="smooth" />
+      <ClientsMarquee />
+      <AboutSnippet />
+      <CurvedDivider topColor="#ffffff" bottomColor="#f9fafb" height={120} curve="smooth" />
       <FeaturesGrid />
-      <CurvedDivider topColor="#f9fafb" bottomColor="#ffffff" height={150} curve="smooth" />
-      <KeyBenefits />
-      <SymprioStats />
-      <Pricing />
-      <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={150} curve="smooth" />
-      <EventsAndTrainings />
+      <CurvedDivider topColor="#f9fafb" bottomColor="#ffffff" height={120} curve="smooth" />
       <Services />
-      <CurvedDivider topColor="#ffffff" bottomColor="#ffffff" height={150} curve="smooth" />
+      <TrainingBanner />
+      <SymprioStats />
+      <Industries />
+      <KeyBenefits />
+      <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={120} curve="smooth" />
+      <EventsAndTrainings />
+      <CurvedDivider topColor="#f3f4f6" bottomColor="#ffffff" height={120} curve="smooth" />
       <FeaturedCaseStudy />
-      <FAQSection />
       <Testimonials />
       <TeamMembers />
-      <CurvedDivider topColor="#ffffff" bottomColor="#87CEEB" height={150} curve="smooth" />
+      <BlogLatestPosts />
+      <FAQSection />
+      <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />
       <SymprioFooter />
     </div>

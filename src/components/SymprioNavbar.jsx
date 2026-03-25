@@ -7,6 +7,8 @@ export default function SymprioNavbar() {
   const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -176,24 +178,139 @@ export default function SymprioNavbar() {
           </Link>
         </div>
 
-        {/* CTA Group */}
+        {/* CTA + Hamburger */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button
             onClick={() => navigate('/contact')}
-            className="btn-pill btn-primary"
+            className="btn-pill btn-primary hide-on-mobile"
             style={{ padding: '12px 28px', fontSize: '14px' }}
           >
             Connect Now
           </button>
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            className="hamburger-btn"
+            aria-label="Toggle menu"
+            style={{
+              display: 'none',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '5px',
+              width: '44px',
+              height: '44px',
+              background: 'rgba(10,45,110,0.07)',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              padding: '0'
+            }}
+          >
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(45deg) translate(5px,5px)' : 'none' }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', opacity: mobileOpen ? 0 : 1 }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#0A2D6E', borderRadius: '2px', transition: 'all 0.3s ease', transform: mobileOpen ? 'rotate(-45deg) translate(5px,-5px)' : 'none' }} />
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      {mobileOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.4)',
+          zIndex: 999
+        }} onClick={() => setMobileOpen(false)}>
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: '300px',
+              height: '100%',
+              background: '#fff',
+              boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
+              padding: '32px 24px',
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <img src="/symprio-logo.png" alt="Symprio" style={{ height: '28px' }} />
+              <button onClick={() => setMobileOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#0A2D6E', lineHeight: 1 }}>×</button>
+            </div>
+
+            <MobileNavLink label="Home" onClick={() => { navigate('/'); setMobileOpen(false); }} />
+
+            {/* Solutions accordion */}
+            <div>
+              <div
+                onClick={() => setMobileExpanded(e => e === 'services' ? null : 'services')}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#0A2D6E' }}
+              >
+                Solutions
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transform: mobileExpanded === 'services' ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              {mobileExpanded === 'services' && (
+                <div style={{ paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  {services.map(s => (
+                    <MobileNavLink key={s.name} label={s.name} small onClick={() => { navigate(s.url); setMobileOpen(false); }} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Academy accordion */}
+            <div>
+              <div
+                onClick={() => setMobileExpanded(e => e === 'training' ? null : 'training')}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px', color: '#0A2D6E' }}
+              >
+                Academy
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transform: mobileExpanded === 'training' ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              {mobileExpanded === 'training' && (
+                <div style={{ paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  {training.map(t => (
+                    <MobileNavLink key={t.name} label={t.name} small onClick={() => { navigate(t.url); setMobileOpen(false); }} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <MobileNavLink label="About" onClick={() => { navigate('/about'); setMobileOpen(false); }} />
+            <MobileNavLink label="Case Studies" onClick={() => { navigate('/case-studies'); setMobileOpen(false); }} />
+            <MobileNavLink label="Blog" onClick={() => { navigate('/blog'); setMobileOpen(false); }} />
+            <MobileNavLink label="Careers" onClick={() => { navigate('/careers'); setMobileOpen(false); }} />
+
+            <div style={{ marginTop: '24px' }}>
+              <button
+                onClick={() => { navigate('/contact'); setMobileOpen(false); }}
+                style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #0A2D6E, #0D9488)', color: '#fff', border: 'none', borderRadius: '14px', fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}
+              >
+                Get a Free Consultation →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @media (max-width: 991px) {
           .d-lg-flex { display: none !important; }
+          .hamburger-btn { display: flex !important; }
+          .hide-on-mobile { display: none !important; }
         }
         @media (min-width: 992px) {
           .d-lg-flex { display: flex !important; }
+          .hamburger-btn { display: none !important; }
         }
         .hover-opacity-100:hover { opacity: 1 !important; color: var(--secondary) !important; }
       `}</style>
@@ -222,6 +339,27 @@ function NavLink({ label, onClick }) {
         e.currentTarget.style.opacity = 0.8;
         e.currentTarget.style.color = 'var(--primary)';
       }}
+    >
+      {label}
+    </div>
+  );
+}
+
+function MobileNavLink({ label, onClick, small }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        padding: small ? '10px 16px' : '14px 16px',
+        borderRadius: '12px',
+        fontSize: small ? '14px' : '15px',
+        fontWeight: '600',
+        color: small ? '#374151' : '#0A2D6E',
+        cursor: 'pointer',
+        transition: 'background 0.2s'
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = 'rgba(10,45,110,0.06)'}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
     >
       {label}
     </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const customDevFaqs = [
   {
@@ -327,6 +328,8 @@ export default function CustomDevelopment() {
 
       </div>
       <FAQSection faqs={customDevFaqs} />
+
+      <ConsultationForm />
     </div>
   );
 }

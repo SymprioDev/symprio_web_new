@@ -4,6 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import ReadyToStartCTA from './ReadyToStartCTA';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const agenticFaqs = [
   {
@@ -1259,6 +1260,8 @@ export default function AgenticAI() {
 
       {/* CTA Section */}
       <ReadyToStartCTA />
+
+      <ConsultationForm />
     </div>
   );
 }

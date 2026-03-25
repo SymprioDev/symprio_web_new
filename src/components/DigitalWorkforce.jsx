@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const workforceFaqs = [
   {
@@ -261,6 +262,8 @@ export default function DigitalWorkforce() {
 
       </div>
       <FAQSection faqs={workforceFaqs} />
+
+      <ConsultationForm />
     </div>
   );
 }

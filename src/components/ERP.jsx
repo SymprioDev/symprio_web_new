@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const erpFaqs = [
   {
@@ -708,6 +709,8 @@ export default function ERP() {
       </section>
 
       <FAQSection faqs={erpFaqs} />
+
+      <ConsultationForm />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import ReadyToStartCTA from './ReadyToStartCTA';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 // Zigzag Features Component
 const ZigzagFeatures = () => {
@@ -585,6 +586,8 @@ export default function DigitalTransformation() {
       <ReadyToStartCTA />
 
       <FAQSection faqs={dtFaqs} />
+
+      <ConsultationForm />
     </div>
   );
 }

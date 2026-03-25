@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const paFaqs = [
   {
@@ -238,6 +239,8 @@ export default function ProcessAssessment() {
       </section>
 
       <FAQSection faqs={paFaqs} />
+
+      <ConsultationForm />
     </div>
   );
 }

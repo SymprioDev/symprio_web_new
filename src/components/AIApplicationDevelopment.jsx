@@ -5,6 +5,7 @@ import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
 import CurvedDivider from './CurvedDivider';
 import FAQSection from './FAQSection';
+import ConsultationForm from './ConsultationForm';
 
 const aiFaqs = [
   {
@@ -326,6 +327,8 @@ export default function AIApplicationDevelopment() {
           </button>
         </div>
       </section>
+
+      <ConsultationForm />
     </div>
   );
 }

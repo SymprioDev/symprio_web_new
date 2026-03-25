@@ -11,7 +11,7 @@ const partners = [
   { name: 'Meta', logo: '/meta-logo.png' },
   { name: 'ChatGPT', logo: '/chatgpt-logo.png' },
   { name: 'Claude', logo: '/claude-logo.png' },
-  { name: 'Mistral', logo: '/mistral-logo.png' },
+  { name: 'Mistral', logo: '/mistral-logo.svg' },
   { name: 'Manus', text: 'Manus' }
 ];
 
@@ -20,7 +20,7 @@ function getSpherePositions(count, radius) {
   const positions = [];
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < count; i++) {
-    const y = 1 - (i / (count - 1)) * 2; // -1 to 1
+    const y = 1 - (i / (count - 1)) * 2;
     const theta = goldenAngle * i;
     const rotateX = Math.asin(y) * (180 / Math.PI);
     const rotateY = (theta * 180) / Math.PI;
@@ -37,7 +37,7 @@ export default function SymprioHero() {
     setShowAnimation(true);
   }, []);
 
-  const spherePositions = getSpherePositions(partners.length, 280);
+  const spherePositions = getSpherePositions(partners.length, 210);
 
   return (
     <div style={{
@@ -58,10 +58,10 @@ export default function SymprioHero() {
 
       <div style={{
         width: '100%',
-        maxWidth: '1400px',
+        maxWidth: '1200px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1.2fr',
-        gap: '40px',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '60px',
         alignItems: 'center',
         position: 'relative',
         zIndex: 10
@@ -74,9 +74,9 @@ export default function SymprioHero() {
         }}>
           <h1 style={{
             marginBottom: '24px',
-            fontSize: 'clamp(3rem, 7vw, 5rem)',
+            fontSize: 'clamp(2.8rem, 5vw, 4.5rem)',
             fontWeight: '600',
-            lineHeight: '1.08',
+            lineHeight: '1.1',
             letterSpacing: '-0.02em',
             color: 'var(--primary)'
           }}>
@@ -88,7 +88,7 @@ export default function SymprioHero() {
             color: '#6b7280',
             lineHeight: '1.75',
             marginBottom: '48px',
-            maxWidth: '540px',
+            maxWidth: '500px',
             fontWeight: '300'
           }}>
             Symprio empowers global enterprises to redefine productivity, reduce costs by up to 40%, and scale exponentially with intelligent Agentic AI solutions.
@@ -123,7 +123,7 @@ export default function SymprioHero() {
           </div>
         </div>
 
-        {/* Right — Full 3D Sphere */}
+        {/* Right — 3D Sphere */}
         <div style={{
           position: 'relative',
           opacity: showAnimation ? 1 : 0,
@@ -132,54 +132,38 @@ export default function SymprioHero() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '620px',
-          perspective: '1400px'
+          minHeight: '580px',
+          perspective: '1200px'
         }}>
-          {/* Gradient glow behind sphere */}
+          {/* Gradient glow */}
           <div style={{
             position: 'absolute',
-            width: '600px',
-            height: '600px',
+            width: '500px',
+            height: '500px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.08) 0%, rgba(13, 148, 136, 0.04) 40%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(24, 90, 219, 0.07) 0%, rgba(13, 148, 136, 0.03) 40%, transparent 70%)',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             pointerEvents: 'none'
           }} />
 
-          {/* Decorative orbit rings */}
+          {/* Orbit rings */}
           <div style={{
-            position: 'absolute',
-            width: '520px',
-            height: '520px',
-            borderRadius: '50%',
-            border: '1px dashed rgba(24, 90, 219, 0.08)',
-            top: '50%',
-            left: '50%',
+            position: 'absolute', width: '440px', height: '440px', borderRadius: '50%',
+            border: '1px dashed rgba(24, 90, 219, 0.07)',
+            top: '50%', left: '50%',
             transform: 'translate(-50%, -50%) rotateX(70deg)',
             pointerEvents: 'none'
           }} />
-          <div style={{
-            position: 'absolute',
-            width: '400px',
-            height: '400px',
-            borderRadius: '50%',
-            border: '1px dashed rgba(24, 90, 219, 0.06)',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%) rotateX(70deg) rotateZ(45deg)',
-            pointerEvents: 'none'
-          }} />
 
-          {/* 3D Sphere container — cinematic ease */}
+          {/* 3D Sphere — tighter radius, bigger cards, faster */}
           <div className="sphere" style={{
-            width: '600px',
-            height: '600px',
+            width: '500px',
+            height: '500px',
             position: 'relative',
             transformStyle: 'preserve-3d'
           }}>
-            {/* Partner logos on sphere surface */}
             {partners.map((p, i) => {
               const pos = spherePositions[i];
               return (
@@ -190,19 +174,19 @@ export default function SymprioHero() {
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    width: '90px',
-                    height: '90px',
-                    marginLeft: '-45px',
-                    marginTop: '-45px',
+                    width: '100px',
+                    height: '100px',
+                    marginLeft: '-50px',
+                    marginTop: '-50px',
                     transformStyle: 'preserve-3d',
                     transform: `rotateY(${pos.rotateY}deg) rotateX(${pos.rotateX}deg) translateZ(${pos.radius}px)`
                   }}
                 >
                   <div className="sphere-logo-card" style={{
-                    width: '90px',
-                    height: '90px',
+                    width: '100px',
+                    height: '100px',
                     background: '#fff',
-                    borderRadius: '22px',
+                    borderRadius: '24px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -211,26 +195,26 @@ export default function SymprioHero() {
                     backfaceVisibility: 'hidden'
                   }}>
                     {p.logo ? (
-                      <img src={p.logo} alt={p.name} style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                      <img src={p.logo} alt={p.name} style={{ width: '56px', height: '56px', objectFit: 'contain' }} />
                     ) : (
-                      <span style={{ fontSize: '16px', fontWeight: '800', color: '#185ADB', letterSpacing: '-0.02em' }}>{p.text}</span>
+                      <span style={{ fontSize: '15px', fontWeight: '800', color: '#185ADB', letterSpacing: '-0.02em' }}>{p.text}</span>
                     )}
                   </div>
                 </div>
               );
             })}
 
-            {/* Center Symprio logo — counter-rotates to stay fixed */}
+            {/* Center Symprio logo */}
             <div className="sphere-center" style={{
               position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '120px',
-              height: '120px',
-              marginLeft: '-60px',
-              marginTop: '-60px',
+              width: '110px',
+              height: '110px',
+              marginLeft: '-55px',
+              marginTop: '-55px',
               background: 'linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)',
-              borderRadius: '30px',
+              borderRadius: '28px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -239,14 +223,13 @@ export default function SymprioHero() {
               zIndex: 10,
               transform: 'translateZ(0px)'
             }}>
-              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '74px', objectFit: 'contain' }} />
+              <img src="/symprio-logo.png" alt="Symprio" style={{ width: '68px', objectFit: 'contain' }} />
             </div>
           </div>
         </div>
       </div>
 
       <style>{`
-        /* Cinematic rotation — slow in front, fast behind */
         @keyframes sphereRotate {
           0%   { transform: rotateY(0deg) rotateX(8deg); }
           25%  { transform: rotateY(60deg) rotateX(8deg); }
@@ -256,7 +239,7 @@ export default function SymprioHero() {
         }
 
         .sphere {
-          animation: sphereRotate 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+          animation: sphereRotate 14s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
           transform-style: preserve-3d;
         }
 
@@ -264,7 +247,6 @@ export default function SymprioHero() {
           transform-style: preserve-3d;
         }
 
-        /* Counter-rotate center logo to stay upright */
         @keyframes sphereCenterReverse {
           0%   { transform: translateZ(0) rotateX(-8deg) rotateY(0deg); }
           25%  { transform: translateZ(0) rotateX(-8deg) rotateY(-60deg); }
@@ -274,7 +256,7 @@ export default function SymprioHero() {
         }
 
         .sphere-center {
-          animation: sphereCenterReverse 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+          animation: sphereCenterReverse 14s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
         }
 
         .sphere-logo-card {
@@ -287,17 +269,11 @@ export default function SymprioHero() {
         }
 
         @media (max-width: 1024px) {
-          .sphere {
-            width: 400px !important;
-            height: 400px !important;
-          }
+          .sphere { width: 380px !important; height: 380px !important; }
         }
 
         @media (max-width: 768px) {
-          .sphere {
-            width: 300px !important;
-            height: 300px !important;
-          }
+          .sphere { width: 280px !important; height: 280px !important; }
         }
       `}</style>
     </div>

@@ -115,6 +115,31 @@ export default function DigitalWorkforce() {
             Augmenting your success with elite, vetted global talent.
           </p>
         </div>
+
+        {/* Breadcrumb */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          background: '#fff',
+          padding: '16px 32px',
+          borderTopRightRadius: '24px',
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}>
+          <a href="/" style={{ color: '#6b7280', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            Home
+          </a>
+          <span style={{ color: '#d1d5db' }}>/</span>
+          <a href="/services" style={{ color: '#6b7280', textDecoration: 'none' }}>Services</a>
+          <span style={{ color: '#d1d5db' }}>/</span>
+          <span style={{ color: '#185ADB' }}>Digital Workforce</span>
+        </div>
       </section>
 
       {/* Main content container */}

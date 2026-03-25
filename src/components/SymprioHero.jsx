@@ -216,26 +216,6 @@ export default function SymprioHero() {
           >
             Get Started <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
           </button>
-
-          {/* Trust Metrics */}
-          <div style={{
-            display: 'flex',
-            gap: '48px',
-            marginTop: '64px',
-            paddingTop: '40px',
-            borderTop: '1px solid rgba(0,0,0,0.06)'
-          }}>
-            {[
-              { val: '50+', label: 'Global Clients' },
-              { val: '500+', label: 'Bots Live' },
-              { val: '99.9%', label: 'Uptime' }
-            ].map((stat, i) => (
-              <div key={i}>
-                <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--primary)', marginBottom: '4px', lineHeight: 1.1 }}>{stat.val}</div>
-                <div style={{ fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Right — 3D Logo Sphere with gradient bg */}
@@ -265,6 +245,34 @@ export default function SymprioHero() {
 
           <LogoSphere size={460} />
         </div>
+      </div>
+
+      {/* Trust Metrics — below the grid, full width */}
+      <div style={{
+        position: 'absolute',
+        bottom: '40px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '64px',
+        zIndex: 20,
+        padding: '32px 48px',
+        background: 'rgba(255,255,255,0.6)',
+        backdropFilter: 'blur(12px)',
+        borderRadius: '20px',
+        border: '1px solid rgba(0,0,0,0.04)'
+      }}>
+        {[
+          { val: '50+', label: 'Global Clients' },
+          { val: '500+', label: 'Bots Live' },
+          { val: '99.9%', label: 'Uptime' },
+          { val: '15+', label: 'Countries' }
+        ].map((stat, i) => (
+          <div key={i} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--primary)', marginBottom: '4px', lineHeight: 1.1 }}>{stat.val}</div>
+            <div style={{ fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

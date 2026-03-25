@@ -16,7 +16,6 @@ import TeamMembers from './components/TeamMembers';
 import TransformCTA from './components/TransformCTA';
 import SymprioFooter from './components/SymprioFooter';
 import DigitalTransformation from './components/DigitalTransformation';
-import Chatbots from './components/Chatbots';
 import RPA from './components/RPA';
 import ERP from './components/ERP';
 import CustomDevelopment from './components/CustomDevelopment';
@@ -29,10 +28,18 @@ import Clients from './components/Clients';
 import ServicesLanding from './components/ServicesLanding';
 import AgenticAI from './components/AgenticAI';
 import Careers from './components/Careers';
-import Enquiry from './components/Enquiry';
+import Contact from './components/Contact';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import SupportSubscription from './components/SupportSubscription';
 import CurvedDivider from './components/CurvedDivider';
+import AIApplicationDevelopment from './components/AIApplicationDevelopment';
+import ProcessAssessment from './components/ProcessAssessment';
+import TrainingLanding from './components/TrainingLanding';
+import Blog from './components/Blog';
+import RPATraining from './components/RPATraining';
+import AIGenAITraining from './components/AIGenAITraining';
+import CorporateWorkshops from './components/CorporateWorkshops';
+import CaseStudiesLanding from './components/CaseStudiesLanding';
 
 const HomePage = () => {
   return (
@@ -126,16 +133,27 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<ServicePage component={AboutUs} />} />
       <Route path="/services" element={<ServicePage component={ServicesLanding} />} />
-      <Route path="/agentic-ai" element={<ServicePage component={AgenticAI} />} />
-      <Route path="/digital-transformation" element={<ServicePage component={DigitalTransformation} />} />
-      <Route path="/chatbots" element={<ServicePage component={Chatbots} />} />
-      <Route path="/rpa" element={<ServicePage component={RPA} />} />
-      <Route path="/erp" element={<ServicePage component={ERP} />} />
-      <Route path="/custom-development" element={<ServicePage component={CustomDevelopment} />} />
-      <Route path="/digital-workforce" element={<ServicePage component={DigitalWorkforce} />} />
-      <Route path="/clients" element={<Clients />} />
+      {/* Service Sub-pages */}
+      <Route path="/services/rpa" element={<ServicePage component={RPA} />} />
+      <Route path="/services/ai-development" element={<ServicePage component={AIApplicationDevelopment} />} />
+      <Route path="/services/agentic-ai" element={<ServicePage component={AgenticAI} />} />
+      <Route path="/services/process-assessment" element={<ServicePage component={ProcessAssessment} />} />
+      <Route path="/services/digital-transformation" element={<ServicePage component={DigitalTransformation} />} />
+      <Route path="/services/erp-oracle" element={<ServicePage component={ERP} />} />
+      <Route path="/services/custom-software" element={<ServicePage component={CustomDevelopment} />} />
+      <Route path="/services/digital-workforce" element={<ServicePage component={DigitalWorkforce} />} />
+      
+      {/* Training Pages */}
+      <Route path="/training" element={<ServicePage component={TrainingLanding} />} />
+      <Route path="/training/rpa" element={<ServicePage component={RPATraining} />} />
+      <Route path="/training/ai-genai" element={<ServicePage component={AIGenAITraining} />} />
+      <Route path="/training/corporate-workshops" element={<ServicePage component={CorporateWorkshops} />} />
+
+      <Route path="/case-studies" element={<ServicePage component={CaseStudiesLanding} />} />
+      <Route path="/blog" element={<ServicePage component={Blog} />} />
       <Route path="/careers" element={<ServicePage component={Careers} />} />
-      <Route path="/enquiry" element={<ServicePage component={Enquiry} />} />
+      <Route path="/contact" element={<ServicePage component={Contact} />} />
+      <Route path="/enquiry" element={<Navigate to="/contact" replace />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/support-subscription" element={<ServicePage component={SupportSubscription} />} />
       <Route 

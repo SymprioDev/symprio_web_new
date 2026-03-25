@@ -46,7 +46,6 @@ import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
 import BlogLatestPosts from './components/BlogLatestPosts';
 import Industries from './components/Industries';
-import TextMarquee from './components/TextMarquee';
 
 const HomePage = () => {
   return (
@@ -59,7 +58,6 @@ const HomePage = () => {
     }}>
       <SymprioNavbar />
       <SymprioHero />
-      <TextMarquee />
       <ClientsMarquee />
       <AboutSnippet />
       <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />

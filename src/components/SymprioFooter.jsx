@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaLinkedin, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 
 export default function SymprioFooter() {
   return (
@@ -50,10 +51,10 @@ export default function SymprioFooter() {
                 {[
                   { name: 'Latest Blogs', url: 'https://symprioideas.medium.com/' },
                   { name: 'Careers', url: '/careers' },
-                  { name: 'Privacy Policy', url: 'https://www.symprio.com/privacy-policy/' }
+                  { name: 'Privacy Policy', url: '/privacy-policy' }
                 ].map((link, idx) => (
                   <li key={idx} style={{ marginBottom: '10px' }}>
-                    <a href={link.url} {...(link.url.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })} style={{
+                    <a href={link.url} {...((link.url.startsWith('http') || link.url.includes('privacy')) && { target: '_blank', rel: 'noopener noreferrer' })} style={{
                       color: '#d1d5db',
                       textDecoration: 'none',
                       fontSize: '14px',
@@ -81,15 +82,15 @@ export default function SymprioFooter() {
               </h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {[
-                  { name: 'Digital Transformation', url: 'https://www.symprio.com/digital-transformation/' },
-                  { name: 'Robotic Process Automation', url: 'https://www.symprio.com/robotic-process-automation/' },
-                  { name: 'ERP Practice (Oracle)', url: 'https://www.symprio.com/erp-practice-oracle/' },
-                  { name: 'Chatbots', url: 'https://www.symprio.com/chatbots/' },
-                  { name: 'Custom Development', url: 'https://www.symprio.com/custom-development/' },
-                  { name: 'Digital Workforce', url: 'https://www.symprio.com/digital-workforce/' }
+                  { name: 'Digital Transformation', url: '/digital-transformation' },
+                  { name: 'Robotic Process Automation', url: '/rpa' },
+                  { name: 'ERP Practice (Oracle)', url: '/erp' },
+                  { name: 'Chatbots', url: '/chatbots' },
+                  { name: 'Custom Development', url: '/custom-development' },
+                  { name: 'Digital Workforce', url: '/digital-workforce' }
                 ].map((service, idx) => (
                   <li key={idx} style={{ marginBottom: '10px' }}>
-                    <a href={service.url} target="_blank" rel="noopener noreferrer" style={{
+                    <a href={service.url} style={{
                       color: '#d1d5db',
                       textDecoration: 'none',
                       fontSize: '14px',
@@ -104,6 +105,118 @@ export default function SymprioFooter() {
                 ))}
               </ul>
             </div>
+
+            {/* Column 4 - Connect with us */}
+            <div>
+              <h5 style={{
+                fontSize: '16px',
+                fontWeight: '700',
+                color: '#fff',
+                margin: '0 0 20px 0'
+              }}>
+                CONNECT WITH US
+              </h5>
+              <div style={{ display: 'flex', gap: '16px' }}>
+                {/* LinkedIn */}
+                <a 
+                  href="https://www.linkedin.com/company/symprio/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    color: '#d1d5db',
+                    fontSize: '20px',
+                    transition: 'all 0.3s ease',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0077b5';
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = '#d1d5db';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <FaLinkedin />
+                </a>
+
+                {/* YouTube */}
+                <a 
+                  href="https://www.youtube.com/@symprioautomation1485" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    color: '#d1d5db',
+                    fontSize: '20px',
+                    transition: 'all 0.3s ease',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ff0000';
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = '#d1d5db';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <FaYoutube />
+                </a>
+
+                {/* WhatsApp */}
+                <a 
+                  href="https://web.whatsapp.com/send?phone=60138802574&text=Hello!%20Welcome%20to%20Symprio" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    color: '#d1d5db',
+                    fontSize: '20px',
+                    transition: 'all 0.3s ease',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#25d366';
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = '#d1d5db';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <FaWhatsapp />
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Bottom - Copyright */}
@@ -117,7 +230,7 @@ export default function SymprioFooter() {
               color: '#9ca3af',
               margin: '0'
             }}>
-              Copyright © 2024 <a href="https://www.symprio.com" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>Symprio</a>. All Rights Reserved.
+              Copyright © 2024 <a href="/" style={{ color: '#3b82f6', textDecoration: 'none' }}>Symprio</a>. All Rights Reserved.
             </p>
           </div>
         </div>

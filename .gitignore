@@ -32,3 +32,6 @@ yarn-error.log*
 # Local DB & uploads
 users.db
 public/uploads
+
+# Config files with sensitive data
+config/mail-config.json

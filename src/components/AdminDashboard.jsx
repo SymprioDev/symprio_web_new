@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ApplicationViewModal from './ApplicationViewModal';
+import ApplicationFilters from './ApplicationFilters';
+import MailConfig from './MailConfig';
+import SubscriptionViewModal from './SubscriptionViewModal';
+import SubscriptionStatusTypes from './SubscriptionStatusTypes';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('events');
@@ -9,10 +14,49 @@ const AdminDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [jobApplications, setJobApplications] = useState([]);
+  const [jobAppsLoading, setJobAppsLoading] = useState(true);
+  const [jobAppsError, setJobAppsError] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [showTrainingForm, setShowTrainingForm] = useState(false);
   const [showJobForm, setShowJobForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
+  
+  // Modal state for job application view
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  
+  // Filter state for job applications
+  const [filters, setFilters] = useState({
+    search: '',
+    jobTitle: '',
+    dateFrom: '',
+    dateTo: '',
+    status: ''
+  });
+
+  // Notification state
+  const [notification, setNotification] = useState(null);
+
+  // Subscription config state
+  const [subscriptionRate, setSubscriptionRate] = useState('');
+  const [loadingSubscriptionRate, setLoadingSubscriptionRate] = useState(true);
+
+  // Subscriptions state
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [loadingSubscriptions, setLoadingSubscriptions] = useState(true);
+  const [subscriptionStatusTypes, setSubscriptionStatusTypes] = useState([]);
+  
+  // Subscription modal state
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
+  // Show notification
+  const showNotification = (type, message) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 5000);
+  };
+  
   const navigate = useNavigate();
   const { user, logout, token } = useAuth();
 
@@ -63,11 +107,21 @@ const AdminDashboard = () => {
     fetchJobs();
     fetchEnquiries();
     fetchLocations();
+    fetchJobApplications();
+    fetchSubscriptionConfig();
   }, []);
+
+  // Fetch subscriptions after auth is loaded
+  useEffect(() => {
+    if (token) {
+      fetchSubscriptions();
+      fetchSubscriptionStatusTypes();
+    }
+  }, [token]);
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch('/api/events');
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
@@ -79,7 +133,7 @@ const AdminDashboard = () => {
 
   const fetchTrainings = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/trainings');
+      const response = await fetch('/api/trainings');
       if (response.ok) {
         const data = await response.json();
         setTrainings(data);
@@ -91,7 +145,7 @@ const AdminDashboard = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/jobs');
+      const response = await fetch('/api/jobs');
       if (response.ok) {
         const data = await response.json();
         setJobs(data);
@@ -103,7 +157,7 @@ const AdminDashboard = () => {
 
   const fetchEnquiries = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/enquiries', {
+      const response = await fetch('/api/enquiries', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -119,7 +173,7 @@ const AdminDashboard = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/locations');
+      const response = await fetch('/api/locations');
       if (response.ok) {
         const data = await response.json();
         setLocations(Array.isArray(data) ? data : []);
@@ -129,9 +183,278 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchJobApplications = async () => {
+    setJobAppsLoading(true);
+    setJobAppsError(null);
+    try {
+      const response = await fetch('/api/job-applications', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJobApplications(Array.isArray(data) ? data : []);
+      } else if (response.status === 401) {
+        setJobAppsError('Session expired. Please log in again.');
+      } else {
+        setJobAppsError('Failed to load job applications');
+      }
+    } catch (error) {
+      console.error('Failed to fetch job applications:', error);
+      setJobAppsError('Failed to load job applications. Please try again.');
+    } finally {
+      setJobAppsLoading(false);
+    }
+  };
+
+  const fetchSubscriptionConfig = async () => {
+    setLoadingSubscriptionRate(true);
+    try {
+      const response = await fetch('/api/admin/subscription-config', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSubscriptionRate(data.rate || 50);
+      }
+    } catch (error) {
+      console.error('Failed to fetch subscription config:', error);
+    } finally {
+      setLoadingSubscriptionRate(false);
+    }
+  };
+
+  const fetchSubscriptions = async () => {
+    if (!token) {
+      console.warn('No token available, skipping fetch');
+      return;
+    }
+    setLoadingSubscriptions(true);
+    try {
+      console.log('Fetching subscriptions...');
+      // Try with proxy first
+      let response = await fetch('/api/subscription', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // If proxy fails, try direct
+      if (!response.ok && response.status === 404) {
+        console.log('Trying direct fetch to port 5000...');
+        response = await fetch('/api/subscription', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      }
+      
+      console.log('Response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Subscriptions fetched:', data);
+        setSubscriptions(Array.isArray(data) ? data : []);
+      } else if (response.status === 401) {
+        console.error('Unauthorized - token may be expired');
+      } else {
+        console.error('Failed to fetch subscriptions:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching subscriptions:', error);
+    } finally {
+      setLoadingSubscriptions(false);
+    }
+  };
+
+  const fetchSubscriptionStatusTypes = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch('/api/admin/subscription-status-types', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSubscriptionStatusTypes(data);
+      }
+    } catch (error) {
+      console.error('Error fetching subscription status types:', error);
+    }
+  };
+
+  // Helper function to get status color
+  const getSubscriptionStatusColor = (statusName) => {
+    const status = subscriptionStatusTypes.find(s => s.status_name === statusName);
+    if (status) {
+      return {
+        background: status.color + '20',
+        color: status.color,
+        border: `1px solid ${status.color}40`
+      };
+    }
+    // Default colors if not found
+    const defaultColors = {
+      'Pending': { background: '#fef3c7', color: '#d97706', border: '#f59e0b40' },
+      'Reviewed': { background: '#d1fae5', color: '#059669', border: '#10b98140' },
+      'Rejected': { background: '#fee2e2', color: '#dc2626', border: '#ef444440' }
+    };
+    return defaultColors[statusName] || { background: '#f3f4f6', color: '#6b7280', border: '#d1d5db40' };
+  };
+
+  const handleDeleteSubscription = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this subscription?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/subscription/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        showNotification('success', 'Subscription deleted successfully');
+        // Refresh the list
+        setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+      } else {
+        showNotification('error', 'Failed to delete subscription');
+      }
+    } catch (error) {
+      console.error('Error deleting subscription:', error);
+      showNotification('error', 'Error deleting subscription');
+    }
+  };
+
+  // Handle subscription status change
+  const handleSubscriptionStatusChange = async (id, newStatus) => {
+    console.log("Updating subscription status:", id, newStatus);
+    
+    // Update UI immediately
+    setSubscriptions(prev =>
+      prev.map(sub =>
+        sub.id === id ? { ...sub, status: newStatus } : sub
+      )
+    );
+    
+    // API call to persist change - use proxy URL with /api/subscriptions (plural)
+    try {
+      const response = await fetch(`/api/subscriptions/${id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
+      console.log("Subscription status update response:", response.status, response.ok);
+      
+      if (!response.ok) {
+        console.error('Failed to update subscription status, status:', response.status);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error response:', errorData);
+        showNotification('error', 'Failed to update subscription status');
+      } else {
+        showNotification('success', 'Status updated successfully');
+      }
+    } catch (error) {
+      console.error('Error updating subscription status:', error);
+    }
+  };
+
+  // Handle view subscription
+  const handleViewSubscription = (sub) => {
+    setSelectedSubscription(sub);
+    setShowSubscriptionModal(true);
+  };
+
+  const handleSaveSubscriptionConfig = async (e) => {
+    e.preventDefault();
+    
+    if (!subscriptionRate || subscriptionRate <= 0) {
+      showNotification('error', 'Rate must be greater than 0');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/subscription-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ rate: parseInt(subscriptionRate) })
+      });
+
+      if (response.ok) {
+        showNotification('success', 'Subscription config saved successfully');
+      } else {
+        showNotification('error', 'Failed to save subscription config');
+      }
+    } catch (error) {
+      console.error('Failed to save subscription config:', error);
+      showNotification('error', 'Failed to save subscription config');
+    }
+  };
+
+  const handleDeleteJobApplication = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this application?')) return;
+    try {
+      const response = await fetch(`/api/job-applications/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        fetchJobApplications();
+      }
+    } catch (error) {
+      console.error('Failed to delete job application:', error);
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    // Update UI immediately
+    setJobApplications(prev =>
+      prev.map(app =>
+        app.id === id ? { ...app, status: newStatus } : app
+      )
+    );
+    
+    // Also update filtered applications if needed
+    setFilters(prev => ({ ...prev }));
+    
+    // API call to persist change
+    try {
+      const response = await fetch(`/api/job-applications/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to update status');
+        // Optionally revert on failure
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
   const handleDeleteEnquiry = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/enquiries/${id}`, {
+      const response = await fetch(`/api/enquiries/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -147,7 +470,7 @@ const AdminDashboard = () => {
 
   const handleUpdateEnquiryStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/enquiries/${id}`, {
+      const response = await fetch(`/api/enquiries/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -166,7 +489,7 @@ const AdminDashboard = () => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/events', {
+      const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +513,7 @@ const AdminDashboard = () => {
   const handleAddTraining = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/trainings', {
+      const response = await fetch('/api/trainings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -214,7 +537,7 @@ const AdminDashboard = () => {
   const handleAddJob = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/jobs', {
+      const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -251,7 +574,7 @@ const AdminDashboard = () => {
         formData.append('imageUrl', locationForm.imageUrl);
       }
 
-      const response = await fetch('http://localhost:5000/api/locations', {
+      const response = await fetch('/api/locations', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -275,7 +598,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this location?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/locations/${locationId}`, {
+      const response = await fetch(`/api/locations/${locationId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -294,7 +617,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
+      const response = await fetch(`/api/events/${eventId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -313,7 +636,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this training?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/trainings/${trainingId}`, {
+      const response = await fetch(`/api/trainings/${trainingId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -332,7 +655,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
+      const response = await fetch(`/api/jobs/${jobId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -345,6 +668,72 @@ const AdminDashboard = () => {
     } catch (error) {
       alert('Error deleting job: ' + error.message);
     }
+  };
+
+  // Filter job applications using useMemo for performance
+  const filteredApplications = useMemo(() => {
+    return jobApplications.filter(app => {
+      // Search filter (name, email, job title)
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        const matchesSearch = 
+          (app.firstName?.toLowerCase().includes(searchLower)) ||
+          (app.lastName?.toLowerCase().includes(searchLower)) ||
+          (app.email?.toLowerCase().includes(searchLower)) ||
+          (app.jobTitle?.toLowerCase().includes(searchLower));
+        if (!matchesSearch) return false;
+      }
+
+      // Job Title filter
+      if (filters.jobTitle && app.jobTitle !== filters.jobTitle) {
+        return false;
+      }
+
+      // Date from filter
+      if (filters.dateFrom) {
+        const appDate = new Date(app.submittedDate);
+        const fromDate = new Date(filters.dateFrom);
+        appDate.setHours(0, 0, 0, 0);
+        fromDate.setHours(0, 0, 0, 0);
+        if (appDate < fromDate) return false;
+      }
+
+      // Date to filter
+      if (filters.dateTo) {
+        const appDate = new Date(app.submittedDate);
+        const toDate = new Date(filters.dateTo);
+        appDate.setHours(23, 59, 59, 999);
+        toDate.setHours(23, 59, 59, 999);
+        if (appDate > toDate) return false;
+      }
+
+      // Status filter (if app has status field)
+      // Treat NULL/undefined status as 'pending' for pre-migration applications
+      if (filters.status) {
+        const appStatus = app.status || 'pending';
+        if (appStatus !== filters.status) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [jobApplications, filters]);
+
+  // Handle filter changes
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  // Handle filter reset
+  const handleResetFilters = () => {
+    setFilters({
+      search: '',
+      jobTitle: '',
+      dateFrom: '',
+      dateTo: '',
+      status: ''
+    });
   };
 
   return (
@@ -451,7 +840,21 @@ const AdminDashboard = () => {
               cursor: 'pointer'
             }}
           >
-            Post Jobs
+            Job Listings ({jobs.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('jobApplications')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'jobApplications' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'jobApplications' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Job Applications ({jobApplications.length})
           </button>
           <button
             onClick={() => setActiveTab('locations')}
@@ -480,6 +883,62 @@ const AdminDashboard = () => {
             }}
           >
             Enquiries ({enquiries.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('mailConfig')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'mailConfig' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'mailConfig' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Mail Configuration
+          </button>
+          <button
+            onClick={() => setActiveTab('subscriptionConfig')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'subscriptionConfig' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'subscriptionConfig' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Subscription Config
+          </button>
+          <button
+            onClick={() => setActiveTab('subscriptions')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'subscriptions' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'subscriptions' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Support Subscriptions
+          </button>
+          <button
+            onClick={() => setActiveTab('statusTypes')}
+            style={{
+              padding: '12px 24px',
+              background: activeTab === 'statusTypes' ? '#00d4ff' : 'transparent',
+              color: activeTab === 'statusTypes' ? 'white' : '#6b7280',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Status Types
           </button>
         </div>
 
@@ -1040,6 +1499,135 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {activeTab === 'jobApplications' && (
+          <div>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1f2937' }}>
+              Job Applications ({filteredApplications.length}{jobApplications.length > 0 && ` of ${jobApplications.length}`})
+            </h2>
+            
+            {/* Loading State */}
+            {jobAppsLoading && (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
+                Loading job applications...
+              </div>
+            )}
+            
+            {/* Error State */}
+            {!jobAppsLoading && jobAppsError && (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#dc2626', background: '#fee2e2', borderRadius: '8px', marginBottom: '20px' }}>
+                {jobAppsError}
+              </div>
+            )}
+            
+            {/* Empty State */}
+            {!jobAppsLoading && !jobAppsError && jobApplications.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
+                No job applications yet.
+              </div>
+            )}
+            
+            {/* Show filters and table when not loading, no error, and has applications */}
+            {!jobAppsLoading && !jobAppsError && jobApplications.length > 0 && (
+              <>
+                {/* Filters Section */}
+                <ApplicationFilters
+                  jobs={jobs}
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  onReset={handleResetFilters}
+                />
+                
+                {filteredApplications.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
+                    No applications found matching your filters. Try adjusting your search criteria.
+                  </div>
+                ) : (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
+                      <thead>
+                        <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
+                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>First Name</th>
+                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Mobile</th>
+                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Job Title</th>
+                          <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Submitted</th>
+                          <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Status</th>
+                          <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredApplications.map((app) => (
+                      <tr key={app.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.firstName}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.mobileNumber}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{app.jobTitle || '-'}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>
+                          {app.submittedDate ? new Date(app.submittedDate).toLocaleDateString() : '-'}
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <select
+                            value={app.status || 'pending'}
+                            onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: '4px',
+                              border: '1px solid #d1d5db',
+                              background: app.status === 'rejected' ? '#fee2e2' : app.status === 'reviewed' ? '#d1fae5' : '#fef3c7',
+                              color: app.status === 'rejected' ? '#dc2626' : app.status === 'reviewed' ? '#059669' : '#d97706',
+                              fontWeight: '600',
+                              fontSize: '12px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="rejected">Rejected</option>
+                          </select>
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => {
+                              setSelectedApplication(app);
+                              setShowApplicationModal(true);
+                            }}
+                            style={{
+                              background: '#dbeafe',
+                              color: '#2563eb',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              marginRight: '8px'
+                            }}
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDeleteJobApplication(app.id)}
+                            style={{
+                              background: '#fee2e2',
+                              color: '#dc2626',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '600'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         {activeTab === 'locations' && (
           <div>
             <button
@@ -1305,6 +1893,250 @@ const AdminDashboard = () => {
               </div>
             )}
           </div>
+        )}
+
+        {/* Status Types Tab */}
+        {activeTab === 'statusTypes' && (
+          <SubscriptionStatusTypes 
+            token={token} 
+            onNotification={showNotification}
+            onRefresh={fetchSubscriptionStatusTypes}
+          />
+        )}
+
+        {/* Mail Configuration Tab */}
+        {activeTab === 'mailConfig' && (
+          <MailConfig 
+            token={token} 
+            onNotification={showNotification} 
+          />
+        )}
+
+        {/* Subscription Configuration Tab */}
+        {activeTab === 'subscriptionConfig' && (
+          <div>
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '8px',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              maxWidth: '500px'
+            }}>
+              <h2 style={{ marginTop: 0, marginBottom: '24px', fontSize: '20px', fontWeight: '700' }}>
+                Subscription Rate Configuration
+              </h2>
+              <p style={{ color: '#6b7280', marginBottom: '24px' }}>
+                Set the rate per hour for support hours subscription.
+              </p>
+              <form onSubmit={handleSaveSubscriptionConfig}>
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
+                    Rate ($ per hour)
+                  </label>
+                  <input
+                    type="number"
+                    value={subscriptionRate}
+                    onChange={(e) => setSubscriptionRate(e.target.value)}
+                    placeholder="Enter rate per hour"
+                    min="1"
+                    required
+                    disabled={loadingSubscriptionRate}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      fontSize: '14px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loadingSubscriptionRate}
+                  style={{
+                    background: '#00d4ff',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    cursor: loadingSubscriptionRate ? 'not-allowed' : 'pointer',
+                    opacity: loadingSubscriptionRate ? 0.7 : 1
+                  }}
+                >
+                  {loadingSubscriptionRate ? 'Loading...' : 'Save Configuration'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Support Subscriptions Tab */}
+        {activeTab === 'subscriptions' && (
+          <div>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1f2937' }}>
+              Support Subscriptions ({subscriptions.length})
+            </h2>
+            
+            {/* Loading State */}
+            {loadingSubscriptions && (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
+                Loading subscriptions...
+              </div>
+            )}
+            
+            {/* Empty State */}
+            {!loadingSubscriptions && subscriptions.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', background: 'white', borderRadius: '8px' }}>
+                No subscriptions found.
+              </div>
+            )}
+            
+            {/* Subscriptions Table */}
+            {!loadingSubscriptions && subscriptions.length > 0 && (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
+                  <thead>
+                    <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Name</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Company</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Contact</th>
+                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Hours</th>
+                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Total</th>
+                      <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#374151' }}>Date</th>
+                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Status</th>
+                      <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#374151' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {subscriptions.map((sub) => (
+                      <tr key={sub.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                        <td style={{ padding: '16px', color: '#374151' }}>{sub.name || '-'}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{sub.companyName || '-'}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>{sub.contactNumber || '-'}</td>
+                        <td style={{ padding: '16px', textAlign: 'center', color: '#374151' }}>{sub.hours || 0}</td>
+                        <td style={{ padding: '16px', textAlign: 'center', color: '#0891b2', fontWeight: '600' }}>${sub.totalAmount || 0}</td>
+                        <td style={{ padding: '16px', color: '#374151' }}>
+                          {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-GB') : '-'}
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span style={{
+                              ...getSubscriptionStatusColor(sub.status || 'Pending'),
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              fontWeight: '600',
+                              fontSize: '12px',
+                              display: 'inline-block'
+                            }}>
+                              {sub.status || 'Pending'}
+                            </span>
+                            <select
+                              value={sub.status || 'Pending'}
+                              onChange={(e) => handleSubscriptionStatusChange(sub.id, e.target.value)}
+                              style={{
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                border: '1px solid #d1d5db',
+                                background: 'white',
+                                color: '#374151',
+                                fontSize: '13px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {subscriptionStatusTypes.length > 0 ? (
+                                subscriptionStatusTypes.map(status => (
+                                  <option key={status.id} value={status.status_name}>{status.status_name}</option>
+                                ))
+                              ) : (
+                                <>
+                                  <option value="Pending">Pending</option>
+                                  <option value="Reviewed">Reviewed</option>
+                                  <option value="Rejected">Rejected</option>
+                                </>
+                              )}
+                            </select>
+                          </div>
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => handleViewSubscription(sub)}
+                            style={{
+                              background: '#dbeafe',
+                              color: '#2563eb',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              marginRight: '8px'
+                            }}
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSubscription(sub.id)}
+                            style={{
+                              background: '#fee2e2',
+                              color: '#dc2626',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '600'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Notification */}
+        {notification && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '16px 24px',
+            borderRadius: '8px',
+            background: notification.type === 'success' ? '#10b981' : '#ef4444',
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            zIndex: 1000,
+            animation: 'slideIn 0.3s ease-out'
+          }}>
+            {notification.message}
+          </div>
+        )}
+        
+        {/* Application View Modal */}
+        {showApplicationModal && selectedApplication && (
+          <ApplicationViewModal
+            application={selectedApplication}
+            onClose={() => {
+              setShowApplicationModal(false);
+              setSelectedApplication(null);
+            }}
+          />
+        )}
+
+        {/* Subscription View Modal */}
+        {showSubscriptionModal && selectedSubscription && (
+          <SubscriptionViewModal
+            subscription={selectedSubscription}
+            onClose={() => {
+              setShowSubscriptionModal(false);
+              setSelectedSubscription(null);
+            }}
+          />
         )}
       </div>
     </div>

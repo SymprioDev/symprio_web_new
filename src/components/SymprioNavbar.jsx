@@ -18,11 +18,11 @@ export default function SymprioNavbar() {
 
   const services = [
     { name: 'Digital Transformation', url: '/digital-transformation' },
-    { name: 'Robotic Process Automation', url: 'https://www.symprio.com/robotic-process-automation/' },
-    { name: 'ERP Practice (Oracle)', url: 'https://www.symprio.com/erp-practice-oracle/' },
+    { name: 'Robotic Process Automation', url: '/rpa' },
+    { name: 'ERP Practice (Oracle)', url: '/erp' },
     { name: 'Chatbots', url: '/chatbots' },
-    { name: 'Custom Development', url: 'https://www.symprio.com/custom-development/' },
-    { name: 'Digital Workforce', url: 'https://www.symprio.com/digital-workforce/' }
+    { name: 'Custom Development', url: '/custom-development' },
+    { name: 'Digital Workforce', url: '/digital-workforce' }
   ];
 
   return (
@@ -36,7 +36,7 @@ export default function SymprioNavbar() {
         background: 'linear-gradient(135deg, #0f172a 0%, #0891b2 100%)',
         padding: '20px 60px',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         borderBottom: '3px solid #ffffff',
         zIndex: 10001,
@@ -175,6 +175,22 @@ export default function SymprioNavbar() {
           onMouseLeave={(e) => e.target.style.color = '#fff'}
           >
             Contact Us
+          </a>
+
+          <a href="/support-subscription" onClick={(e) => { e.preventDefault(); navigate('/support-subscription'); }} style={{
+            fontSize: '15px',
+            fontWeight: '600',
+            color: '#fff',
+            textDecoration: 'none',
+            transition: 'color 0.3s ease',
+            cursor: 'pointer',
+            fontFamily: 'Segoe UI, Inter, sans-serif',
+            letterSpacing: '0.3px'
+          }}
+          onMouseEnter={(e) => e.target.style.color = '#bfdbfe'}
+          onMouseLeave={(e) => e.target.style.color = '#fff'}
+          >
+            Subscription
           </a>
         </div>
 

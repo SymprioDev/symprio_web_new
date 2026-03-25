@@ -8,7 +8,7 @@ export default function TrainingsContainer() {
   useEffect(() => {
     const fetchTrainings = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/trainings');
+        const response = await fetch('/api/trainings');
         if (response.ok) {
           const data = await response.json();
           setTrainings(data);

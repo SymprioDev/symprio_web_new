@@ -51,6 +51,8 @@ jobs:
           export PATH=$PATH:/usr/local/bin:/root/.nvm/versions/node/*/bin
           cd /var/www/symprio
           npm ci --production
+          sudo cp nginx.conf /etc/nginx/sites-available/isai-alai.live
+          sudo ln -sf /etc/nginx/sites-available/isai-alai.live /etc/nginx/sites-enabled/isai-alai.live
+          sudo nginx -t && sudo systemctl reload nginx
           pm2 restart symprio-backend || pm2 start ecosystem.config.cjs --only symprio-backend
-          sudo systemctl reload nginx
           EOF

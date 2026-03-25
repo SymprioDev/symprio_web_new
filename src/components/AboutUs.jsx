@@ -76,7 +76,7 @@ export default function AboutUs() {
   const resolveImageUrl = (imageUrl) => {
     if (!imageUrl) return '';
     if (imageUrl.startsWith('http')) return imageUrl;
-    if (imageUrl.startsWith('/uploads/')) return `http://localhost:5000${imageUrl}`;
+    if (imageUrl.startsWith('/uploads/')) return imageUrl;
     return imageUrl;
   };
 
@@ -109,7 +109,7 @@ export default function AboutUs() {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/locations');
+        const response = await fetch('/api/locations');
         if (response.ok) {
           const data = await response.json();
           setLocations(Array.isArray(data) ? data : []);

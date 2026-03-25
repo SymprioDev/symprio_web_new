@@ -142,7 +142,7 @@ const MailConfig = ({ token, onNotification }) => {
     setErrors({});
     
     try {
-      const response = await fetch('http://localhost:5000/api/admin/mail-config', {
+      const response = await fetch('/api/admin/mail-config', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

@@ -27,11 +27,11 @@ export default function UpcomingScrollBanner() {
   const fetchUpcomingItems = async () => {
     try {
       // Fetch events
-      const eventsResponse = await fetch('http://localhost:5000/api/events');
+      const eventsResponse = await fetch('/api/events');
       const eventsData = eventsResponse.ok ? await eventsResponse.json() : [];
       
       // Fetch trainings
-      const trainingsResponse = await fetch('http://localhost:5000/api/trainings');
+      const trainingsResponse = await fetch('/api/trainings');
       const trainingsData = trainingsResponse.ok ? await trainingsResponse.json() : [];
 
       // Check if item is recent (within 1 month)

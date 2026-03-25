@@ -12,7 +12,7 @@ export default function Events() {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch('/api/events');
       if (response.ok) {
         const data = await response.json();
         // Only set if data is not empty, otherwise keep defaults

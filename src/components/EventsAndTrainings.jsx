@@ -14,8 +14,8 @@ const EventsAndTrainings = () => {
   const fetchData = async () => {
     try {
       const [eventsRes, trainingsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/events'),
-        fetch('http://localhost:5000/api/trainings')
+        fetch('/api/events'),
+        fetch('/api/trainings')
       ]);
 
       if (eventsRes.ok) {

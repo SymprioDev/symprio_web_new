@@ -28,7 +28,7 @@ export default function Enquiry() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/enquiries', {
+      const response = await fetch('/api/enquiries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -35,7 +35,7 @@ export default function Careers() {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/jobs');
+      const response = await fetch('/api/jobs');
       if (response.ok) {
         const data = await response.json();
         setOpenPositions(data);
@@ -173,7 +173,7 @@ export default function Careers() {
       formDataToSend.append('jobTitle', selectedRole?.title || '');
       formDataToSend.append('cv', cvFile);
 
-      const response = await fetch('http://localhost:5000/api/job-applications', {
+      const response = await fetch('/api/job-applications', {
         method: 'POST',
         body: formDataToSend
       });

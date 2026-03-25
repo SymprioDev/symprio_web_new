@@ -16,8 +16,8 @@ export default function AnnouncementBanner() {
   const fetchItems = async () => {
     try {
       const [eventsRes, trainingsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/events', { timeout: 3000 }),
-        fetch('http://localhost:5000/api/trainings', { timeout: 3000 })
+        fetch('/api/events', { timeout: 3000 }),
+        fetch('/api/trainings', { timeout: 3000 })
       ]);
 
       if (!eventsRes.ok || !trainingsRes.ok) {

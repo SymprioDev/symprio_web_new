@@ -5,7 +5,7 @@ const COLORS = {
   primary: '#0A2D6E',
   teal: '#0D9488',
   accent: '#0077B6',
-  bg: '#f9fafb',
+  bg: '#F1F7F3',
   cardBg: '#ffffff',
   textDark: '#111827',
   textMid: '#374151',

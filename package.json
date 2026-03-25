@@ -21,6 +21,7 @@
     "mailersend": "^2.6.0",
     "multer": "^2.0.2",
     "nodemailer": "^8.0.2",
+    "playwright": "^1.58.2",
     "react": "^18.2.0",
     "react-countup": "^6.4.0",
     "react-dom": "^18.2.0",

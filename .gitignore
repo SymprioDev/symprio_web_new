@@ -35,3 +35,4 @@ public/uploads
 
 # Config files with sensitive data
 config/mail-config.json
+screenshots/

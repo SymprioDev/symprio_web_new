@@ -2,6 +2,29 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+const ArrowsExpandIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 3 21 3 21 9" />
+    <polyline points="9 21 3 21 3 15" />
+    <polyline points="21 3 14 10" />
+    <polyline points="3 21 10 14" />
+  </svg>
+);
+
+const SparklesIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
 export default function KeyBenefits() {
   const [expandedBenefit, setExpandedBenefit] = useState(null);
 
@@ -16,7 +39,7 @@ export default function KeyBenefits() {
   const benefits = [
     {
       id: 1,
-      icon: '\u{1F680}',
+      icon: <ArrowsExpandIcon />,
       title: "End-to-End Digital Transformation",
       subtitle: "Accelerate Growth from Strategy to Execution",
       description: "We guide your organization through every stage of its digital journey, turning complex roadmaps into high-performance realities. Modernize your tech stack and align your operations with global digital standards.",
@@ -24,7 +47,7 @@ export default function KeyBenefits() {
     },
     {
       id: 2,
-      icon: '\u{1F916}',
+      icon: <SparklesIcon />,
       title: "Intelligent Agentic AI Solutions",
       subtitle: "Future-Proof Your Team with Autonomous AI",
       description: "Step beyond simple chatbots. Our Agentic AI solutions act as autonomous team members capable of complex reasoning and independent action, revolutionizing customer service and supply chain efficiency.",
@@ -32,7 +55,7 @@ export default function KeyBenefits() {
     },
     {
       id: 3,
-      icon: '\u{1F310}',
+      icon: <GlobeIcon />,
       title: "Global Expertise, Local Insight",
       subtitle: "Industry-Leading Consulting for Enterprise",
       description: "Our consultants bring deep experience from Banking, Telecom, and Healthcare. With deep roots in the Silicon Valley and Indo-Pacific, we bridge the gap between global innovation and regional needs.",
@@ -105,7 +128,7 @@ export default function KeyBenefits() {
               }}
             >
               {/* Icon */}
-              <div style={{ fontSize: '48px', marginBottom: '20px', lineHeight: 1 }}>
+              <div style={{ width: '48px', height: '48px', color: '#185ADB', marginBottom: '20px' }}>
                 {benefit.icon}
               </div>
 

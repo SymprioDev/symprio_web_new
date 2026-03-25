@@ -169,6 +169,17 @@ export default function AboutSnippet() {
 
         {/* Right Column — Stats Card */}
         <div style={styles.rightCol} data-aos="fade-up" data-aos-delay="100">
+          <img
+            src="/assets/images/about-bg.jpg"
+            alt="Symprio Team"
+            style={{
+              width: '100%',
+              borderRadius: '20px',
+              marginBottom: '24px',
+              objectFit: 'cover',
+              maxHeight: '280px'
+            }}
+          />
           <div style={styles.statsCard}>
             {stats.map((stat, index) => (
               <div key={index} style={styles.statItem}>

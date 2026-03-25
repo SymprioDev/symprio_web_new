@@ -4,6 +4,66 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import SEO from './SEO';
 
+const RefreshIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 4 23 10 17 10" />
+    <polyline points="1 20 1 14 7 14" />
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
+  </svg>
+);
+
+const BrainIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+    <rect x="9" y="9" width="6" height="6" />
+    <line x1="9" y1="1" x2="9" y2="4" />
+    <line x1="15" y1="1" x2="15" y2="4" />
+    <line x1="9" y1="20" x2="9" y2="23" />
+    <line x1="15" y1="20" x2="15" y2="23" />
+    <line x1="20" y1="9" x2="23" y2="9" />
+    <line x1="20" y1="14" x2="23" y2="14" />
+    <line x1="1" y1="9" x2="4" y2="9" />
+    <line x1="1" y1="14" x2="4" y2="14" />
+  </svg>
+);
+
+const RobotIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="10" rx="2" />
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 7v4" />
+    <line x1="8" y1="16" x2="8" y2="16.01" />
+    <line x1="16" y1="16" x2="16" y2="16.01" />
+    <line x1="1" y1="15" x2="3" y2="15" />
+    <line x1="21" y1="15" x2="23" y2="15" />
+  </svg>
+);
+
+const DatabaseIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3" />
+    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const CodeBracketIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </svg>
+);
+
 const Services = () => {
   const navigate = useNavigate();
   const [expandedCards, setExpandedCards] = useState({});
@@ -28,6 +88,7 @@ const Services = () => {
   const services = [
     {
       number: '01',
+      icon: <RefreshIcon />,
       title: 'Digital Transformation',
       description: 'Accelerate your business evolution with expert strategy and change management. We turn digital roadmaps into real-world success.',
       expanded: 'Our digital transformation services encompass strategic planning, technology assessment, change management, and end-to-end implementation to modernize your operations and unlock new growth.',
@@ -35,6 +96,7 @@ const Services = () => {
     },
     {
       number: '02',
+      icon: <BrainIcon />,
       title: 'Agentic AI & AI Solutions',
       description: 'Deploy autonomous AI agents that handle complex tasks and boost team productivity. Experience the next generation of generative AI for enterprise.',
       expanded: 'We design and deploy intelligent AI agents powered by large language models, custom-trained on your data, to automate workflows, enhance decision-making, and drive measurable outcomes.',
@@ -42,6 +104,7 @@ const Services = () => {
     },
     {
       number: '03',
+      icon: <RobotIcon />,
       title: 'Intelligent RPA',
       description: 'Eliminate manual errors and slash operational costs with Robotic Process Automation. Scale your output without increasing headcount.',
       expanded: 'Our RPA solutions automate repetitive tasks across finance, HR, operations, and customer service — delivering faster processing, fewer errors, and significant cost savings.',
@@ -49,6 +112,7 @@ const Services = () => {
     },
     {
       number: '04',
+      icon: <DatabaseIcon />,
       title: 'ERP & Platforms',
       description: 'Optimize your core operations with seamless Oracle and enterprise platform solutions. Expert implementation for maximized ROI.',
       expanded: 'From Oracle Cloud implementation to platform migrations and integrations, we ensure your ERP ecosystem runs efficiently and scales with your business.',
@@ -56,6 +120,7 @@ const Services = () => {
     },
     {
       number: '05',
+      icon: <UsersIcon />,
       title: 'Digital Workforce',
       description: 'Access elite IT talent and flexible staff augmentation. Build your dream team with our managed workforce and outsourcing services.',
       expanded: 'Whether you need dedicated teams, staff augmentation, or fully managed IT services, we provide the skilled professionals to keep your projects moving forward.',
@@ -63,6 +128,7 @@ const Services = () => {
     },
     {
       number: '06',
+      icon: <CodeBracketIcon />,
       title: 'Custom Development',
       description: 'Build bespoke, scalable software tailored to your unique business needs. From ideation to deployment, we engineer excellence.',
       expanded: 'Our full-stack development team builds custom web applications, mobile solutions, APIs, and cloud-native platforms designed for performance, security, and scale.',
@@ -141,14 +207,19 @@ const Services = () => {
                 data-aos="fade-up"
                 data-aos-delay={idx * 100}
               >
-                {/* Number Indicator */}
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#185ADB',
-                  letterSpacing: '0.1em'
-                }}>
-                  {service.number}
+                {/* Icon and Number */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{ width: '40px', height: '40px', color: '#185ADB' }}>
+                    {service.icon}
+                  </div>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#185ADB',
+                    letterSpacing: '0.1em'
+                  }}>
+                    {service.number}
+                  </div>
                 </div>
 
                 {/* Content */}

@@ -10,7 +10,7 @@ export default function ClientsMarquee() {
   const doubled = [...logos, ...logos];
 
   return (
-    <section style={{ padding: '60px 0', background: '#f9fafb', overflow: 'hidden' }}>
+    <section style={{ padding: '60px 0', background: '#F1F7F3', overflow: 'hidden' }}>
       <style>{`
         @keyframes marquee {
           0%   { transform: translateX(0); }

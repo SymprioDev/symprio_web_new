@@ -5,17 +5,38 @@ export default function Testimonials() {
     {
       quote: "Symprio transformed our digital operations. Their RPA solution reduced our processing time by 60% and freed our team to focus on strategic initiatives.",
       author: "CEO, Financial Services",
-      company: "Fortune 500 Bank"
+      company: "Fortune 500 Bank",
+      initials: "CF"
     },
     {
       quote: "Working with Symprio was seamless. Their agentic AI solution enhanced our customer support capabilities and improved satisfaction scores significantly.",
       author: "Head of Operations",
-      company: "Global Telecom Company"
+      company: "Global Telecom Company",
+      initials: "HO"
     },
     {
       quote: "Symprio's Oracle expertise and change management approach made our ERP implementation smooth. Their team understood our local requirements perfectly.",
       author: "CIO",
-      company: "Regional Enterprise"
+      company: "Regional Enterprise",
+      initials: "CI"
+    },
+    {
+      quote: "The RPA training Symprio delivered was hands-on and immediately applicable. Our team was building bots within days.",
+      author: "Digital Transformation Lead",
+      company: "Insurance Company",
+      initials: "DT"
+    },
+    {
+      quote: "Symprio's process assessment revealed inefficiencies we didn't know existed. ROI was evident within the first quarter.",
+      author: "COO",
+      company: "Manufacturing Group",
+      initials: "CO"
+    },
+    {
+      quote: "Their AI agent handles our entire back-office workflow autonomously. It's like having a full-time team member who never stops.",
+      author: "CEO, Fintech Startup",
+      company: "Fintech Startup",
+      initials: "CE"
     }
   ];
 
@@ -28,6 +49,14 @@ export default function Testimonials() {
 
   return (
     <>
+    <style>{`
+      @media (max-width: 1024px) {
+        .testimonials-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      }
+      @media (max-width: 600px) {
+        .testimonials-grid { grid-template-columns: 1fr !important; }
+      }
+    `}</style>
     <section style={{
       width: '100%',
       margin: '0',
@@ -53,9 +82,9 @@ export default function Testimonials() {
           Feedback from <strong>Real Teams</strong>
         </h2>
 
-        <div style={{
+        <div className="testimonials-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '30px'
         }}>
           {testimonials.map((testimonial, idx) => (
@@ -84,6 +113,16 @@ export default function Testimonials() {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              <div style={{
+                width: '56px', height: '56px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, #185ADB, #0D9488)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: '20px', fontWeight: '700',
+                marginBottom: '20px'
+              }}>
+                {testimonial.initials}
+              </div>
+
               <div style={{
                 color: '#185ADB',
                 fontSize: '18px',

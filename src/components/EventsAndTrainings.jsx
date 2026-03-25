@@ -53,7 +53,7 @@ const EventsAndTrainings = () => {
   return (
     <section style={{
       padding: '80px 20px',
-      background: '#f3f4f6'
+      background: '#F1F7F3'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>

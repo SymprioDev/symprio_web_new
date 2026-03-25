@@ -1,33 +1,85 @@
 import React from 'react';
 
+const LightningBoltIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10" />
+    <line x1="12" y1="20" x2="12" y2="4" />
+    <line x1="6" y1="20" x2="6" y2="14" />
+  </svg>
+);
+
+const HeadsetIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z" />
+    <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" />
+  </svg>
+);
+
+const ScaleIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 3 21 3 21 9" />
+    <polyline points="9 21 3 21 3 15" />
+    <line x1="21" y1="3" x2="14" y2="10" />
+    <line x1="3" y1="21" x2="10" y2="14" />
+  </svg>
+);
+
+const CpuIcon = () => (
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+    <rect x="9" y="9" width="6" height="6" />
+    <line x1="9" y1="1" x2="9" y2="4" />
+    <line x1="15" y1="1" x2="15" y2="4" />
+    <line x1="9" y1="20" x2="9" y2="23" />
+    <line x1="15" y1="20" x2="15" y2="23" />
+    <line x1="20" y1="9" x2="23" y2="9" />
+    <line x1="20" y1="14" x2="23" y2="14" />
+    <line x1="1" y1="9" x2="4" y2="9" />
+    <line x1="1" y1="14" x2="4" y2="14" />
+  </svg>
+);
+
 const features = [
   {
-    icon: '⚡',
+    icon: <LightningBoltIcon />,
     title: 'Fast Implementation',
     desc: 'Deploy automated workflows in weeks, not months, with our proven agile delivery methodology.'
   },
   {
-    icon: '🛡️',
+    icon: <ShieldIcon />,
     title: 'Enterprise Security',
     desc: 'Robust governance and ISO-standard security frameworks to protect your mission-critical data.'
   },
   {
-    icon: '📊',
+    icon: <ChartIcon />,
     title: 'Real-time Analytics',
     desc: 'Monitor bot performance and ROI with dynamic AI-powered dashboards and predictive reporting.'
   },
   {
-    icon: '🤝',
+    icon: <HeadsetIcon />,
     title: 'Elite Support',
     desc: '24/7 expert support teams available globally to ensure 99.9% uptime for your digital workforce.'
   },
   {
-    icon: '🚀',
+    icon: <ScaleIcon />,
     title: 'Infinite Scalability',
     desc: 'Seamlessly scale your digital operations as your business grows without increasing human overhead.'
   },
   {
-    icon: '🧠',
+    icon: <CpuIcon />,
     title: 'Agentic AI Engine',
     desc: 'The only platform combining RPA with advanced LLMs for truly autonomous end-to-end execution.'
   }
@@ -78,8 +130,9 @@ export default function FeaturesGrid() {
               className="feature-card"
             >
               <div style={{
-                fontSize: '60px',
-                lineHeight: '1',
+                width: '56px',
+                height: '56px',
+                color: '#185ADB',
                 marginBottom: '32px'
               }}>
                 {f.icon}

@@ -62,17 +62,17 @@ const HomePage = () => {
       <TextMarquee />
       <ClientsMarquee />
       <AboutSnippet />
-      <CurvedDivider topColor="#ffffff" bottomColor="#f9fafb" height={120} curve="smooth" />
+      <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />
       <FeaturesGrid />
-      <CurvedDivider topColor="#f9fafb" bottomColor="#ffffff" height={120} curve="smooth" />
+      <CurvedDivider topColor="#F1F7F3" bottomColor="#ffffff" height={120} curve="smooth" />
       <Services />
       <TrainingBanner />
       <SymprioStats />
       <Industries />
       <KeyBenefits />
-      <CurvedDivider topColor="#ffffff" bottomColor="#f3f4f6" height={120} curve="smooth" />
+      <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />
       <EventsAndTrainings />
-      <CurvedDivider topColor="#f3f4f6" bottomColor="#ffffff" height={120} curve="smooth" />
+      <CurvedDivider topColor="#F1F7F3" bottomColor="#ffffff" height={120} curve="smooth" />
       <FeaturedCaseStudy />
       <Testimonials />
       <TeamMembers />

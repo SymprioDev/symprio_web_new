@@ -15,7 +15,7 @@ export default function SymprioHero() {
       position: 'relative',
       width: '100%',
       minHeight: '100vh',
-      background: '#ffffff',
+      background: '#F1F7F3',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

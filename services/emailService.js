@@ -1,6 +1,4 @@
 // Email service using MailerSend SDK - ES6 Module
-import fs from 'fs';
-import path from 'path';
 import { MailerSend, EmailParams, Recipient } from 'mailersend';
 
 // Helper function to escape HTML to prevent XSS
@@ -14,36 +12,22 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
-export function getMailConfig() {
-  const filePath = path.join(process.cwd(), 'config/mail-config.json');
-
-  if (!fs.existsSync(filePath)) {
-    console.log("Mail config file not found at:", filePath);
-    return null;
-  }
-
-  const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-  return data;
-}
-
-export async function sendEnquiryEmails(enquiry) {
+export async function sendEnquiryEmails(enquiry, config, companyEmail) {
   try {
     console.log("Sending enquiry emails...");
 
-    const config = getMailConfig();
-
-    if (!config) {
-      console.error("Mail config not available");
+    if (!config || !config.apiKey || !config.domain) {
+      console.error("Mail config is incomplete. API Key and Domain are required.");
       return;
     }
 
-    if (!config.MAILERSEND_API_KEY || !config.MAILERSEND_DOMAIN || !config.COMPANY_EMAIL) {
-      console.error("Mail config is incomplete. API Key, Domain, and Company Email are required.");
+    if (!companyEmail) {
+      console.error("Company email not provided");
       return;
     }
 
     const mailerSend = new MailerSend({
-      apiKey: config.MAILERSEND_API_KEY,
+      apiKey: config.apiKey,
     });
 
     const {
@@ -55,15 +39,15 @@ export async function sendEnquiryEmails(enquiry) {
       message
     } = enquiry;
 
-    console.log("Sending email to company:", config.COMPANY_EMAIL);
+    console.log("Sending email to company:", companyEmail);
 
     // Email to Company
     const companyEmailParams = new EmailParams()
       .setFrom({
-        email: "no-reply@" + config.MAILERSEND_DOMAIN,
+        email: "no-reply@" + config.domain,
         name: 'Symprio'
       })
-      .setTo([new Recipient(config.COMPANY_EMAIL, 'Admin')])
+      .setTo([new Recipient(companyEmail, 'Admin')])
       .setSubject('New Enquiry Received - Symprio')
       .setHtml(`
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -104,7 +88,7 @@ export async function sendEnquiryEmails(enquiry) {
     // Email to User
     const userEmailParams = new EmailParams()
       .setFrom({
-        email: "no-reply@" + config.MAILERSEND_DOMAIN,
+        email: "no-reply@" + config.domain,
         name: 'Symprio'
       })
       .setTo([new Recipient(email, fullName)])
@@ -130,24 +114,22 @@ export async function sendEnquiryEmails(enquiry) {
   }
 }
 
-export async function sendSubscriptionEmails(subscription, userEmail) {
+export async function sendSubscriptionEmails(subscription, userEmail, config, companyEmail) {
   try {
     console.log("Sending subscription emails...");
 
-    const config = getMailConfig();
-
-    if (!config) {
-      console.error("Mail config not available");
+    if (!config || !config.apiKey || !config.domain) {
+      console.error("Mail config is incomplete. API Key and Domain are required.");
       return;
     }
 
-    if (!config.MAILERSEND_API_KEY || !config.MAILERSEND_DOMAIN || !config.COMPANY_EMAIL) {
-      console.error("Mail config is incomplete. API Key, Domain, and Company Email are required.");
+    if (!companyEmail) {
+      console.error("Company email not provided");
       return;
     }
 
     const mailerSend = new MailerSend({
-      apiKey: config.MAILERSEND_API_KEY,
+      apiKey: config.apiKey,
     });
 
     const {
@@ -160,15 +142,15 @@ export async function sendSubscriptionEmails(subscription, userEmail) {
       totalAmount
     } = subscription;
 
-    console.log("Sending subscription email to company:", config.COMPANY_EMAIL);
+    console.log("Sending subscription email to company:", companyEmail);
 
     // Email to Company
     const companyEmailParams = new EmailParams()
       .setFrom({
-        email: "no-reply@" + config.MAILERSEND_DOMAIN,
+        email: "no-reply@" + config.domain,
         name: 'Symprio'
       })
-      .setTo([new Recipient(config.COMPANY_EMAIL, 'Admin')])
+      .setTo([new Recipient(companyEmail, 'Admin')])
       .setSubject('New Subscription Request - Symprio')
       .setHtml(`
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -213,7 +195,7 @@ export async function sendSubscriptionEmails(subscription, userEmail) {
     // Email to User
     const userEmailParams = new EmailParams()
       .setFrom({
-        email: "no-reply@" + config.MAILERSEND_DOMAIN,
+        email: "no-reply@" + config.domain,
         name: 'Symprio'
       })
       .setTo([new Recipient(userEmail, name)])

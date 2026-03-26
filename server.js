@@ -716,8 +716,11 @@ app.post('/api/enquiries', async (req, res) => {
     // Trigger email (non-blocking) - using dynamic import for ES6 module
     try {
       const { sendEnquiryEmails } = await import('./services/emailService.js');
-      // Don't await - let it run in background
-      sendEnquiryEmails(enquiryData);
+      const { rows: mailRows } = await pool.query('SELECT mailersend_api_key, mailersend_domain, company_email FROM mail_config ORDER BY id DESC LIMIT 1');
+      const mailConfig = mailRows[0];
+      if (mailConfig) {
+        sendEnquiryEmails(enquiryData, { apiKey: mailConfig.mailersend_api_key, domain: mailConfig.mailersend_domain }, mailConfig.company_email);
+      }
     } catch (emailErr) {
       console.error('Email service error:', emailErr.message);
       // Don't block - email failure shouldn't affect enquiry submission
@@ -1260,7 +1263,11 @@ app.post('/api/subscription', async (req, res) => {
     // Send emails asynchronously (non-blocking)
     try {
       const { sendSubscriptionEmails } = await import('./services/emailService.js');
-      sendSubscriptionEmails({ id: newId, name, companyName, email, contactNumber, message: message || '', hours, rate, totalAmount, status: 'pending' }, email);
+      const { rows: mailRows } = await pool.query('SELECT mailersend_api_key, mailersend_domain, company_email FROM mail_config ORDER BY id DESC LIMIT 1');
+      const mailConfig = mailRows[0];
+      if (mailConfig) {
+        sendSubscriptionEmails({ id: newId, name, companyName, email, contactNumber, message: message || '', hours, rate, totalAmount, status: 'pending' }, email, { apiKey: mailConfig.mailersend_api_key, domain: mailConfig.mailersend_domain }, mailConfig.company_email);
+      }
     } catch (emailErr) {
       console.error('Subscription email error:', emailErr.message);
     }

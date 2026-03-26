@@ -541,9 +541,12 @@ const AdminDashboard = () => {
       });
 
       if (response.ok) {
-        setEventForm({ title: '', description: '', date: '', location: '', type: 'event', link: '' });
+        setEventForm({ title: '', description: '', date: '', location: '', type: 'event', link: '', registration_link: '' });
         setShowEventForm(false);
         fetchEvents();
+        // Re-fetch after delay to pick up AI-generated banner image
+        setTimeout(() => fetchEvents(), 15000);
+        setTimeout(() => fetchEvents(), 30000);
       } else {
         alert('Failed to add event');
       }

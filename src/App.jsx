@@ -48,6 +48,8 @@ import BlogLatestPosts from './components/BlogLatestPosts';
 import Industries from './components/Industries';
 import AIMode from './components/AIMode';
 import PowerfulFeatures from './components/PowerfulFeatures';
+import EventPopupBanner from './components/EventPopupBanner';
+import AIModePrompt from './components/AIModePrompt';
 
 const HomePage = () => {
   return (
@@ -82,6 +84,8 @@ const HomePage = () => {
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />
       <SymprioFooter />
+      <EventPopupBanner />
+      <AIModePrompt />
     </div>
   );
 };

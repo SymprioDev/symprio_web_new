@@ -92,7 +92,8 @@ const AdminDashboard = () => {
     date: '',
     location: '',
     type: 'event',
-    link: ''
+    link: '',
+    registration_link: ''
   });
 
   // Training form state
@@ -1579,6 +1580,16 @@ const AdminDashboard = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Registration Link</label>
+                      <input
+                        value={eventForm.registration_link}
+                        onChange={(e) => setEventForm({ ...eventForm, registration_link: e.target.value })}
+                        placeholder="https://example.com/register"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">AI will auto-generate a banner image from event content</p>
+                    </div>
                     <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
                       Add Event
                     </button>
@@ -1591,17 +1602,25 @@ const AdminDashboard = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {events.map((event) => (
-                        <div key={event.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                          <h3 className="font-semibold text-gray-800 mb-2">{event.title}</h3>
-                          <p className="text-sm text-gray-600 mb-1">📅 {event.date}</p>
-                          <p className="text-sm text-gray-600 mb-3">📍 {event.location}</p>
-                          <p className="text-sm text-gray-500 mb-4 line-clamp-2">{event.description}</p>
-                          <button
-                            onClick={() => handleDeleteEvent(event.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-                          >
-                            Delete
-                          </button>
+                        <div key={event.id} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                          {event.banner_image && (
+                            <img src={event.banner_image} alt={event.title} className="w-full h-32 object-cover" />
+                          )}
+                          <div className="p-4">
+                            <h3 className="font-semibold text-gray-800 mb-2">{event.title}</h3>
+                            <p className="text-sm text-gray-600 mb-1">📅 {event.date}</p>
+                            <p className="text-sm text-gray-600 mb-2">📍 {event.location}</p>
+                            {event.registration_link && (
+                              <p className="text-xs text-blue-500 mb-2 truncate">🔗 {event.registration_link}</p>
+                            )}
+                            <p className="text-sm text-gray-500 mb-4 line-clamp-2">{event.description}</p>
+                            <button
+                              onClick={() => handleDeleteEvent(event.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>

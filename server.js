@@ -91,11 +91,16 @@ async function initializeDatabase() {
       location TEXT NOT NULL,
       type TEXT DEFAULT 'event',
       link TEXT,
+      registration_link TEXT,
+      banner_image TEXT,
       created_by INTEGER,
       created_at TIMESTAMP DEFAULT NOW(),
       FOREIGN KEY (created_by) REFERENCES users(id)
     )
   `);
+  // Add columns for existing tables
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS registration_link TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS banner_image TEXT`);
   console.log('Events table ready');
 
   await pool.query(`
@@ -451,30 +456,112 @@ app.get('/api/events', async (req, res) => {
   }
 });
 
+// Generate event banner image using Mistral AI
+async function generateEventBanner(eventId, title, description, date, location) {
+  try {
+    if (!process.env.MISTRAL_API_KEY) return null;
+    const mistralImg = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
+
+    // Create an image generation agent
+    const agent = await mistralImg.beta.agents.create({
+      model: 'mistral-medium-latest',
+      name: 'Event Banner Generator',
+      instructions: 'You are a professional event banner designer. Generate a visually stunning, modern event banner image. Use bold typography, vibrant gradients (blues, teals, purples), and tech/corporate aesthetics. The image should be suitable as a promotional banner for a tech/AI event. Do NOT include any text in the image — only abstract visuals, patterns, and tech-themed graphics.',
+      tools: [{ type: 'image_generation' }],
+      completionArgs: { temperature: 0.3, topP: 0.95 }
+    });
+
+    const prompt = `Create a professional event banner image for: "${title}" — ${description}. Event date: ${date}, Location: ${location}. Style: modern tech conference, abstract geometric shapes, gradient blues and teals, futuristic feel. No text in the image.`;
+
+    const conversation = await mistralImg.beta.conversations.start({
+      agentId: agent.id,
+      inputs: prompt
+    });
+
+    // Extract file_id from response
+    let fileId = null;
+    if (conversation.outputs) {
+      for (const output of conversation.outputs) {
+        if (output.type === 'message.output' && output.content) {
+          for (const chunk of output.content) {
+            if (chunk.type === 'tool_file' && chunk.fileId) {
+              fileId = chunk.fileId;
+              break;
+            }
+          }
+        }
+        if (fileId) break;
+      }
+    }
+
+    if (!fileId) {
+      console.log('[EventBanner] No image file in response');
+      return null;
+    }
+
+    // Download the generated image
+    const fileStream = await mistralImg.files.download({ fileId });
+    const bannerDir = path.join(__dirname, 'uploads', 'event-banners');
+    if (!fs.existsSync(bannerDir)) fs.mkdirSync(bannerDir, { recursive: true });
+
+    const bannerFile = `event_${eventId}.png`;
+    const bannerPath = path.join(bannerDir, bannerFile);
+
+    // Collect stream chunks and write to file
+    const chunks = [];
+    for await (const chunk of fileStream) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    }
+    fs.writeFileSync(bannerPath, Buffer.concat(chunks));
+
+    const bannerUrl = `/uploads/event-banners/${bannerFile}`;
+    console.log('[EventBanner] Generated:', bannerUrl);
+
+    // Clean up the agent
+    try { await mistralImg.beta.agents.delete({ agentId: agent.id }); } catch (e) {}
+
+    return bannerUrl;
+  } catch (error) {
+    console.error('[EventBanner] Generation error:', error.message);
+    return null;
+  }
+}
+
 // Add new event (admin only)
 app.post('/api/events', verifyJWT, async (req, res) => {
   try {
-    const { title, description, date, location, type, link } = req.body;
+    const { title, description, date, location, type, link, registration_link } = req.body;
 
     if (!title || !description || !date || !location) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     const result = await pool.query(
-      'INSERT INTO events (title, description, date, location, type, link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
-      [title, description, date, location, type || 'event', link || null, req.user.id]
+      'INSERT INTO events (title, description, date, location, type, link, registration_link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
+      [title, description, date, location, type || 'event', link || null, registration_link || null, req.user.id]
     );
+
+    const eventId = result.rows[0].id;
+
+    // Generate banner image in background
+    generateEventBanner(eventId, title, description, date, location).then(async (bannerUrl) => {
+      if (bannerUrl) {
+        await pool.query('UPDATE events SET banner_image = $1 WHERE id = $2', [bannerUrl, eventId]);
+      }
+    });
 
     res.status(201).json({
       success: true,
       event: {
-        id: result.rows[0].id,
+        id: eventId,
         title,
         description,
         date,
         location,
         type: type || 'event',
-        link: link || null
+        link: link || null,
+        registration_link: registration_link || null,
+        banner_image: null // Will be generated async
       }
     });
   } catch (error) {

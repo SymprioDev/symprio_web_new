@@ -104,7 +104,7 @@ export default function AIMode() {
   const [showHistory, setShowHistory] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [lastReply, setLastReply] = useState("Hello. I'm Symprio AI. Tap the mic or speak to begin.");
+  const [lastReply, setLastReply] = useState("Hello. I'm Symprio AI. Tap the mic button to start a voice conversation, or use Type to chat.");
   const [messages, setMessages] = useState([]);
   const [textInput, setTextInput] = useState('');
 
@@ -136,21 +136,31 @@ export default function AIMode() {
   /* ---- ElevenLabs Conversational AI ---- */
   const initElevenLabs = useCallback(async () => {
     try {
-      const res = await fetch('/api/elevenlabs/signed-url');
-      if (!res.ok) throw new Error('Failed to get signed URL');
-      const { signedUrl } = await res.json();
+      // Request mic permission first
+      await navigator.mediaDevices.getUserMedia({ audio: true });
 
+      const res = await fetch('/api/elevenlabs/signed-url');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const signedUrl = data.signedUrl || data.signed_url;
+      if (!signedUrl) throw new Error('No signed URL in response');
+
+      console.log('[ElevenLabs] Starting session...');
       const conversation = await Conversation.startSession({
         signedUrl,
         onConnect: () => {
-          console.log('Connected to ElevenLabs');
+          console.log('[ElevenLabs] Connected');
           setStatus('listening');
         },
         onDisconnect: () => {
-          console.log('Disconnected from ElevenLabs');
+          console.log('[ElevenLabs] Disconnected');
           setStatus('idle');
         },
         onMessage: (message) => {
+          console.log('[ElevenLabs] Message:', message);
           if (message.source === 'user') {
             setTranscript(message.message);
             setMessages(prev => [...prev, { role: 'user', content: message.message }]);
@@ -171,8 +181,14 @@ export default function AIMode() {
 
       conversationRef.current = conversation;
     } catch (err) {
-      console.error('Failed to start ElevenLabs:', err);
-      setLastReply('Voice agent unavailable. Use the Type button instead.');
+      console.error('[ElevenLabs] Failed:', err.message, err);
+      if (err.name === 'NotFoundError' || err.message.includes('device not found')) {
+        setLastReply('No microphone detected. Please connect a mic and tap the mic button, or use Type to chat.');
+      } else if (err.name === 'NotAllowedError') {
+        setLastReply('Microphone access denied. Please allow mic permission and tap the mic button to retry.');
+      } else {
+        setLastReply(`Voice connection issue. Tap mic to retry, or use Type to chat.`);
+      }
       setStatus('idle');
     }
   }, []);
@@ -201,14 +217,14 @@ export default function AIMode() {
       themeAudioRef.current = audio;
     } catch { /* no audio */ }
 
-    // Mic stream for audio visualizer (not for speech recognition)
+    // Try to get mic for visualizer — don't auto-start ElevenLabs
+    // User clicks mic button to start voice conversation
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       micStreamRef.current = stream;
       setupAudioVisualizer(stream);
-    }).catch(() => { /* no mic */ });
-
-    // Auto-start ElevenLabs conversation
-    initElevenLabs();
+    }).catch(() => {
+      console.log('[AIMode] No mic available — visualizer will use idle animation');
+    });
 
     // Canvas animation loop
     const canvas = canvasRef.current;

@@ -162,3 +162,9 @@ a, button {
 /* Orbixa hover scale */
 .hover-scale { transition: transform 0.3s ease; }
 .hover-scale:hover { transform: translateY(-3px); }
+
+/* AI Mode pulse dot */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}

@@ -178,8 +178,30 @@ export default function SymprioNavbar() {
           </Link>
         </div>
 
-        {/* CTA + Hamburger */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        {/* CTA + AI Mode + Hamburger */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <button
+            onClick={() => navigate('/ai')}
+            className="hide-on-mobile"
+            style={{
+              padding: '10px 20px',
+              fontSize: '13px',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #0a0a1a, #185ADB)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              letterSpacing: '0.02em',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0D9488', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
+            AI Mode
+          </button>
           <button
             onClick={() => navigate('/contact')}
             className="btn-pill btn-primary hide-on-mobile"

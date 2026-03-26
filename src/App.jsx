@@ -46,6 +46,7 @@ import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
 import BlogLatestPosts from './components/BlogLatestPosts';
 import Industries from './components/Industries';
+import AIMode from './components/AIMode';
 import PowerfulFeatures from './components/PowerfulFeatures';
 
 const HomePage = () => {
@@ -169,6 +170,7 @@ function App() {
       <Route path="/enquiry" element={<Navigate to="/contact" replace />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/support-subscription" element={<ServicePage component={SupportSubscription} />} />
+      <Route path="/ai" element={<AIMode />} />
       <Route 
         path="/admin" 
         element={

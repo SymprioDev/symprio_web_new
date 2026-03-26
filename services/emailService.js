@@ -257,11 +257,13 @@ export async function sendTestEmail(apiKey, domain, companyEmail) {
     return { success: true };
 
   } catch (error) {
-    console.error("Test Email Error:", error.message);
+    const errMsg = error.message || error.body?.message || JSON.stringify(error.body || error);
+    console.error("Test Email Error:", errMsg);
+    console.error("Test Email Full Error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
     if (error.response) {
-      console.error("MailerSend response:", error.response.body);
+      console.error("MailerSend response:", JSON.stringify(error.response.body || error.response));
     }
-    return { success: false, message: error.message };
+    return { success: false, message: errMsg };
   }
 }
 

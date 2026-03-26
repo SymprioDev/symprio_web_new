@@ -2,89 +2,94 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /* =========================================================
-   Knight Rider Scanner — Canvas Drawing
+   KITT Scanner — Canvas Drawing (Knight Rider diamond bars)
    ========================================================= */
-function drawKnightRider(ctx, W, H, time, audioData, status) {
-  ctx.clearRect(0, 0, W, H);
+function drawKITT(ctx, W, H, time, audioData, status) {
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, W, H);
 
-  const centerY = H * 0.45;
-  const barWidth = Math.min(W * 0.6, 500);
-  const barX = (W - barWidth) / 2;
+  const centerX = W / 2;
+  const centerY = H * 0.42;
 
-  // Speed based on status
+  // Scale bars to ~35% of screen width
+  const scale = Math.min(W * 0.35 / 160, 2.2);
+  const barH = 22 * scale;
+  const barGap = 6 * scale;
+  const colGap = 16 * scale;
+
+  // Column configs: x offset multiplier, bar count, max width
+  const columns = [
+    { x: -1, bars: 3, maxW: 140 * scale },
+    { x: 0,  bars: 5, maxW: 160 * scale },
+    { x: 1,  bars: 3, maxW: 140 * scale },
+  ];
+
+  // Scanner sweep speed varies by status
   const speed =
-    status === 'listening' ? 3
-    : status === 'speaking' ? 2.5
-    : status === 'thinking' ? 4
-    : 1;
-  const pos = (Math.sin(time * speed) + 1) / 2; // 0 to 1
-  const lightX = barX + pos * barWidth;
+    status === 'listening' ? 2.5
+    : status === 'speaking' ? 2
+    : status === 'thinking' ? 3.5
+    : 1.2;
+  const scanPos = Math.sin(time * speed); // -1 to 1
 
-  // "SYMPRIO" watermark text behind scanner
-  ctx.fillStyle = 'rgba(255,255,255,0.06)';
-  ctx.font = `${Math.min(120, W * 0.12)}px Inter, -apple-system, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('SYMPRIO', W / 2, centerY - 80);
+  // Reset shadow before drawing bars
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
 
-  // Audio equalizer bars above scanner
-  const eqBars = 40;
-  const eqBarWidth = barWidth / eqBars;
-  for (let i = 0; i < eqBars; i++) {
-    const freq = audioData
-      ? (audioData[i * 2] || 0) / 255
-      : Math.sin(time * 2 + i * 0.4) * 0.15 + 0.15;
-    const barH = status === 'idle' ? freq * 30 : freq * 80;
-    const x = barX + i * eqBarWidth + 2;
+  columns.forEach(col => {
+    const colX = centerX + col.x * (col.maxW + colGap);
+    const totalH = col.bars * barH + (col.bars - 1) * barGap;
+    const startY = centerY - totalH / 2;
 
-    // Distance from scanner light affects brightness
-    const distFromLight = Math.abs(x - lightX) / barWidth;
-    const alpha = Math.max(0.1, 0.7 - distFromLight);
+    for (let i = 0; i < col.bars; i++) {
+      // Diamond shape: widest in center row, narrower at edges
+      const centerIdx = (col.bars - 1) / 2;
+      const distFromCenter = centerIdx === 0 ? 0 : Math.abs(i - centerIdx) / centerIdx;
+      const barW = col.maxW * (1 - distFromCenter * 0.35);
 
-    ctx.fillStyle = `rgba(24, 90, 219, ${alpha})`;
-    ctx.fillRect(x, centerY - barH - 15, eqBarWidth - 4, barH);
+      const y = startY + i * (barH + barGap);
+      const x = colX - barW / 2;
 
-    // Mirror below
-    ctx.fillStyle = `rgba(13, 148, 136, ${alpha * 0.3})`;
-    ctx.fillRect(x, centerY + 15, eqBarWidth - 4, barH * 0.4);
-  }
+      // Brightness: scanner proximity + bar position
+      const colDist = Math.abs(scanPos - col.x * 0.8);
+      const brightness = Math.max(0.15, 1 - colDist * 0.8 - distFromCenter * 0.3);
 
-  // Draw the scanner track (dark line)
-  ctx.beginPath();
-  ctx.moveTo(barX, centerY);
-  ctx.lineTo(barX + barWidth, centerY);
-  ctx.strokeStyle = 'rgba(24, 90, 219, 0.15)';
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  ctx.stroke();
+      // Audio reactivity
+      const audioIdx = Math.abs(i + col.x * 3 + 10);
+      const audioBoost = audioData ? (audioData[audioIdx] || 128) / 255 : 0.5;
+      const finalBright = brightness * (0.6 + audioBoost * 0.4);
 
-  // Scanning light glow trail
-  const glowRadius = status === 'listening' || status === 'speaking' ? 100 : 80;
-  const gradient = ctx.createRadialGradient(lightX, centerY, 0, lightX, centerY, glowRadius);
-  gradient.addColorStop(0, status === 'listening' ? 'rgba(24, 90, 219, 1)' : 'rgba(24, 90, 219, 0.8)');
-  gradient.addColorStop(0.3, 'rgba(24, 90, 219, 0.3)');
-  gradient.addColorStop(1, 'transparent');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(barX - glowRadius, centerY - glowRadius / 2, barWidth + glowRadius * 2, glowRadius);
+      // Red color with varying brightness
+      const r = Math.floor(Math.min(255, finalBright * 255));
+      const g = Math.floor(Math.min(255, finalBright * 20));
 
-  // Bright center dot — outer glow
-  ctx.beginPath();
-  ctx.arc(lightX, centerY, 12, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(24, 90, 219, 0.6)';
-  ctx.fill();
+      // Draw bar with rounded corners
+      ctx.save();
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      const radius = 4 * scale;
+      ctx.roundRect(x, y, barW, barH, radius);
+      ctx.fillStyle = `rgb(${r}, ${g}, 0)`;
+      ctx.fill();
 
-  // Bright center dot — white core
-  ctx.beginPath();
-  ctx.arc(lightX, centerY, 5, 0, Math.PI * 2);
-  ctx.fillStyle = '#fff';
-  ctx.fill();
+      // Glow on bright bars
+      if (finalBright > 0.6) {
+        ctx.shadowColor = `rgba(255, 50, 0, ${finalBright * 0.5})`;
+        ctx.shadowBlur = 20 * scale;
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+  });
 
-  // Horizontal light streak along the track
-  const streakGrad = ctx.createLinearGradient(lightX - 60, 0, lightX + 60, 0);
-  streakGrad.addColorStop(0, 'transparent');
-  streakGrad.addColorStop(0.5, 'rgba(24, 90, 219, 0.4)');
-  streakGrad.addColorStop(1, 'transparent');
-  ctx.fillStyle = streakGrad;
-  ctx.fillRect(lightX - 60, centerY - 2, 120, 4);
+  // Subtle horizontal scan glow
+  const scanLineX = centerX + scanPos * 200 * scale;
+  const scanGrad = ctx.createRadialGradient(scanLineX, centerY, 0, scanLineX, centerY, 100 * scale);
+  scanGrad.addColorStop(0, 'rgba(255, 50, 0, 0.08)');
+  scanGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = scanGrad;
+  ctx.fillRect(0, centerY - 80 * scale, W, 160 * scale);
 }
 
 /* =========================================================
@@ -107,7 +112,7 @@ export default function AIMode() {
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const recognitionRef = useRef(null);
-  const ambientRef = useRef(null);
+  const themeAudioRef = useRef(null);
   const micStreamRef = useRef(null);
   const handleSendRef = useRef(null);
   const statusRef = useRef(status);
@@ -117,26 +122,7 @@ export default function AIMode() {
 
   useEffect(() => { statusRef.current = status; }, [status]);
 
-  /* ---- Ambient drone ---- */
-  const createAmbientSound = useCallback(() => {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const gainNode = ctx.createGain();
-      gainNode.gain.value = 0.03;
-      gainNode.connect(ctx.destination);
-      const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 80;
-      osc1.connect(gainNode); osc1.start();
-      const osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 120;
-      const gain2 = ctx.createGain(); gain2.gain.value = 0.5;
-      osc2.connect(gain2); gain2.connect(gainNode); osc2.start();
-      const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.1;
-      const lfoGain = ctx.createGain(); lfoGain.gain.value = 10;
-      lfo.connect(lfoGain); lfoGain.connect(osc1.frequency); lfo.start();
-      return { ctx, gainNode, oscillators: [osc1, osc2, lfo] };
-    } catch { return null; }
-  }, []);
-
-  /* ---- Mic analyser for canvas EQ bars ---- */
+  /* ---- Mic analyser for audio-reactive bars ---- */
   const setupAudioVisualizer = useCallback((stream) => {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -154,7 +140,8 @@ export default function AIMode() {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang || detectedLangRef.current || 'en-US';
-    u.rate = 1.0; u.pitch = 0.9;
+    u.rate = 1.0;
+    u.pitch = 0.9;
     const voices = window.speechSynthesis.getVoices();
     const langVoice = voices.find(v => v.lang.startsWith(u.lang.split('-')[0]));
     u.voice = langVoice || voices.find(v => v.name.includes('Google') || v.name.includes('Daniel')) || voices[0];
@@ -220,9 +207,14 @@ export default function AIMode() {
     // Preload TTS voices
     if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
 
-    // Ambient sound
-    const ambient = createAmbientSound();
-    ambientRef.current = ambient;
+    // Knight Rider theme audio
+    try {
+      const audio = new Audio('/knight-rider.mp3');
+      audio.loop = true;
+      audio.volume = 0.15;
+      audio.play().catch(() => { /* autoplay blocked */ });
+      themeAudioRef.current = audio;
+    } catch { /* no audio */ }
 
     // Speech recognition
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -296,14 +288,13 @@ export default function AIMode() {
         lastFrameRef.current = now;
         timeRef.current += dt;
 
-        // Gather audio data
         let audioData = null;
         if (analyserRef.current) {
           audioData = new Uint8Array(analyserRef.current.frequencyBinCount);
           analyserRef.current.getByteFrequencyData(audioData);
         }
 
-        drawKnightRider(ctx, canvas.width, canvas.height, timeRef.current, audioData, statusRef.current);
+        drawKITT(ctx, canvas.width, canvas.height, timeRef.current, audioData, statusRef.current);
         animFrameRef.current = requestAnimationFrame(loop);
       };
       animFrameRef.current = requestAnimationFrame(loop);
@@ -314,10 +305,7 @@ export default function AIMode() {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      if (ambientRef.current) {
-        ambientRef.current.oscillators.forEach(o => { try { o.stop(); } catch { /* */ } });
-        try { ambientRef.current.ctx.close(); } catch { /* */ }
-      }
+      if (themeAudioRef.current) { themeAudioRef.current.pause(); themeAudioRef.current = null; }
       if (audioContextRef.current) { try { audioContextRef.current.close(); } catch { /* */ } }
       if (micStreamRef.current) micStreamRef.current.getTracks().forEach(t => t.stop());
       if (canvas && canvas._resizeHandler) {
@@ -326,11 +314,11 @@ export default function AIMode() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ---- Mute toggle ---- */
+  /* ---- Mute toggle (theme audio) ---- */
   const toggleMute = useCallback(() => {
     setIsMuted(prev => {
       const next = !prev;
-      if (ambientRef.current?.gainNode) ambientRef.current.gainNode.gain.value = next ? 0 : 0.03;
+      if (themeAudioRef.current) themeAudioRef.current.volume = next ? 0 : 0.15;
       return next;
     });
   }, []);
@@ -359,18 +347,22 @@ export default function AIMode() {
   return (
     <div style={S.wrapper}>
 
-      {/* Canvas fills screen */}
-      <canvas ref={canvasRef} style={S.canvas} />
+      {/* Canvas fills entire screen */}
+      <canvas
+        ref={canvasRef}
+        style={S.canvas}
+        onClick={toggleListening}
+      />
 
       {/* Top bar */}
       <header style={S.header}>
         <div style={S.headerLeft}>
           <span style={S.logo}>SYMPRIO</span>
-          <span style={S.dot} className="ai-dot" />
+          <span style={S.dot} className="kitt-dot" />
           <span style={S.aiLabel}>AI</span>
         </div>
         <div style={S.headerRight}>
-          <button onClick={toggleMute} style={S.glassBtn} title={isMuted ? 'Unmute' : 'Mute'}>
+          <button onClick={toggleMute} style={S.glassCircle} title={isMuted ? 'Unmute' : 'Mute'}>
             {isMuted ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M11 5L6 9H2v6h4l5 4V5z"/>
@@ -402,7 +394,7 @@ export default function AIMode() {
         </div>
       </header>
 
-      {/* Status text — centered below scanner */}
+      {/* Status — below the scanner */}
       <div style={S.statusArea}>
         <p style={S.statusText}>{statusLabel}</p>
         {transcript && (status === 'listening' || status === 'thinking') && (
@@ -410,25 +402,25 @@ export default function AIMode() {
         )}
       </div>
 
-      {/* Bottom controls */}
+      {/* Bottom area */}
       <div style={S.bottom}>
-        {/* Last AI reply */}
-        <div style={S.replyBubble} className="ai-bubble-in">
+        {/* Last reply bubble */}
+        <div style={S.replyBubble} className="kitt-bubble-in">
           <p style={S.replyText}>{lastReply}</p>
         </div>
 
-        {/* Chat history overlay */}
+        {/* History overlay */}
         {showHistory && messages.length > 0 && (
-          <div style={S.historyPanel} className="ai-history-scroll">
+          <div style={S.historyPanel} className="kitt-history-scroll">
             {messages.map((m, i) => (
               <div
                 key={i}
-                className="ai-bubble-in"
+                className="kitt-bubble-in"
                 style={m.role === 'user' ? S.bubbleUser : S.bubbleAI}
               >
                 <span style={{
                   fontSize: 10, textTransform: 'uppercase', letterSpacing: 1,
-                  color: m.role === 'user' ? '#185ADB' : '#0D9488', fontWeight: 600, marginRight: 8,
+                  color: m.role === 'user' ? '#ff4444' : '#cc2222', fontWeight: 600, marginRight: 8,
                 }}>
                   {m.role === 'user' ? 'You' : 'AI'}
                 </span>
@@ -438,10 +430,10 @@ export default function AIMode() {
           </div>
         )}
 
-        {/* Control buttons */}
+        {/* Controls */}
         <div style={S.controls}>
           <button onClick={() => setShowHistory(!showHistory)} style={S.pillBtn}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
             <span style={{ fontSize: 11 }}>{showHistory ? 'Hide' : 'History'}</span>
@@ -451,12 +443,10 @@ export default function AIMode() {
             onClick={toggleListening}
             style={{
               ...S.micBtn,
-              background: status === 'listening' ? '#dc2626' : '#185ADB',
-              boxShadow: status === 'listening'
-                ? '0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25)'
-                : '0 0 0 2px rgba(24,90,219,0.15)',
+              background: status === 'listening' ? '#dc2626' : 'rgba(255,255,255,0.08)',
+              border: status === 'listening' ? '2px solid #ff4444' : '2px solid rgba(255,255,255,0.1)',
             }}
-            className={status === 'listening' ? 'ai-mic-pulse' : ''}
+            className={status === 'listening' ? 'kitt-mic-pulse' : ''}
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -466,7 +456,7 @@ export default function AIMode() {
           </button>
 
           <button onClick={() => setShowTextInput(!showTextInput)} style={S.pillBtn}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/>
             </svg>
@@ -485,9 +475,8 @@ export default function AIMode() {
               style={S.textInput}
             />
             <button type="submit" style={S.sendBtn} disabled={!textInput.trim()}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </button>
           </form>
@@ -500,26 +489,26 @@ export default function AIMode() {
           from { opacity: 0; transform: translateY(20px) scale(0.95); }
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .ai-bubble-in {
+        .kitt-bubble-in {
           animation: bubbleIn 0.4s ease-out both;
         }
 
-        @keyframes aiDotPulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 4px #22c55e; }
-          50% { opacity: 0.4; box-shadow: 0 0 8px #22c55e, 0 0 16px #22c55e; }
+        @keyframes kittDotPulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 4px #ff0000; }
+          50% { opacity: 0.4; box-shadow: 0 0 8px #ff0000, 0 0 16px #ff0000; }
         }
-        .ai-dot { animation: aiDotPulse 2s ease-in-out infinite; }
+        .kitt-dot { animation: kittDotPulse 2s ease-in-out infinite; }
 
         @keyframes micPulse {
           0% { box-shadow: 0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25); }
-          50% { box-shadow: 0 0 0 10px rgba(220,38,38,0.1), 0 0 50px rgba(220,38,38,0.15); }
+          50% { box-shadow: 0 0 0 12px rgba(220,38,38,0.08), 0 0 50px rgba(220,38,38,0.15); }
           100% { box-shadow: 0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25); }
         }
-        .ai-mic-pulse { animation: micPulse 1.5s ease-in-out infinite; }
+        .kitt-mic-pulse { animation: micPulse 1.5s ease-in-out infinite; }
 
-        .ai-history-scroll::-webkit-scrollbar { width: 4px; }
-        .ai-history-scroll::-webkit-scrollbar-track { background: transparent; }
-        .ai-history-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .kitt-history-scroll::-webkit-scrollbar { width: 4px; }
+        .kitt-history-scroll::-webkit-scrollbar-track { background: transparent; }
+        .kitt-history-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
       `}</style>
     </div>
   );
@@ -531,7 +520,7 @@ export default function AIMode() {
 const S = {
   wrapper: {
     position: 'fixed', inset: 0, zIndex: 9999,
-    background: '#050510',
+    background: '#000000',
     color: '#fff',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     overflow: 'hidden',
@@ -540,6 +529,7 @@ const S = {
   canvas: {
     position: 'absolute', inset: 0, zIndex: 1,
     width: '100%', height: '100%',
+    cursor: 'pointer',
   },
 
   /* Header */
@@ -549,15 +539,15 @@ const S = {
     padding: '20px 32px',
   },
   headerLeft: { display: 'flex', alignItems: 'center', gap: 10 },
-  logo: { fontSize: 20, fontWeight: 800, letterSpacing: '0.15em', color: '#fff' },
+  logo: { fontSize: 18, fontWeight: 800, letterSpacing: '0.12em', color: '#fff' },
   dot: {
-    width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block',
+    width: 8, height: 8, borderRadius: '50%', background: '#ff0000', display: 'inline-block',
   },
-  aiLabel: { fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: 1 },
+  aiLabel: { fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: 1 },
   headerRight: { display: 'flex', alignItems: 'center', gap: 12 },
-  glassBtn: {
-    width: 44, height: 44, borderRadius: 12,
-    border: '1px solid rgba(255,255,255,0.1)',
+  glassCircle: {
+    width: 40, height: 40, borderRadius: '50%',
+    border: '1px solid rgba(255,255,255,0.08)',
     background: 'rgba(255,255,255,0.06)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
@@ -568,64 +558,62 @@ const S = {
   exitBtn: {
     display: 'flex', alignItems: 'center',
     background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid rgba(255,255,255,0.08)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
     color: 'rgba(255,255,255,0.7)',
-    padding: '10px 20px', borderRadius: 12,
+    padding: '10px 20px', borderRadius: 10,
     cursor: 'pointer', fontSize: 14, fontWeight: 500,
     transition: 'background 0.2s',
   },
 
   /* Status text below scanner */
   statusArea: {
-    position: 'absolute', bottom: '35%', left: 0, right: 0, zIndex: 10,
+    position: 'absolute', top: '65%', left: 0, right: 0, zIndex: 10,
     display: 'flex', flexDirection: 'column', alignItems: 'center',
     pointerEvents: 'none',
   },
   statusText: {
-    fontSize: 13, fontWeight: 600, letterSpacing: '0.3em',
-    color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase',
+    fontSize: 12, fontWeight: 600, letterSpacing: '0.3em',
+    color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
     margin: 0,
   },
   transcript: {
-    marginTop: 8, fontSize: 15, color: 'rgba(255,255,255,0.3)',
+    marginTop: 8, fontSize: 14, color: 'rgba(255,255,255,0.2)',
     fontStyle: 'italic', textAlign: 'center', maxWidth: 500,
     padding: '0 20px', lineHeight: 1.5,
   },
 
   /* Bottom panel */
   bottom: {
-    position: 'absolute', bottom: 40, left: 0, right: 0, zIndex: 20,
+    position: 'absolute', bottom: 30, left: 0, right: 0, zIndex: 20,
     display: 'flex', flexDirection: 'column', alignItems: 'center',
-    gap: 14, padding: '0 28px',
+    gap: 14, padding: '0 28px', maxWidth: 600, margin: '0 auto',
   },
 
   /* Reply bubble */
   replyBubble: {
-    maxWidth: 600, width: '100%',
-    background: 'rgba(255,255,255,0.04)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
+    width: '100%',
+    background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: 16, padding: '16px 24px',
-    marginBottom: 10,
+    borderRadius: 14, padding: '14px 20px',
+    marginBottom: 6,
   },
   replyText: {
-    margin: 0, fontSize: 15, color: 'rgba(255,255,255,0.7)',
+    margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.6)',
     lineHeight: 1.6,
   },
 
   /* History */
   historyPanel: {
-    maxWidth: 500, width: '100%', maxHeight: 300, overflowY: 'auto',
+    width: '100%', maxHeight: 280, overflowY: 'auto',
     display: 'flex', flexDirection: 'column', gap: 6,
-    padding: '4px 0', marginBottom: 10,
+    padding: '4px 0', marginBottom: 6,
   },
   bubbleUser: {
     fontSize: 13, color: 'rgba(255,255,255,0.6)',
     padding: '10px 14px',
-    background: 'linear-gradient(135deg, rgba(24,90,219,0.15), rgba(24,90,219,0.08))',
+    background: 'linear-gradient(135deg, rgba(220,38,38,0.15), rgba(220,38,38,0.08))',
     borderRadius: 12, lineHeight: 1.5,
     alignSelf: 'flex-end', maxWidth: '85%',
     marginLeft: 'auto',
@@ -634,7 +622,7 @@ const S = {
     fontSize: 13, color: 'rgba(255,255,255,0.55)',
     padding: '10px 14px',
     background: 'rgba(255,255,255,0.03)',
-    borderLeft: '2px solid rgba(24,90,219,0.3)',
+    borderLeft: '2px solid rgba(255,50,0,0.3)',
     borderRadius: 12, lineHeight: 1.5,
     alignSelf: 'flex-start', maxWidth: '85%',
   },
@@ -642,21 +630,22 @@ const S = {
   /* Controls row */
   controls: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    gap: 16,
+    gap: 14,
   },
   pillBtn: {
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
     background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid rgba(255,255,255,0.08)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: 12, padding: '10px 18px',
+    borderRadius: 10, padding: '10px 18px', height: 40,
+    justifyContent: 'center',
     color: 'rgba(255,255,255,0.5)', cursor: 'pointer',
-    fontSize: 12, transition: 'background 0.2s',
+    fontSize: 13, transition: 'background 0.2s',
   },
   micBtn: {
     width: 64, height: 64, borderRadius: '50%',
-    border: 'none', cursor: 'pointer',
+    cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'box-shadow 0.3s, background 0.3s',
     flexShrink: 0,
@@ -665,7 +654,7 @@ const S = {
   /* Text input */
   textForm: {
     display: 'flex', alignItems: 'center', gap: 8,
-    maxWidth: 500, width: '100%', marginTop: 2,
+    width: '100%', marginTop: 2,
   },
   textInput: {
     flex: 1,
@@ -678,7 +667,7 @@ const S = {
   },
   sendBtn: {
     width: 44, height: 44, borderRadius: 12,
-    border: 'none', background: '#185ADB',
+    border: 'none', background: '#dc2626',
     color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', flexShrink: 0,
   },

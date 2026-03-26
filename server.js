@@ -150,6 +150,23 @@ function initializeDatabase() {
       console.error('Error creating jobs table:', err);
     } else {
       console.log('Jobs table ready');
+      // Seed default jobs if table is empty
+      db.get('SELECT COUNT(*) as count FROM jobs', (err, row) => {
+        if (!err && row && row.count === 0) {
+          const seedJobs = [
+            ['Senior RPA Developer', 'Engineering', 'Full-time', 'Design and deploy enterprise RPA solutions using UiPath and Power Automate. Lead bot development, testing, and go-live support.', 'Kuala Lumpur, Malaysia'],
+            ['AI Solution Architect', 'Consulting', 'Full-time', 'Architect AI-powered applications including chatbots, RAG systems, and LLM pipelines for enterprise clients.', 'Singapore / Remote'],
+            ['Oracle Cloud Consultant', 'Consulting', 'Contract', 'Lead Oracle Cloud ERP implementations and migrations for APAC and Middle East clients.', 'India'],
+            ['Business Development Manager', 'Sales', 'Full-time', 'Drive new business in APAC by identifying prospects and closing AI & automation deals.', 'Kuala Lumpur, Malaysia'],
+            ['Digital Marketing Specialist', 'Marketing', 'Full-time', "Own Symprio's digital presence across LinkedIn, Google, and content channels.", 'Remote'],
+            ['UiPath RPA Trainer', 'Consulting', 'Contract', 'Deliver hands-on UiPath and Power Automate training to enterprise clients across APAC.', 'Remote / On-site']
+          ];
+          const stmt = db.prepare('INSERT INTO jobs (title, department, type, description, location, status) VALUES (?, ?, ?, ?, ?, ?)');
+          seedJobs.forEach(j => stmt.run([...j, 'active']));
+          stmt.finalize();
+          console.log('Seeded 6 default jobs');
+        }
+      });
     }
   });
 

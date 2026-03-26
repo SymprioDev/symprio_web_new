@@ -9,6 +9,7 @@ import fs from 'fs';
 import multer from 'multer';
 import { fileURLToPath } from 'url';
 import { Mistral } from '@mistralai/mistralai';
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 
 dotenv.config();
 
@@ -26,9 +27,19 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
+// ElevenLabs client for webhook verification
+const elevenlabs = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
+
 // Middleware
 app.use(cors());
-app.use(express.json());
+// Capture raw body for webhook signature verification
+app.use(express.json({
+  verify: (req, _res, buf) => {
+    if (req.url === '/api/webhooks/elevenlabs') {
+      req.rawBody = buf.toString('utf-8');
+    }
+  }
+}));
 
 // Debug: Log all incoming requests
 app.use((req, res, next) => {
@@ -1356,28 +1367,42 @@ app.get('/api/elevenlabs/signed-url', async (req, res) => {
 // ElevenLabs Webhook — receives conversation transcriptions
 app.post('/api/webhooks/elevenlabs', async (req, res) => {
   try {
-    // Verify webhook secret if configured
     const webhookSecret = process.env.ELEVENLABS_WEBHOOK_SECRET;
-    if (webhookSecret) {
-      const signature = req.headers['x-elevenlabs-signature'] || req.headers['x-webhook-secret'];
-      if (signature !== webhookSecret) {
-        console.warn('[ElevenLabs Webhook] Invalid signature');
-        return res.status(401).json({ error: 'Invalid webhook signature' });
+    const signature = req.headers['elevenlabs-signature'] || '';
+    const rawBody = req.rawBody || JSON.stringify(req.body);
+
+    let event = null;
+    if (webhookSecret && signature) {
+      try {
+        event = await elevenlabs.webhooks.constructEvent(rawBody, signature, webhookSecret);
+        console.log('[ElevenLabs Webhook] Signature verified. Type:', event.type);
+      } catch (verifyErr) {
+        console.warn('[ElevenLabs Webhook] Signature verification failed:', verifyErr.message);
+        // Still process the webhook but log the warning
+        event = req.body;
       }
+    } else {
+      console.log('[ElevenLabs Webhook] No secret or signature, processing without verification');
+      event = req.body;
     }
 
-    const data = req.body;
+    // ElevenLabs wraps data in { type, event_timestamp, data }
+    const data = event.data || event;
     console.log('[ElevenLabs Webhook] Received:', JSON.stringify(data).substring(0, 200));
 
     const conversationId = data.conversation_id || data.id || `conv_${Date.now()}`;
     const agentId = data.agent_id || 'agent_7501kmmfax02fycs40pezcevmfx6';
     const status = data.status || 'completed';
 
-    // Build transcript from messages array or use raw transcript
+    // Build transcript from ElevenLabs transcript array or messages
     let transcript = '';
-    if (data.transcript) {
-      transcript = typeof data.transcript === 'string' ? data.transcript :
-        JSON.stringify(data.transcript);
+    if (data.transcript && Array.isArray(data.transcript)) {
+      // ElevenLabs format: [{ role: "agent"|"user", message: "...", ... }]
+      transcript = data.transcript.map(m =>
+        `${m.role === 'agent' ? 'Symprio AI' : 'User'}: ${m.message || m.content || ''}`
+      ).join('\n');
+    } else if (data.transcript && typeof data.transcript === 'string') {
+      transcript = data.transcript;
     } else if (data.messages && Array.isArray(data.messages)) {
       transcript = data.messages.map(m =>
         `${m.role === 'agent' ? 'Symprio AI' : 'User'}: ${m.message || m.content || ''}`

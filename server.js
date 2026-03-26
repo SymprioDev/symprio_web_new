@@ -1356,6 +1356,16 @@ app.get('/api/elevenlabs/signed-url', async (req, res) => {
 // ElevenLabs Webhook — receives conversation transcriptions
 app.post('/api/webhooks/elevenlabs', async (req, res) => {
   try {
+    // Verify webhook secret if configured
+    const webhookSecret = process.env.ELEVENLABS_WEBHOOK_SECRET;
+    if (webhookSecret) {
+      const signature = req.headers['x-elevenlabs-signature'] || req.headers['x-webhook-secret'];
+      if (signature !== webhookSecret) {
+        console.warn('[ElevenLabs Webhook] Invalid signature');
+        return res.status(401).json({ error: 'Invalid webhook signature' });
+      }
+    }
+
     const data = req.body;
     console.log('[ElevenLabs Webhook] Received:', JSON.stringify(data).substring(0, 200));
 

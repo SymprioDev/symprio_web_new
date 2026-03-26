@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Conversation } from '@11labs/client';
 
 /* =========================================================
    KITT Scanner — Canvas Drawing (Knight Rider diamond bars)
@@ -111,12 +112,10 @@ export default function AIMode() {
   const animFrameRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
-  const recognitionRef = useRef(null);
+  const conversationRef = useRef(null);
   const themeAudioRef = useRef(null);
   const micStreamRef = useRef(null);
-  const handleSendRef = useRef(null);
   const statusRef = useRef(status);
-  const detectedLangRef = useRef('en-US');
   const timeRef = useRef(0);
   const lastFrameRef = useRef(performance.now());
 
@@ -134,79 +133,65 @@ export default function AIMode() {
     } catch { /* no analyser */ }
   }, []);
 
-  /* ---- TTS ---- */
-  const speak = useCallback((text, lang) => {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang || detectedLangRef.current || 'en-US';
-    u.rate = 1.0;
-    u.pitch = 0.9;
-    const voices = window.speechSynthesis.getVoices();
-    const langVoice = voices.find(v => v.lang.startsWith(u.lang.split('-')[0]));
-    u.voice = langVoice || voices.find(v => v.name.includes('Google') || v.name.includes('Daniel')) || voices[0];
-    u.onstart = () => setStatus('speaking');
-    u.onend = () => { setStatus('idle'); setTimeout(() => startListening(), 300); };
-    window.speechSynthesis.speak(u);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  /* ---- Chat send ---- */
-  const handleSend = useCallback(async (text) => {
-    const msg = (text || '').trim();
-    if (!msg) return;
-    const userMsg = { role: 'user', content: msg };
-    setMessages(prev => [...prev, userMsg]);
-    setTranscript(msg);
-    setStatus('thinking');
+  /* ---- ElevenLabs Conversational AI ---- */
+  const initElevenLabs = useCallback(async () => {
     try {
-      const res = await fetch('/api/ai-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: `[Respond in the same language as the user's message] ${msg}`,
-          history: [...messages.slice(-10), userMsg],
-        }),
+      const res = await fetch('/api/elevenlabs/signed-url');
+      if (!res.ok) throw new Error('Failed to get signed URL');
+      const { signedUrl } = await res.json();
+
+      const conversation = await Conversation.startSession({
+        signedUrl,
+        onConnect: () => {
+          console.log('Connected to ElevenLabs');
+          setStatus('listening');
+        },
+        onDisconnect: () => {
+          console.log('Disconnected from ElevenLabs');
+          setStatus('idle');
+        },
+        onMessage: (message) => {
+          if (message.source === 'user') {
+            setTranscript(message.message);
+            setMessages(prev => [...prev, { role: 'user', content: message.message }]);
+          } else if (message.source === 'ai') {
+            setLastReply(message.message);
+            setMessages(prev => [...prev, { role: 'assistant', content: message.message }]);
+          }
+        },
+        onModeChange: (mode) => {
+          setStatus(mode.mode === 'speaking' ? 'speaking' : 'listening');
+        },
+        onError: (error) => {
+          console.error('ElevenLabs error:', error);
+          setLastReply('Connection issue. Tap mic to reconnect.');
+          setStatus('idle');
+        },
       });
-      const data = await res.json();
-      const reply = data.reply || "I'm having trouble connecting. Please try again.";
-      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-      setLastReply(reply);
-      speak(reply, detectedLangRef.current);
-    } catch {
-      const err = 'Connection interrupted. Please try again.';
-      setMessages(prev => [...prev, { role: 'assistant', content: err }]);
-      setLastReply(err);
+
+      conversationRef.current = conversation;
+    } catch (err) {
+      console.error('Failed to start ElevenLabs:', err);
+      setLastReply('Voice agent unavailable. Use the Type button instead.');
       setStatus('idle');
     }
-  }, [messages, speak]);
-
-  useEffect(() => { handleSendRef.current = handleSend; }, [handleSend]);
-
-  /* ---- Speech recognition ---- */
-  const startListening = useCallback(() => {
-    const rec = recognitionRef.current;
-    if (!rec) return;
-    if (statusRef.current === 'thinking' || statusRef.current === 'speaking') return;
-    try { rec.start(); setStatus('listening'); } catch { /* already running */ }
   }, []);
 
-  const stopListening = useCallback(() => {
-    const rec = recognitionRef.current;
-    if (!rec) return;
-    try { rec.stop(); } catch { /* not running */ }
-    setStatus('idle');
-  }, []);
-
-  const toggleListening = useCallback(() => {
-    if (statusRef.current === 'listening') stopListening();
-    else if (statusRef.current === 'idle') startListening();
-  }, [startListening, stopListening]);
+  /* ---- Toggle listening ---- */
+  const toggleListening = useCallback(async () => {
+    if (statusRef.current === 'listening' || statusRef.current === 'speaking') {
+      // Stop conversation
+      await conversationRef.current?.endSession();
+      conversationRef.current = null;
+      setStatus('idle');
+    } else {
+      // Start new conversation
+      initElevenLabs();
+    }
+  }, [initElevenLabs]);
 
   /* ---- Init everything on mount ---- */
   useEffect(() => {
-    // Preload TTS voices
-    if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
-
     // Knight Rider theme audio
     try {
       const audio = new Audio('/knight-rider.mp3');
@@ -216,59 +201,14 @@ export default function AIMode() {
       themeAudioRef.current = audio;
     } catch { /* no audio */ }
 
-    // Speech recognition
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SR) {
-      const recognition = new SR();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = '';
-      let finalTranscript = '';
-
-      recognition.onresult = (event) => {
-        let interim = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const result = event.results[i];
-          if (result.isFinal) {
-            finalTranscript += result[0].transcript;
-            if (result[0].lang) detectedLangRef.current = result[0].lang;
-          } else {
-            interim += result[0].transcript;
-          }
-        }
-        setTranscript(finalTranscript || interim);
-      };
-
-      recognition.onend = () => {
-        if (finalTranscript.trim() && statusRef.current === 'listening') {
-          const msg = finalTranscript.trim();
-          finalTranscript = '';
-          setStatus('thinking');
-          handleSendRef.current(msg);
-        } else if (statusRef.current === 'listening') {
-          try { recognition.start(); } catch { /* */ }
-        }
-      };
-
-      recognition.onerror = (e) => {
-        if (e.error === 'no-speech' && statusRef.current === 'listening') {
-          try { recognition.start(); } catch { /* */ }
-        }
-      };
-
-      recognitionRef.current = recognition;
-    }
-
-    // Mic stream
+    // Mic stream for audio visualizer (not for speech recognition)
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       micStreamRef.current = stream;
       setupAudioVisualizer(stream);
-      setTimeout(() => {
-        if (recognitionRef.current) {
-          try { recognitionRef.current.start(); setStatus('listening'); } catch { /* */ }
-        }
-      }, 500);
     }).catch(() => { /* no mic */ });
+
+    // Auto-start ElevenLabs conversation
+    initElevenLabs();
 
     // Canvas animation loop
     const canvas = canvasRef.current;
@@ -302,9 +242,8 @@ export default function AIMode() {
 
     // Cleanup
     return () => {
+      if (conversationRef.current) conversationRef.current.endSession();
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       if (themeAudioRef.current) { themeAudioRef.current.pause(); themeAudioRef.current = null; }
       if (audioContextRef.current) { try { audioContextRef.current.close(); } catch { /* */ } }
       if (micStreamRef.current) micStreamRef.current.getTracks().forEach(t => t.stop());
@@ -323,16 +262,32 @@ export default function AIMode() {
     });
   }, []);
 
-  /* ---- Text submit ---- */
-  const handleTextSubmit = useCallback((e) => {
+  /* ---- Text submit (Mistral fallback for typed messages) ---- */
+  const handleTextSubmit = useCallback(async (e) => {
     e.preventDefault();
     const msg = textInput.trim();
     if (!msg) return;
     setTextInput('');
     setShowTextInput(false);
-    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
-    handleSend(msg);
-  }, [textInput, handleSend]);
+    setMessages(prev => [...prev, { role: 'user', content: msg }]);
+    setTranscript(msg);
+    setStatus('thinking');
+    try {
+      const res = await fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg, history: messages.slice(-10) }),
+      });
+      const data = await res.json();
+      const reply = data.reply || 'Please try again.';
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+      setLastReply(reply);
+      setStatus('idle');
+    } catch {
+      setLastReply('Connection issue.');
+      setStatus('idle');
+    }
+  }, [textInput, messages]);
 
   /* ---- Status label ---- */
   const statusLabel =
@@ -377,9 +332,11 @@ export default function AIMode() {
             )}
           </button>
           <button
-            onClick={() => {
-              if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
-              window.speechSynthesis.cancel();
+            onClick={async () => {
+              if (conversationRef.current) {
+                await conversationRef.current.endSession();
+                conversationRef.current = null;
+              }
               navigate('/');
             }}
             style={S.exitBtn}

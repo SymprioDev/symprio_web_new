@@ -128,9 +128,22 @@ export default function Careers() {
     document.body.style.overflow = '';
   }
 
+  const [fileError, setFileError] = useState('');
+
   function handleChange(e) {
     const { name, value, files } = e.target;
-    setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
+    if (files && files[0]) {
+      const file = files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        setFileError('File size exceeds 5MB limit. Please upload a smaller file.');
+        e.target.value = '';
+        return;
+      }
+      setFileError('');
+      setFormData(prev => ({ ...prev, [name]: file }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   }
 
   async function handleSubmit(e) {
@@ -472,8 +485,13 @@ export default function Careers() {
                       }}
                     />
                     <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
-                      Accepted formats: PDF, DOC, DOCX
+                      Accepted formats: PDF, DOC, DOCX (Max 5MB)
                     </p>
+                    {fileError && (
+                      <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '4px', fontWeight: '600' }}>
+                        {fileError}
+                      </p>
+                    )}
                   </div>
 
                   {/* Submit */}

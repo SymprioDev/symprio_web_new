@@ -136,21 +136,31 @@ export default function AIMode() {
   /* ---- ElevenLabs Conversational AI ---- */
   const initElevenLabs = useCallback(async () => {
     try {
-      const res = await fetch('/api/elevenlabs/signed-url');
-      if (!res.ok) throw new Error('Failed to get signed URL');
-      const { signedUrl } = await res.json();
+      // Request mic permission first
+      await navigator.mediaDevices.getUserMedia({ audio: true });
 
+      const res = await fetch('/api/elevenlabs/signed-url');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const signedUrl = data.signedUrl || data.signed_url;
+      if (!signedUrl) throw new Error('No signed URL in response');
+
+      console.log('[ElevenLabs] Starting session...');
       const conversation = await Conversation.startSession({
         signedUrl,
         onConnect: () => {
-          console.log('Connected to ElevenLabs');
+          console.log('[ElevenLabs] Connected');
           setStatus('listening');
         },
         onDisconnect: () => {
-          console.log('Disconnected from ElevenLabs');
+          console.log('[ElevenLabs] Disconnected');
           setStatus('idle');
         },
         onMessage: (message) => {
+          console.log('[ElevenLabs] Message:', message);
           if (message.source === 'user') {
             setTranscript(message.message);
             setMessages(prev => [...prev, { role: 'user', content: message.message }]);
@@ -171,8 +181,8 @@ export default function AIMode() {
 
       conversationRef.current = conversation;
     } catch (err) {
-      console.error('Failed to start ElevenLabs:', err);
-      setLastReply('Voice agent unavailable. Use the Type button instead.');
+      console.error('[ElevenLabs] Failed:', err.message, err);
+      setLastReply(`Voice agent connecting issue: ${err.message}. Use Type button or tap mic to retry.`);
       setStatus('idle');
     }
   }, []);

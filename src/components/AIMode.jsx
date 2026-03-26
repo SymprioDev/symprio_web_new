@@ -1,143 +1,90 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as THREE from 'three';
 
 /* =========================================================
-   Three.js Scene Factory
+   Knight Rider Scanner — Canvas Drawing
    ========================================================= */
-function createScene(container) {
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    45, container.clientWidth / container.clientHeight, 0.1, 1000
-  );
-  camera.position.z = 5;
+function drawKnightRider(ctx, W, H, time, audioData, status) {
+  ctx.clearRect(0, 0, W, H);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(0x000000, 0);
-  container.appendChild(renderer.domElement);
+  const centerY = H * 0.45;
+  const barWidth = Math.min(W * 0.6, 500);
+  const barX = (W - barWidth) / 2;
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0x404040, 0.5));
-  const light1 = new THREE.PointLight(0x185ADB, 2, 50);
-  light1.position.set(5, 5, 5);
-  scene.add(light1);
-  const light2 = new THREE.PointLight(0x0D9488, 1.5, 50);
-  light2.position.set(-5, -3, 3);
-  scene.add(light2);
+  // Speed based on status
+  const speed =
+    status === 'listening' ? 3
+    : status === 'speaking' ? 2.5
+    : status === 'thinking' ? 4
+    : 1;
+  const pos = (Math.sin(time * speed) + 1) / 2; // 0 to 1
+  const lightX = barX + pos * barWidth;
 
-  // Main morphing sphere
-  const geometry = new THREE.IcosahedronGeometry(1.5, 20);
-  const originalPositions = geometry.attributes.position.array.slice();
-  const material = new THREE.MeshPhongMaterial({
-    color: 0x185ADB,
-    emissive: 0x0D9488,
-    emissiveIntensity: 0.15,
-    shininess: 100,
-    transparent: true,
-    opacity: 0.85,
-  });
-  const sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
+  // "SYMPRIO" watermark text behind scanner
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  ctx.font = `${Math.min(120, W * 0.12)}px Inter, -apple-system, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('SYMPRIO', W / 2, centerY - 80);
 
-  // Outer wireframe shell
-  const wireGeo = new THREE.IcosahedronGeometry(1.7, 8);
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: 0x185ADB,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.08,
-  });
-  const wireframe = new THREE.Mesh(wireGeo, wireMat);
-  scene.add(wireframe);
+  // Audio equalizer bars above scanner
+  const eqBars = 40;
+  const eqBarWidth = barWidth / eqBars;
+  for (let i = 0; i < eqBars; i++) {
+    const freq = audioData
+      ? (audioData[i * 2] || 0) / 255
+      : Math.sin(time * 2 + i * 0.4) * 0.15 + 0.15;
+    const barH = status === 'idle' ? freq * 30 : freq * 80;
+    const x = barX + i * eqBarWidth + 2;
 
-  // Floating particles
-  const particlesGeo = new THREE.BufferGeometry();
-  const particleCount = 200;
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount * 3; i++) {
-    positions[i] = (Math.random() - 0.5) * 10;
-  }
-  particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particleMat = new THREE.PointsMaterial({
-    color: 0x185ADB, size: 0.02, transparent: true, opacity: 0.4,
-  });
-  const particles = new THREE.Points(particlesGeo, particleMat);
-  scene.add(particles);
+    // Distance from scanner light affects brightness
+    const distFromLight = Math.abs(x - lightX) / barWidth;
+    const alpha = Math.max(0.1, 0.7 - distFromLight);
 
-  return { scene, camera, renderer, sphere, wireframe, particles, geometry, originalPositions };
-}
+    ctx.fillStyle = `rgba(24, 90, 219, ${alpha})`;
+    ctx.fillRect(x, centerY - barH - 15, eqBarWidth - 4, barH);
 
-/* =========================================================
-   Animation loop (called every frame via rAF)
-   ========================================================= */
-function animateScene(threeRefs, analyserRef, statusRef) {
-  const { scene, camera, renderer, sphere, wireframe, particles, geometry, originalPositions } = threeRefs;
-  const time = Date.now() * 0.001;
-  const currentStatus = statusRef.current;
-
-  // Audio data
-  let audioData = new Uint8Array(64);
-  let avgFreq = 0;
-  if (analyserRef.current) {
-    audioData = new Uint8Array(analyserRef.current.frequencyBinCount);
-    analyserRef.current.getByteFrequencyData(audioData);
-    avgFreq = audioData.reduce((a, b) => a + b, 0) / audioData.length / 255;
+    // Mirror below
+    ctx.fillStyle = `rgba(13, 148, 136, ${alpha * 0.3})`;
+    ctx.fillRect(x, centerY + 15, eqBarWidth - 4, barH * 0.4);
   }
 
-  // Vertex displacement
-  const pos = geometry.attributes.position.array;
-  for (let i = 0; i < pos.length; i += 3) {
-    const ox = originalPositions[i];
-    const oy = originalPositions[i + 1];
-    const oz = originalPositions[i + 2];
-    const len = Math.sqrt(ox * ox + oy * oy + oz * oz);
-    const nx = ox / len;
-    const ny = oy / len;
-    const nz = oz / len;
+  // Draw the scanner track (dark line)
+  ctx.beginPath();
+  ctx.moveTo(barX, centerY);
+  ctx.lineTo(barX + barWidth, centerY);
+  ctx.strokeStyle = 'rgba(24, 90, 219, 0.15)';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  ctx.stroke();
 
-    // Simplex-like noise via trig composition
-    const noiseVal =
-      Math.sin(ox * 3 + time * 0.8) *
-      Math.cos(oy * 3 + time * 0.6) *
-      Math.sin(oz * 3 + time * 0.7);
+  // Scanning light glow trail
+  const glowRadius = status === 'listening' || status === 'speaking' ? 100 : 80;
+  const gradient = ctx.createRadialGradient(lightX, centerY, 0, lightX, centerY, glowRadius);
+  gradient.addColorStop(0, status === 'listening' ? 'rgba(24, 90, 219, 1)' : 'rgba(24, 90, 219, 0.8)');
+  gradient.addColorStop(0.3, 'rgba(24, 90, 219, 0.3)');
+  gradient.addColorStop(1, 'transparent');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(barX - glowRadius, centerY - glowRadius / 2, barWidth + glowRadius * 2, glowRadius);
 
-    // Map vertex angle to frequency bin
-    const freqIndex = Math.abs(Math.floor((Math.atan2(ny, nx) / Math.PI + 1) * 32)) % 64;
-    const audioVal = (audioData[freqIndex] || 0) / 255;
+  // Bright center dot — outer glow
+  ctx.beginPath();
+  ctx.arc(lightX, centerY, 12, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(24, 90, 219, 0.6)';
+  ctx.fill();
 
-    // Status-driven displacement intensity
-    let intensity = 0.05;
-    if (currentStatus === 'listening') intensity = 0.08 + audioVal * 0.25;
-    else if (currentStatus === 'thinking') intensity = 0.12 + Math.sin(time * 4) * 0.05;
-    else if (currentStatus === 'speaking') intensity = 0.1 + audioVal * 0.15;
+  // Bright center dot — white core
+  ctx.beginPath();
+  ctx.arc(lightX, centerY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
 
-    const displacement = noiseVal * intensity;
-    pos[i] = ox + nx * displacement;
-    pos[i + 1] = oy + ny * displacement;
-    pos[i + 2] = oz + nz * displacement;
-  }
-  geometry.attributes.position.needsUpdate = true;
-  geometry.computeVertexNormals();
-
-  // Rotation speeds
-  const rotSpeed = currentStatus === 'thinking' ? 0.015 : 0.003;
-  sphere.rotation.y += rotSpeed;
-  sphere.rotation.x += rotSpeed * 0.3;
-  wireframe.rotation.y -= 0.002;
-  wireframe.rotation.z += 0.001;
-  particles.rotation.y += 0.0005;
-
-  // Audio-reactive scale pulse
-  const scale = 1 + avgFreq * 0.15;
-  sphere.scale.setScalar(scale);
-
-  // Emissive glow intensity
-  sphere.material.emissiveIntensity = 0.15 + avgFreq * 0.3;
-
-  renderer.render(scene, camera);
-  return requestAnimationFrame(() => animateScene(threeRefs, analyserRef, statusRef));
+  // Horizontal light streak along the track
+  const streakGrad = ctx.createLinearGradient(lightX - 60, 0, lightX + 60, 0);
+  streakGrad.addColorStop(0, 'transparent');
+  streakGrad.addColorStop(0.5, 'rgba(24, 90, 219, 0.4)');
+  streakGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = streakGrad;
+  ctx.fillRect(lightX - 60, centerY - 2, 120, 4);
 }
 
 /* =========================================================
@@ -155,8 +102,7 @@ export default function AIMode() {
   const [messages, setMessages] = useState([]);
   const [textInput, setTextInput] = useState('');
 
-  const mountRef = useRef(null);
-  const threeRef = useRef(null);
+  const canvasRef = useRef(null);
   const animFrameRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -166,6 +112,8 @@ export default function AIMode() {
   const handleSendRef = useRef(null);
   const statusRef = useRef(status);
   const detectedLangRef = useRef('en-US');
+  const timeRef = useRef(0);
+  const lastFrameRef = useRef(performance.now());
 
   useEffect(() => { statusRef.current = status; }, [status]);
 
@@ -188,7 +136,7 @@ export default function AIMode() {
     } catch { return null; }
   }, []);
 
-  /* ---- Mic analyser for Three.js ---- */
+  /* ---- Mic analyser for canvas EQ bars ---- */
   const setupAudioVisualizer = useCallback((stream) => {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -330,24 +278,35 @@ export default function AIMode() {
       }, 500);
     }).catch(() => { /* no mic */ });
 
-    // Three.js scene
-    const container = mountRef.current;
-    if (container) {
-      const refs = createScene(container);
-      threeRef.current = refs;
-      animFrameRef.current = animateScene(refs, analyserRef, statusRef);
+    // Canvas animation loop
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
 
-      // Resize handler
-      const onResize = () => {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        refs.camera.aspect = w / h;
-        refs.camera.updateProjectionMatrix();
-        refs.renderer.setSize(w, h);
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
       };
-      window.addEventListener('resize', onResize);
-      // Store cleanup ref
-      container._resizeHandler = onResize;
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      canvas._resizeHandler = resizeCanvas;
+
+      const loop = (now) => {
+        const dt = (now - lastFrameRef.current) / 1000;
+        lastFrameRef.current = now;
+        timeRef.current += dt;
+
+        // Gather audio data
+        let audioData = null;
+        if (analyserRef.current) {
+          audioData = new Uint8Array(analyserRef.current.frequencyBinCount);
+          analyserRef.current.getByteFrequencyData(audioData);
+        }
+
+        drawKnightRider(ctx, canvas.width, canvas.height, timeRef.current, audioData, statusRef.current);
+        animFrameRef.current = requestAnimationFrame(loop);
+      };
+      animFrameRef.current = requestAnimationFrame(loop);
     }
 
     // Cleanup
@@ -361,19 +320,8 @@ export default function AIMode() {
       }
       if (audioContextRef.current) { try { audioContextRef.current.close(); } catch { /* */ } }
       if (micStreamRef.current) micStreamRef.current.getTracks().forEach(t => t.stop());
-      if (threeRef.current) {
-        const { renderer, geometry, sphere, wireframe, particles } = threeRef.current;
-        geometry.dispose();
-        sphere.material.dispose();
-        wireframe.geometry.dispose();
-        wireframe.material.dispose();
-        particles.geometry.dispose();
-        particles.material.dispose();
-        renderer.dispose();
-        if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
-      if (container && container._resizeHandler) {
-        window.removeEventListener('resize', container._resizeHandler);
+      if (canvas && canvas._resizeHandler) {
+        window.removeEventListener('resize', canvas._resizeHandler);
       }
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -399,156 +347,154 @@ export default function AIMode() {
   }, [textInput, handleSend]);
 
   /* ---- Status label ---- */
-  const statusText =
-    status === 'listening' ? 'Listening...'
-    : status === 'thinking' ? 'Processing...'
-    : status === 'speaking' ? 'Speaking...'
-    : 'Tap to speak';
+  const statusLabel =
+    status === 'listening' ? 'LISTENING...'
+    : status === 'thinking' ? 'PROCESSING...'
+    : status === 'speaking' ? 'SPEAKING...'
+    : 'TAP TO SPEAK';
 
   /* =======================================================
      RENDER
      ======================================================= */
   return (
     <div style={S.wrapper}>
-      {/* Three.js canvas background */}
-      <div ref={mountRef} style={S.threeContainer} />
 
-      {/* UI Overlay */}
-      <div style={S.overlay}>
+      {/* Canvas fills screen */}
+      <canvas ref={canvasRef} style={S.canvas} />
 
-        {/* ---- Top bar ---- */}
-        <header style={S.header}>
-          <div style={S.headerLeft}>
-            <span style={S.logo}>SYMPRIO</span>
-            <span style={S.dot} className="ai-dot" />
-            <span style={S.aiLabel}>AI</span>
-          </div>
-          <div style={S.headerRight}>
-            <button onClick={toggleMute} style={S.iconBtn} title={isMuted ? 'Unmute' : 'Mute'}>
-              {isMuted ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                  <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                </svg>
-              )}
-            </button>
-            <button
-              onClick={() => {
-                if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
-                window.speechSynthesis.cancel();
-                navigate('/');
-              }}
-              style={S.exitBtn}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-              Exit
-            </button>
-          </div>
-        </header>
-
-        {/* ---- Center status ---- */}
-        <div style={S.center}>
-          <p style={S.statusText}>{statusText}</p>
-          {transcript && (status === 'listening' || status === 'thinking') && (
-            <p style={S.transcript}>{transcript}</p>
-          )}
+      {/* Top bar */}
+      <header style={S.header}>
+        <div style={S.headerLeft}>
+          <span style={S.logo}>SYMPRIO</span>
+          <span style={S.dot} className="ai-dot" />
+          <span style={S.aiLabel}>AI</span>
         </div>
-
-        {/* ---- Bottom chat area ---- */}
-        <div style={S.bottom}>
-          {/* Latest AI reply bubble */}
-          <div style={S.replyBubble} className="ai-bubble-in">
-            <p style={S.replyText}>{lastReply}</p>
-          </div>
-
-          {/* Chat history */}
-          {showHistory && messages.length > 0 && (
-            <div style={S.historyPanel} className="ai-history-scroll">
-              {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className="ai-bubble-in"
-                  style={m.role === 'user' ? S.bubbleUser : S.bubbleAI}
-                >
-                  <span style={{
-                    fontSize: 10, textTransform: 'uppercase', letterSpacing: 1,
-                    color: m.role === 'user' ? '#185ADB' : '#0D9488', fontWeight: 600, marginRight: 8,
-                  }}>
-                    {m.role === 'user' ? 'You' : 'AI'}
-                  </span>
-                  {m.content}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Controls row */}
-          <div style={S.controls}>
-            <button onClick={() => setShowHistory(!showHistory)} style={S.controlBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <div style={S.headerRight}>
+          <button onClick={toggleMute} style={S.glassBtn} title={isMuted ? 'Unmute' : 'Mute'}>
+            {isMuted ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
               </svg>
-              <span style={{ fontSize: 11 }}>{showHistory ? 'Hide' : 'History'}</span>
-            </button>
-
-            <button
-              onClick={toggleListening}
-              style={{
-                ...S.micBtn,
-                boxShadow: status === 'listening'
-                  ? '0 0 0 4px rgba(24,90,219,0.3), 0 0 30px rgba(24,90,219,0.25)'
-                  : '0 0 0 2px rgba(24,90,219,0.15)',
-              }}
-              className={status === 'listening' ? 'ai-mic-pulse' : ''}
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
               </svg>
-            </button>
-
-            <button onClick={() => setShowTextInput(!showTextInput)} style={S.controlBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"/>
-                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/>
-              </svg>
-              <span style={{ fontSize: 11 }}>Type</span>
-            </button>
-          </div>
-
-          {/* Text input */}
-          {showTextInput && (
-            <form onSubmit={handleTextSubmit} style={S.textForm}>
-              <input
-                autoFocus
-                value={textInput}
-                onChange={e => setTextInput(e.target.value)}
-                placeholder="Type your message..."
-                style={S.textInput}
-              />
-              <button type="submit" style={S.sendBtn} disabled={!textInput.trim()}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-              </button>
-            </form>
-          )}
+            )}
+          </button>
+          <button
+            onClick={() => {
+              if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* */ } }
+              window.speechSynthesis.cancel();
+              navigate('/');
+            }}
+            style={S.exitBtn}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Exit
+          </button>
         </div>
+      </header>
+
+      {/* Status text — centered below scanner */}
+      <div style={S.statusArea}>
+        <p style={S.statusText}>{statusLabel}</p>
+        {transcript && (status === 'listening' || status === 'thinking') && (
+          <p style={S.transcript}>{transcript}</p>
+        )}
       </div>
 
-      {/* ---- Animations ---- */}
+      {/* Bottom controls */}
+      <div style={S.bottom}>
+        {/* Last AI reply */}
+        <div style={S.replyBubble} className="ai-bubble-in">
+          <p style={S.replyText}>{lastReply}</p>
+        </div>
+
+        {/* Chat history overlay */}
+        {showHistory && messages.length > 0 && (
+          <div style={S.historyPanel} className="ai-history-scroll">
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                className="ai-bubble-in"
+                style={m.role === 'user' ? S.bubbleUser : S.bubbleAI}
+              >
+                <span style={{
+                  fontSize: 10, textTransform: 'uppercase', letterSpacing: 1,
+                  color: m.role === 'user' ? '#185ADB' : '#0D9488', fontWeight: 600, marginRight: 8,
+                }}>
+                  {m.role === 'user' ? 'You' : 'AI'}
+                </span>
+                {m.content}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Control buttons */}
+        <div style={S.controls}>
+          <button onClick={() => setShowHistory(!showHistory)} style={S.pillBtn}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span style={{ fontSize: 11 }}>{showHistory ? 'Hide' : 'History'}</span>
+          </button>
+
+          <button
+            onClick={toggleListening}
+            style={{
+              ...S.micBtn,
+              background: status === 'listening' ? '#dc2626' : '#185ADB',
+              boxShadow: status === 'listening'
+                ? '0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25)'
+                : '0 0 0 2px rgba(24,90,219,0.15)',
+            }}
+            className={status === 'listening' ? 'ai-mic-pulse' : ''}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+
+          <button onClick={() => setShowTextInput(!showTextInput)} style={S.pillBtn}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/>
+            </svg>
+            <span style={{ fontSize: 11 }}>Type</span>
+          </button>
+        </div>
+
+        {/* Text input (toggle) */}
+        {showTextInput && (
+          <form onSubmit={handleTextSubmit} style={S.textForm}>
+            <input
+              autoFocus
+              value={textInput}
+              onChange={e => setTextInput(e.target.value)}
+              placeholder="Type your message..."
+              style={S.textInput}
+            />
+            <button type="submit" style={S.sendBtn} disabled={!textInput.trim()}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* Animations */}
       <style>{`
         @keyframes bubbleIn {
           from { opacity: 0; transform: translateY(20px) scale(0.95); }
@@ -565,9 +511,9 @@ export default function AIMode() {
         .ai-dot { animation: aiDotPulse 2s ease-in-out infinite; }
 
         @keyframes micPulse {
-          0% { box-shadow: 0 0 0 4px rgba(24,90,219,0.3), 0 0 30px rgba(24,90,219,0.25); }
-          50% { box-shadow: 0 0 0 10px rgba(24,90,219,0.1), 0 0 50px rgba(24,90,219,0.15); }
-          100% { box-shadow: 0 0 0 4px rgba(24,90,219,0.3), 0 0 30px rgba(24,90,219,0.25); }
+          0% { box-shadow: 0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25); }
+          50% { box-shadow: 0 0 0 10px rgba(220,38,38,0.1), 0 0 50px rgba(220,38,38,0.15); }
+          100% { box-shadow: 0 0 0 4px rgba(220,38,38,0.3), 0 0 30px rgba(220,38,38,0.25); }
         }
         .ai-mic-pulse { animation: micPulse 1.5s ease-in-out infinite; }
 
@@ -591,94 +537,90 @@ const S = {
     overflow: 'hidden',
   },
 
-  /* Three.js fills the entire background */
-  threeContainer: {
+  canvas: {
     position: 'absolute', inset: 0, zIndex: 1,
-  },
-
-  /* UI overlay on top of Three.js */
-  overlay: {
-    position: 'relative', zIndex: 10,
     width: '100%', height: '100%',
-    display: 'flex', flexDirection: 'column',
-    pointerEvents: 'none',
   },
 
   /* Header */
   header: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '24px 32px', flexShrink: 0, pointerEvents: 'auto',
+    padding: '20px 32px',
   },
   headerLeft: { display: 'flex', alignItems: 'center', gap: 10 },
-  logo: { fontSize: 18, fontWeight: 700, letterSpacing: 2, color: '#fff' },
+  logo: { fontSize: 20, fontWeight: 800, letterSpacing: '0.15em', color: '#fff' },
   dot: {
     width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block',
   },
-  aiLabel: { fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: 1 },
-  headerRight: { display: 'flex', alignItems: 'center', gap: 10 },
-  iconBtn: {
-    width: 40, height: 40, borderRadius: 8,
+  aiLabel: { fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: 1 },
+  headerRight: { display: 'flex', alignItems: 'center', gap: 12 },
+  glassBtn: {
+    width: 44, height: 44, borderRadius: 12,
     border: '1px solid rgba(255,255,255,0.1)',
-    background: 'rgba(255,255,255,0.05)',
+    background: 'rgba(255,255,255,0.06)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     color: 'rgba(255,255,255,0.6)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer',
   },
   exitBtn: {
     display: 'flex', alignItems: 'center',
-    background: 'rgba(255,255,255,0.05)',
+    background: 'rgba(255,255,255,0.06)',
     border: '1px solid rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     color: 'rgba(255,255,255,0.7)',
-    padding: '8px 18px', borderRadius: 8,
+    padding: '10px 20px', borderRadius: 12,
     cursor: 'pointer', fontSize: 14, fontWeight: 500,
     transition: 'background 0.2s',
   },
 
-  /* Center (status text) */
-  center: {
-    flex: 1, display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center',
+  /* Status text below scanner */
+  statusArea: {
+    position: 'absolute', bottom: '35%', left: 0, right: 0, zIndex: 10,
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
     pointerEvents: 'none',
   },
   statusText: {
-    fontSize: 13, fontWeight: 600, letterSpacing: 3,
-    color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
+    fontSize: 13, fontWeight: 600, letterSpacing: '0.3em',
+    color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase',
     margin: 0,
   },
   transcript: {
-    marginTop: 12, fontSize: 15, color: 'rgba(255,255,255,0.5)',
+    marginTop: 8, fontSize: 15, color: 'rgba(255,255,255,0.3)',
     fontStyle: 'italic', textAlign: 'center', maxWidth: 500,
     padding: '0 20px', lineHeight: 1.5,
   },
 
   /* Bottom panel */
   bottom: {
-    flexShrink: 0, padding: '0 28px 32px',
+    position: 'absolute', bottom: 40, left: 0, right: 0, zIndex: 20,
     display: 'flex', flexDirection: 'column', alignItems: 'center',
-    gap: 14, maxWidth: 700, width: '100%', margin: '0 auto',
-    pointerEvents: 'auto',
+    gap: 14, padding: '0 28px',
   },
 
   /* Reply bubble */
   replyBubble: {
+    maxWidth: 600, width: '100%',
     background: 'rgba(255,255,255,0.04)',
     backdropFilter: 'blur(20px)',
     WebkitBackdropFilter: 'blur(20px)',
     border: '1px solid rgba(255,255,255,0.06)',
-    borderLeft: '3px solid rgba(24,90,219,0.5)',
-    borderRadius: 14, padding: '16px 22px',
-    maxWidth: '100%', width: '100%',
+    borderRadius: 16, padding: '16px 24px',
+    marginBottom: 10,
   },
   replyText: {
-    margin: 0, fontSize: 15, color: 'rgba(255,255,255,0.8)',
-    lineHeight: 1.65,
+    margin: 0, fontSize: 15, color: 'rgba(255,255,255,0.7)',
+    lineHeight: 1.6,
   },
 
   /* History */
   historyPanel: {
-    width: '100%', maxHeight: 300, overflowY: 'auto',
+    maxWidth: 500, width: '100%', maxHeight: 300, overflowY: 'auto',
     display: 'flex', flexDirection: 'column', gap: 6,
-    padding: '4px 0',
+    padding: '4px 0', marginBottom: 10,
   },
   bubbleUser: {
     fontSize: 13, color: 'rgba(255,255,255,0.6)',
@@ -700,34 +642,37 @@ const S = {
   /* Controls row */
   controls: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    gap: 16, marginTop: 6,
+    gap: 16,
   },
-  controlBtn: {
+  pillBtn: {
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'rgba(255,255,255,0.06)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     borderRadius: 12, padding: '10px 18px',
     color: 'rgba(255,255,255,0.5)', cursor: 'pointer',
     fontSize: 12, transition: 'background 0.2s',
   },
   micBtn: {
     width: 64, height: 64, borderRadius: '50%',
-    background: 'linear-gradient(135deg, #185ADB 0%, #0D9488 100%)',
     border: 'none', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'box-shadow 0.3s',
+    transition: 'box-shadow 0.3s, background 0.3s',
     flexShrink: 0,
   },
 
   /* Text input */
   textForm: {
     display: 'flex', alignItems: 'center', gap: 8,
-    width: '100%',
+    maxWidth: 500, width: '100%', marginTop: 2,
   },
   textInput: {
     flex: 1,
     background: 'rgba(255,255,255,0.07)',
     border: '1px solid rgba(255,255,255,0.12)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     borderRadius: 12, padding: '14px 18px',
     color: '#fff', fontSize: 14, outline: 'none',
   },

@@ -1261,7 +1261,21 @@ process.on('SIGINT', () => {
   pool.end();
 });
 
-// AI Mode — Chat via Mistral Agent (agent has its own instructions + web search)
+// AI Mode — Symprio AI Chat via Mistral
+const SYMPRIO_SYSTEM = `You are Symprio AI — the intelligent virtual assistant for Symprio. You speak in a confident, warm, and slightly futuristic tone — like JARVIS from Iron Man. Keep responses concise (2-4 sentences). Always respond in the same language the user speaks.
+
+ABOUT SYMPRIO: Global AI & automation consultancy. HQ: Kuala Lumpur, Malaysia. Offices: Silicon Valley, Singapore, India. 45+ clients, 400+ bots deployed, 15+ countries, 50+ consultants. Partners: UiPath, Microsoft, Oracle, Salesforce, Google, Meta.
+
+SERVICES: 1) RPA (UiPath, Power Automate) 2) AI App Development (chatbots, RAG, LLM) 3) Agentic AI & LLM Solutions 4) Process Assessment & Consultancy 5) Digital Transformation 6) ERP & Oracle Services 7) Custom Software Development 8) Digital Workforce & Staff Augmentation.
+
+TRAINING: RPA Training, AI & GenAI Training, Corporate Workshops. Certified training partner.
+
+TEAM: Vilhelm Bjermeland (COO, USA), Prabin Vijay (Practice Lead, APAC), Vivek Krishna (Director, Automation Services), Ramalingam Dushyanth (Practice Head, Automation).
+
+CONTACT: contact@symprio.com | +60 13 880 2574 | Tower B, 8-05, KL, Malaysia. Support: $50/hr, min 50hrs.
+
+Guide users toward the right Symprio service. End with a follow-up question when appropriate.`;
+
 app.post('/api/ai-chat', async (req, res) => {
   try {
     const { message, history = [] } = req.body;
@@ -1277,18 +1291,17 @@ app.post('/api/ai-chat', async (req, res) => {
 
     const mistral = new Mistral({ apiKey });
 
-    // Build messages for the Mistral Agent
-    const inputs = [
-      ...history.map(h => ({
-        role: h.role,
-        content: h.content
-      })),
+    const messages = [
+      { role: 'system', content: SYMPRIO_SYSTEM },
+      ...history.slice(-10).map(h => ({ role: h.role, content: h.content })),
       { role: 'user', content: message }
     ];
 
-    const response = await mistral.agents.complete({
-      agentId: 'ag_019d28c0be66727c97d94503539921c2',
-      messages: inputs
+    const response = await mistral.chat.complete({
+      model: 'mistral-small-latest',
+      messages,
+      maxTokens: 300,
+      temperature: 0.7
     });
 
     const reply = response.choices[0].message.content;

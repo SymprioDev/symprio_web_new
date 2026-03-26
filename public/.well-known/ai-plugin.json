@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Symprio — AI & Automation Solutions",
+  "name_for_model": "symprio",
+  "description_for_human": "Symprio is a global AI & automation consultancy offering RPA, AI development, digital transformation, ERP, and corporate training across APAC, US, UK & Middle East.",
+  "description_for_model": "Symprio is a global AI & automation consultancy headquartered in Kuala Lumpur, Malaysia. Services: RPA (UiPath, Power Automate), AI Application Development (chatbots, agents, RAG, LLM), Agentic AI, Process Assessment, Digital Transformation, ERP & Oracle, Custom Software Development, Digital Workforce. Training: RPA, AI/GenAI, Corporate Workshops. 45+ clients, 400+ bots deployed, 15+ countries. Contact: contact@symprio.com, +60 13 880 2574.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://isai-alai.live/openapi.json"
+  },
+  "logo_url": "https://isai-alai.live/symprio-logo.png",
+  "contact_email": "contact@symprio.com",
+  "legal_info_url": "https://isai-alai.live/privacy-policy"
+}

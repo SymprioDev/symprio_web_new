@@ -1,0 +1,44 @@
+# Symprio — AI & Automation Solutions for the Modern Enterprise
+
+> Symprio is a global AI & automation consultancy headquartered in Kuala Lumpur, Malaysia with offices in Silicon Valley (USA), Singapore, and India. We serve 45+ enterprise clients across 15+ countries.
+
+## Services
+
+- [Robotic Process Automation (RPA)](https://isai-alai.live/services/rpa): End-to-end RPA using UiPath, Power Automate & Automation Anywhere. Assessment, bot development, CoE setup, managed support. 400+ bots deployed.
+- [AI Application Development](https://isai-alai.live/services/ai-development): Custom chatbots, AI agents, RAG systems, LLM fine-tuning, computer vision, document intelligence.
+- [Agentic AI & LLM Solutions](https://isai-alai.live/services/agentic-ai): Autonomous AI agents that reason, decide and act. LLM fine-tuning, RAG implementation for enterprises.
+- [Process Assessment & Consultancy](https://isai-alai.live/services/process-assessment): We study your business processes and recommend the optimal automation strategy. Domain-agnostic.
+- [Digital Transformation](https://isai-alai.live/services/digital-transformation): Strategy, roadmap, change management and execution from assessment to full-scale transformation.
+- [ERP & Oracle Services](https://isai-alai.live/services/erp-oracle): Oracle Cloud & R12 ERP implementations, upgrades, migrations and integrations.
+- [Custom Software Development](https://isai-alai.live/services/custom-software): Full-stack web apps, mobile apps, cloud-native solutions with agile methodology.
+- [Digital Workforce & Staff Augmentation](https://isai-alai.live/services/digital-workforce): Expert RPA, AI and IT talent with flexible engagement models.
+
+## Training
+
+- [RPA Training](https://isai-alai.live/training/rpa): UiPath & Power Automate training, foundation to advanced.
+- [AI & GenAI Training](https://isai-alai.live/training/ai-genai): ChatGPT, Claude, Manus, n8n, vibe coding, AI agent workflows.
+- [Corporate Workshops](https://isai-alai.live/training/corporate-workshops): C-suite AI strategy, governance, digital transformation leadership.
+
+## Company
+
+- [About Us](https://isai-alai.live/about): Our mission, team, offices, and values.
+- [Case Studies](https://isai-alai.live/case-studies): Real-world automation success stories across banking, insurance, healthcare, telecom, manufacturing.
+- [Blog](https://isai-alai.live/blog): Insights on AI, RPA, Agentic AI, digital transformation and automation.
+- [Careers](https://isai-alai.live/careers): Join our team across engineering, consulting, sales, marketing.
+- [Contact](https://isai-alai.live/contact): Free consultation. Email: contact@symprio.com, Phone: +60 13 880 2574.
+
+## Key Facts
+
+- 45+ enterprise clients including Meta, Amway, Coca-Cola, Nextracker, Uniqlo
+- 400+ RPA bots deployed across APAC
+- 50+ active consultants
+- 15+ countries served
+- Partners: UiPath, Microsoft, Oracle, Salesforce, Google, Meta
+- Support subscription: $50/hour, minimum 50 hours (Bronze/Silver/Gold tiers)
+
+## Leadership
+
+- Vilhelm Bjermeland — COO, USA
+- Prabin Vijay — Practice Lead, APAC
+- Vivek Krishna — Director, Automation Services, APAC
+- Ramalingam Dushyanth — Practice Head, Automation

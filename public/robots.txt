@@ -1,0 +1,36 @@
+# Symprio - AI & Automation Solutions
+# Website: https://isai-alai.live / https://symprio.com
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /uploads/
+
+# Sitemap
+Sitemap: https://isai-alai.live/sitemap.xml
+
+# LLM & AI Crawler Access
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /

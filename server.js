@@ -501,7 +501,7 @@ async function generateEventBanner(eventId, title, description, date, location) 
 
     // Download the generated image
     const fileStream = await mistralImg.files.download({ fileId });
-    const bannerDir = path.join(__dirname, 'uploads', 'event-banners');
+    const bannerDir = path.join(__dirname, 'public', 'uploads', 'event-banners');
     if (!fs.existsSync(bannerDir)) fs.mkdirSync(bannerDir, { recursive: true });
 
     const bannerFile = `event_${eventId}.png`;
@@ -1494,7 +1494,7 @@ app.post('/api/webhooks/elevenlabs', async (req, res) => {
       const conversationId = data.conversation_id;
       const base64Audio = data.full_audio;
       if (conversationId && base64Audio) {
-        const audioDir = path.join(__dirname, 'uploads', 'ai-audio');
+        const audioDir = path.join(__dirname, 'public', 'uploads', 'ai-audio');
         if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
         const audioFile = `${conversationId}.mp3`;
         const audioPath = path.join(audioDir, audioFile);

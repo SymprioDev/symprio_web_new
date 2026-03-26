@@ -22,7 +22,8 @@ import {
   Clock,
   TrendingUp,
   Plus,
-  X
+  X,
+  Brain
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -69,6 +70,11 @@ const AdminDashboard = () => {
   // Subscription modal state
   const [selectedSubscription, setSelectedSubscription] = useState(null);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
+  // AI Conversations state
+  const [conversations, setConversations] = useState([]);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [expandedConversation, setExpandedConversation] = useState(null);
 
   // Show notification
   const showNotification = (type, message) => {
@@ -128,6 +134,7 @@ const AdminDashboard = () => {
     fetchLocations();
     fetchJobApplications();
     fetchSubscriptionConfig();
+    fetchConversations();
   }, []);
 
   // Fetch subscriptions after auth is loaded
@@ -287,6 +294,53 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error fetching subscription status types:', error);
     }
+  };
+
+  const fetchConversations = async () => {
+    setLoadingConversations(true);
+    try {
+      const response = await fetch('/api/ai-conversations', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setConversations(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch AI conversations:', error);
+    } finally {
+      setLoadingConversations(false);
+    }
+  };
+
+  const handleDeleteConversation = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this conversation?')) return;
+    try {
+      const response = await fetch(`/api/ai-conversations/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setConversations(prev => prev.filter(c => c.id !== id));
+        showNotification('success', 'Conversation deleted successfully');
+      } else {
+        showNotification('error', 'Failed to delete conversation');
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+      showNotification('error', 'Error deleting conversation');
+    }
+  };
+
+  const formatDuration = (seconds) => {
+    if (!seconds) return '-';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
   };
 
   // Helper function to get status color
@@ -730,6 +784,7 @@ const AdminDashboard = () => {
     { id: 'locations', label: 'Locations', icon: MapPin },
     { id: 'enquiries', label: 'Enquiries', icon: MessageSquare, badge: pendingEnquiries },
     { id: 'subscriptions', label: 'Support Subscriptions', icon: CheckCircle, badge: pendingSubscriptions },
+    { id: 'aiConversations', label: 'AI Conversations', icon: Brain },
     { id: 'subscriptionConfig', label: 'Subscription Config', icon: Settings },
     { id: 'statusTypes', label: 'Status Types', icon: TrendingUp },
     { id: 'mailConfig', label: 'Mail Configuration', icon: Mail },
@@ -905,9 +960,15 @@ const AdminDashboard = () => {
                   color="bg-[#0a2d6e]"
                   trend={`${pendingSubscriptions} pending`}
                 />
-                <StatCard 
-                  title="Upcoming Events" 
-                  value={events.length} 
+                <StatCard
+                  title="AI Conversations"
+                  value={conversations.length}
+                  icon={Brain}
+                  color="bg-purple-600"
+                />
+                <StatCard
+                  title="Upcoming Events"
+                  value={events.length}
                   icon={Calendar}
                   color="bg-[#0d9488]"
                 />
@@ -938,12 +999,19 @@ const AdminDashboard = () => {
                     <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
                     <p className="text-sm font-medium text-gray-700">Manage Subscriptions</p>
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('mailConfig')}
                     className="p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors text-center"
                   >
                     <Mail className="w-8 h-8 text-orange-600 mx-auto mb-2" />
                     <p className="text-sm font-medium text-gray-700">Mail Settings</p>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('aiConversations')}
+                    className="p-4 bg-violet-50 rounded-lg hover:bg-violet-100 transition-colors text-center"
+                  >
+                    <Brain className="w-8 h-8 text-violet-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">View AI Conversations</p>
                   </button>
                 </div>
               </div>
@@ -1288,6 +1356,121 @@ const AdminDashboard = () => {
                               </tr>
                             );
                           })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AI Conversations Tab */}
+          {activeTab === 'aiConversations' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    AI Conversations
+                    <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                      {conversations.length}
+                    </span>
+                  </h2>
+                </div>
+                <div className="p-4">
+                  {loadingConversations && (
+                    <div className="text-center py-8 text-gray-500">Loading AI conversations...</div>
+                  )}
+
+                  {!loadingConversations && conversations.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">No AI conversations yet.</div>
+                  )}
+
+                  {!loadingConversations && conversations.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border rounded-lg overflow-hidden min-w-[800px]">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Date</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Status</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Language</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Duration</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Summary</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {conversations.map((conv) => (
+                            <React.Fragment key={conv.id}>
+                              <tr className="border-t hover:bg-gray-50">
+                                <td className="p-3 text-gray-800 text-sm">
+                                  {conv.created_at ? new Date(conv.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}
+                                </td>
+                                <td className="p-3 text-center">
+                                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                    conv.status === 'done' || conv.status === 'completed'
+                                      ? 'bg-green-100 text-green-700'
+                                      : conv.status === 'in-progress' || conv.status === 'processing'
+                                      ? 'bg-yellow-100 text-yellow-700'
+                                      : 'bg-gray-100 text-gray-700'
+                                  }`}>
+                                    {conv.status || 'unknown'}
+                                  </span>
+                                </td>
+                                <td className="p-3 text-center text-gray-800 text-sm">{conv.language || '-'}</td>
+                                <td className="p-3 text-center text-gray-800 text-sm">{formatDuration(conv.duration_seconds)}</td>
+                                <td className="p-3 text-gray-600 text-sm max-w-xs">
+                                  {conv.summary
+                                    ? conv.summary.length > 100
+                                      ? conv.summary.substring(0, 100) + '...'
+                                      : conv.summary
+                                    : '-'}
+                                </td>
+                                <td className="p-3 text-center">
+                                  <div className="flex gap-2 justify-center">
+                                    <button
+                                      onClick={() => setExpandedConversation(expandedConversation === conv.id ? null : conv.id)}
+                                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                    >
+                                      {expandedConversation === conv.id ? 'Hide' : 'View'}
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteConversation(conv.id)}
+                                      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              {expandedConversation === conv.id && (
+                                <tr>
+                                  <td colSpan="6" className="p-0">
+                                    <div className="bg-gray-50 p-4 border-t border-gray-200">
+                                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Full Transcript</h4>
+                                      <div
+                                        className="bg-white p-4 rounded-lg border border-gray-200 text-sm text-gray-700 max-h-96 overflow-y-auto"
+                                        style={{ whiteSpace: 'pre-wrap' }}
+                                      >
+                                        {conv.transcript || 'No transcript available.'}
+                                      </div>
+                                      {conv.summary && (
+                                        <>
+                                          <h4 className="text-sm font-semibold text-gray-700 mt-4 mb-2">Summary</h4>
+                                          <div className="bg-white p-4 rounded-lg border border-gray-200 text-sm text-gray-700" style={{ whiteSpace: 'pre-wrap' }}>
+                                            {conv.summary}
+                                          </div>
+                                        </>
+                                      )}
+                                      {conv.conversation_id && (
+                                        <p className="text-xs text-gray-400 mt-3">Conversation ID: {conv.conversation_id}</p>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          ))}
                         </tbody>
                       </table>
                     </div>

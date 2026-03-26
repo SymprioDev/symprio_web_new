@@ -264,6 +264,23 @@ async function initializeDatabase() {
     }
     console.log('Default subscription status types created');
   }
+
+  // AI Conversations table (ElevenLabs webhook data)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS ai_conversations (
+      id SERIAL PRIMARY KEY,
+      conversation_id TEXT UNIQUE,
+      agent_id TEXT,
+      status TEXT DEFAULT 'completed',
+      transcript TEXT,
+      summary TEXT,
+      user_language TEXT,
+      duration_seconds INTEGER DEFAULT 0,
+      metadata JSONB DEFAULT '{}',
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  console.log('AI Conversations table ready');
 }
 
 // Initialize database on startup
@@ -1312,12 +1329,115 @@ app.post('/api/ai-chat', async (req, res) => {
   }
 });
 
+// ElevenLabs — get signed URL for conversational agent
+app.get('/api/elevenlabs/signed-url', async (req, res) => {
+  try {
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    const agentId = process.env.ELEVENLABS_AGENT_ID || 'agent_7501kmmfax02fycs40pezcevmfx6';
+    if (!apiKey) return res.status(500).json({ error: 'ElevenLabs not configured' });
+
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agentId}`,
+      { headers: { 'xi-api-key': apiKey } }
+    );
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('ElevenLabs signed URL error:', err);
+      return res.status(500).json({ error: 'Failed to get signed URL' });
+    }
+    const data = await response.json();
+    res.json({ signedUrl: data.signed_url });
+  } catch (error) {
+    console.error('ElevenLabs signed URL error:', error.message);
+    res.status(500).json({ error: 'Failed to get signed URL' });
+  }
+});
+
+// ElevenLabs Webhook — receives conversation transcriptions
+app.post('/api/webhooks/elevenlabs', async (req, res) => {
+  try {
+    const data = req.body;
+    console.log('[ElevenLabs Webhook] Received:', JSON.stringify(data).substring(0, 200));
+
+    const conversationId = data.conversation_id || data.id || `conv_${Date.now()}`;
+    const agentId = data.agent_id || 'agent_7501kmmfax02fycs40pezcevmfx6';
+    const status = data.status || 'completed';
+
+    // Build transcript from messages array or use raw transcript
+    let transcript = '';
+    if (data.transcript) {
+      transcript = typeof data.transcript === 'string' ? data.transcript :
+        JSON.stringify(data.transcript);
+    } else if (data.messages && Array.isArray(data.messages)) {
+      transcript = data.messages.map(m =>
+        `${m.role === 'agent' ? 'Symprio AI' : 'User'}: ${m.message || m.content || ''}`
+      ).join('\n');
+    } else if (data.conversation) {
+      transcript = typeof data.conversation === 'string' ? data.conversation :
+        JSON.stringify(data.conversation);
+    }
+
+    const summary = data.summary || data.analysis?.summary || '';
+    const language = data.metadata?.language || data.language || 'en';
+    const duration = data.metadata?.duration_seconds || data.duration || 0;
+    const metadata = JSON.stringify(data.metadata || data.analysis || {});
+
+    await pool.query(
+      `INSERT INTO ai_conversations (conversation_id, agent_id, status, transcript, summary, user_language, duration_seconds, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       ON CONFLICT (conversation_id) DO UPDATE SET
+         transcript = EXCLUDED.transcript,
+         summary = EXCLUDED.summary,
+         status = EXCLUDED.status,
+         metadata = EXCLUDED.metadata`,
+      [conversationId, agentId, status, transcript, summary, language, duration, metadata]
+    );
+
+    console.log('[ElevenLabs Webhook] Saved conversation:', conversationId);
+    res.json({ success: true, conversation_id: conversationId });
+  } catch (error) {
+    console.error('[ElevenLabs Webhook] Error:', error.message);
+    res.status(500).json({ error: 'Failed to process webhook' });
+  }
+});
+
+// AI Conversations — Admin endpoints
+app.get('/api/ai-conversations', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, JWT_SECRET);
+
+    const { rows } = await pool.query(
+      'SELECT * FROM ai_conversations ORDER BY created_at DESC'
+    );
+    res.json(rows);
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') return res.status(401).json({ error: 'Invalid token' });
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.delete('/api/ai-conversations/:id', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, JWT_SECRET);
+
+    await pool.query('DELETE FROM ai_conversations WHERE id = $1', [req.params.id]);
+    res.json({ success: true, message: 'Conversation deleted' });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') return res.status(401).json({ error: 'Invalid token' });
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
   console.log('Available API routes:');
-  console.log('  POST /api/subscription');
-  console.log('  GET /api/subscription');
-  console.log('  DELETE /api/subscription/:id');
-  console.log('  PUT /api/subscriptions/:id/status');
+  console.log('  POST /api/webhooks/elevenlabs (webhook)');
+  console.log('  GET /api/ai-conversations (admin)');
 });

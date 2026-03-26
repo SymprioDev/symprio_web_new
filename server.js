@@ -456,75 +456,295 @@ app.get('/api/events', async (req, res) => {
   }
 });
 
-// Generate event banner image using Mistral AI
+// Generate hybrid event banner: Mistral AI background + Canvas text overlay
 async function generateEventBanner(eventId, title, description, date, location) {
+  const { createCanvas, loadImage } = await import('canvas');
+  const bannerDir = path.join(__dirname, 'public', 'uploads', 'event-banners');
+  if (!fs.existsSync(bannerDir)) fs.mkdirSync(bannerDir, { recursive: true });
+  const bannerFile = `event_${eventId}.png`;
+  const bannerPath = path.join(bannerDir, bannerFile);
+  const bannerUrl = `/uploads/event-banners/${bannerFile}`;
+
+  const WIDTH = 1200;
+  const HEIGHT = 630;
+
   try {
-    if (!process.env.MISTRAL_API_KEY) return null;
-    const mistralImg = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
+    // Step 1: Generate AI background with Mistral
+    let bgBuffer = null;
+    if (process.env.MISTRAL_API_KEY) {
+      try {
+        const mistralImg = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
+        const agent = await mistralImg.beta.agents.create({
+          model: 'mistral-medium-latest',
+          name: 'Banner BG',
+          instructions: 'Generate abstract, cinematic background images for tech event banners. No text. Use dramatic lighting, bokeh, particles, geometric shapes, and rich color gradients.',
+          tools: [{ type: 'image_generation' }],
+          completionArgs: { temperature: 0.5, topP: 0.95 }
+        });
 
-    // Create an image generation agent
-    const agent = await mistralImg.beta.agents.create({
-      model: 'mistral-medium-latest',
-      name: 'Event Banner Generator',
-      instructions: 'You are a professional event banner designer. Generate a visually stunning, modern event banner image. Use bold typography, vibrant gradients (blues, teals, purples), and tech/corporate aesthetics. The image should be suitable as a promotional banner for a tech/AI event. Do NOT include any text in the image — only abstract visuals, patterns, and tech-themed graphics.',
-      tools: [{ type: 'image_generation' }],
-      completionArgs: { temperature: 0.3, topP: 0.95 }
-    });
+        const prompt = `Create an abstract cinematic background for a "${title}" event. Style: dramatic lighting with golden/warm particles and bokeh effects, deep navy blue to teal gradient, floating geometric shapes, lens flares, premium feel. Absolutely NO text or letters.`;
 
-    const prompt = `Create a professional event banner image for: "${title}" — ${description}. Event date: ${date}, Location: ${location}. Style: modern tech conference, abstract geometric shapes, gradient blues and teals, futuristic feel. No text in the image.`;
+        const conversation = await mistralImg.beta.conversations.start({
+          agentId: agent.id,
+          inputs: prompt
+        });
 
-    const conversation = await mistralImg.beta.conversations.start({
-      agentId: agent.id,
-      inputs: prompt
-    });
-
-    // Extract file_id from response
-    let fileId = null;
-    if (conversation.outputs) {
-      for (const output of conversation.outputs) {
-        if (output.type === 'message.output' && output.content) {
-          for (const chunk of output.content) {
-            if (chunk.type === 'tool_file' && chunk.fileId) {
-              fileId = chunk.fileId;
-              break;
+        let fileId = null;
+        if (conversation.outputs) {
+          for (const output of conversation.outputs) {
+            if (output.type === 'message.output' && output.content) {
+              for (const chunk of output.content) {
+                if (chunk.type === 'tool_file' && chunk.fileId) {
+                  fileId = chunk.fileId;
+                  break;
+                }
+              }
             }
+            if (fileId) break;
           }
         }
-        if (fileId) break;
+
+        if (fileId) {
+          const fileStream = await mistralImg.files.download({ fileId });
+          const chunks = [];
+          for await (const chunk of fileStream) {
+            chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+          }
+          bgBuffer = Buffer.concat(chunks);
+          console.log('[EventBanner] AI background generated');
+        }
+        try { await mistralImg.beta.agents.delete({ agentId: agent.id }); } catch (e) {}
+      } catch (aiErr) {
+        console.warn('[EventBanner] AI background failed:', aiErr.message);
       }
     }
 
-    if (!fileId) {
-      console.log('[EventBanner] No image file in response');
-      return null;
+    // Step 2: Create canvas and composite
+    const canvas = createCanvas(WIDTH, HEIGHT);
+    const ctx = canvas.getContext('2d');
+
+    // Draw AI background or fallback gradient
+    if (bgBuffer) {
+      try {
+        const bgImg = await loadImage(bgBuffer);
+        // Cover-fit the AI image
+        const scale = Math.max(WIDTH / bgImg.width, HEIGHT / bgImg.height);
+        const sw = WIDTH / scale;
+        const sh = HEIGHT / scale;
+        const sx = (bgImg.width - sw) / 2;
+        const sy = (bgImg.height - sh) / 2;
+        ctx.drawImage(bgImg, sx, sy, sw, sh, 0, 0, WIDTH, HEIGHT);
+      } catch (imgErr) {
+        console.warn('[EventBanner] Failed to load AI image, using fallback');
+        bgBuffer = null;
+      }
     }
 
-    // Download the generated image
-    const fileStream = await mistralImg.files.download({ fileId });
-    const bannerDir = path.join(__dirname, 'public', 'uploads', 'event-banners');
-    if (!fs.existsSync(bannerDir)) fs.mkdirSync(bannerDir, { recursive: true });
+    if (!bgBuffer) {
+      // Fallback: rich gradient background
+      const grad = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+      grad.addColorStop(0, '#010B1D');
+      grad.addColorStop(0.4, '#0A1E3F');
+      grad.addColorStop(0.7, '#112D5A');
+      grad.addColorStop(1, '#0D3B4F');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    const bannerFile = `event_${eventId}.png`;
-    const bannerPath = path.join(bannerDir, bannerFile);
+      // Add particle dots
+      for (let i = 0; i < 80; i++) {
+        const x = Math.random() * WIDTH;
+        const y = Math.random() * HEIGHT;
+        const r = Math.random() * 3 + 0.5;
+        const alpha = Math.random() * 0.5 + 0.1;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 215, 100, ${alpha})`;
+        ctx.fill();
+      }
 
-    // Collect stream chunks and write to file
-    const chunks = [];
-    for await (const chunk of fileStream) {
-      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+      // Add subtle geometric shapes
+      ctx.strokeStyle = 'rgba(24, 90, 219, 0.15)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 6; i++) {
+        const cx = Math.random() * WIDTH;
+        const cy = Math.random() * HEIGHT;
+        const size = Math.random() * 120 + 40;
+        ctx.beginPath();
+        ctx.arc(cx, cy, size, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
-    fs.writeFileSync(bannerPath, Buffer.concat(chunks));
 
-    const bannerUrl = `/uploads/event-banners/${bannerFile}`;
-    console.log('[EventBanner] Generated:', bannerUrl);
+    // Step 3: Dark overlay for text readability
+    const overlay = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+    overlay.addColorStop(0, 'rgba(1, 11, 29, 0.3)');
+    overlay.addColorStop(0.4, 'rgba(1, 11, 29, 0.5)');
+    overlay.addColorStop(0.7, 'rgba(1, 11, 29, 0.7)');
+    overlay.addColorStop(1, 'rgba(1, 11, 29, 0.85)');
+    ctx.fillStyle = overlay;
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    // Clean up the agent
-    try { await mistralImg.beta.agents.delete({ agentId: agent.id }); } catch (e) {}
+    // Step 4: Accent line at top
+    const accentGrad = ctx.createLinearGradient(0, 0, WIDTH, 0);
+    accentGrad.addColorStop(0, '#185ADB');
+    accentGrad.addColorStop(0.5, '#0D9488');
+    accentGrad.addColorStop(1, '#185ADB');
+    ctx.fillStyle = accentGrad;
+    ctx.fillRect(0, 0, WIDTH, 5);
 
+    // Step 5: "SYMPRIO PRESENTS" tag
+    ctx.font = '600 14px "Arial"';
+    ctx.fillStyle = '#0D9488';
+    ctx.letterSpacing = '4px';
+    const tagText = 'SYMPRIO PRESENTS';
+    ctx.fillText(tagText, 60, 80);
+
+    // Accent dot before tag
+    ctx.beginPath();
+    ctx.arc(48, 76, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#185ADB';
+    ctx.fill();
+
+    // Step 6: Event title (large, bold)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 52px "Arial"';
+    // Word wrap title
+    const words = title.split(' ');
+    let lines = [];
+    let currentLine = '';
+    const maxWidth = WIDTH - 120;
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    lines.push(currentLine);
+
+    let titleY = 140;
+    for (const line of lines) {
+      ctx.fillText(line, 60, titleY);
+      titleY += 64;
+    }
+
+    // Step 7: Description (truncated, smaller)
+    const descY = titleY + 20;
+    ctx.font = '400 18px "Arial"';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    const descTruncated = description.length > 140 ? description.substring(0, 140) + '...' : description;
+    // Word wrap description
+    const descWords = descTruncated.split(' ');
+    let descLines = [];
+    let descLine = '';
+    for (const word of descWords) {
+      const testLine = descLine ? `${descLine} ${word}` : word;
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && descLine) {
+        descLines.push(descLine);
+        descLine = word;
+      } else {
+        descLine = testLine;
+      }
+    }
+    descLines.push(descLine);
+    // Max 3 lines
+    descLines = descLines.slice(0, 3);
+
+    let dy = descY;
+    for (const line of descLines) {
+      ctx.fillText(line, 60, dy);
+      dy += 26;
+    }
+
+    // Step 8: Date & Location bar at bottom
+    const barY = HEIGHT - 100;
+
+    // Date box
+    ctx.fillStyle = 'rgba(24, 90, 219, 0.9)';
+    roundRect(ctx, 60, barY, 220, 50, 8);
+    ctx.fill();
+    ctx.font = 'bold 16px "Arial"';
+    ctx.fillStyle = '#FFFFFF';
+    // Calendar icon text
+    ctx.fillText(`📅  ${date}`, 78, barY + 32);
+
+    // Location box
+    ctx.fillStyle = 'rgba(13, 148, 136, 0.9)';
+    roundRect(ctx, 300, barY, 280, 50, 8);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(`📍  ${location}`, 318, barY + 32);
+
+    // Step 9: "Register Now" CTA
+    const ctaGrad = ctx.createLinearGradient(WIDTH - 260, barY, WIDTH - 60, barY + 50);
+    ctaGrad.addColorStop(0, '#185ADB');
+    ctaGrad.addColorStop(1, '#0D9488');
+    ctx.fillStyle = ctaGrad;
+    roundRect(ctx, WIDTH - 260, barY, 200, 50, 25);
+    ctx.fill();
+    ctx.font = 'bold 16px "Arial"';
+    ctx.fillStyle = '#FFFFFF';
+    const ctaText = 'Register Now →';
+    const ctaWidth = ctx.measureText(ctaText).width;
+    ctx.fillText(ctaText, WIDTH - 260 + (200 - ctaWidth) / 2, barY + 32);
+
+    // Step 10: Symprio logo/watermark bottom right
+    ctx.font = '600 13px "Arial"';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.fillText('symprio.com', WIDTH - 130, HEIGHT - 20);
+
+    // Save
+    const buffer = canvas.toBuffer('image/png');
+    fs.writeFileSync(bannerPath, buffer);
+    console.log('[EventBanner] Hybrid banner generated:', bannerUrl, `(${(buffer.length / 1024).toFixed(0)}KB)`);
     return bannerUrl;
+
   } catch (error) {
     console.error('[EventBanner] Generation error:', error.message);
-    return null;
+
+    // Ultimate fallback: simple gradient banner
+    try {
+      const canvas = createCanvas(WIDTH, HEIGHT);
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+      grad.addColorStop(0, '#010B1D');
+      grad.addColorStop(1, '#185ADB');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 48px "Arial"';
+      ctx.fillText(title, 60, HEIGHT / 2);
+      ctx.font = '20px "Arial"';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText(`${date}  •  ${location}`, 60, HEIGHT / 2 + 50);
+      const buffer = canvas.toBuffer('image/png');
+      fs.writeFileSync(bannerPath, buffer);
+      console.log('[EventBanner] Fallback banner generated');
+      return bannerUrl;
+    } catch (fbErr) {
+      console.error('[EventBanner] Fallback also failed:', fbErr.message);
+      return null;
+    }
   }
+}
+
+// Helper: rounded rectangle
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
 
 // Add new event (admin only)

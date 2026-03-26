@@ -33,7 +33,9 @@ const elevenlabs = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY
 // Middleware
 app.use(cors());
 // Capture raw body for webhook signature verification
+// Increase limit for ElevenLabs audio webhooks (base64 MP3 can be large)
 app.use(express.json({
+  limit: '50mb',
   verify: (req, _res, buf) => {
     if (req.url === '/api/webhooks/elevenlabs') {
       req.rawBody = buf.toString('utf-8');
@@ -287,10 +289,13 @@ async function initializeDatabase() {
       summary TEXT,
       user_language TEXT,
       duration_seconds INTEGER DEFAULT 0,
+      audio_url TEXT,
       metadata JSONB DEFAULT '{}',
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  // Add audio_url column if it doesn't exist (for existing tables)
+  await pool.query(`ALTER TABLE ai_conversations ADD COLUMN IF NOT EXISTS audio_url TEXT`);
   console.log('AI Conversations table ready');
 }
 
@@ -1387,7 +1392,30 @@ app.post('/api/webhooks/elevenlabs', async (req, res) => {
     }
 
     // ElevenLabs wraps data in { type, event_timestamp, data }
+    const eventType = event.type || 'unknown';
     const data = event.data || event;
+
+    // Handle audio webhook — save MP3 file and link to conversation
+    if (eventType === 'post_call_audio') {
+      const conversationId = data.conversation_id;
+      const base64Audio = data.full_audio;
+      if (conversationId && base64Audio) {
+        const audioDir = path.join(__dirname, 'uploads', 'ai-audio');
+        if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
+        const audioFile = `${conversationId}.mp3`;
+        const audioPath = path.join(audioDir, audioFile);
+        fs.writeFileSync(audioPath, Buffer.from(base64Audio, 'base64'));
+        const audioUrl = `/uploads/ai-audio/${audioFile}`;
+        await pool.query(
+          `UPDATE ai_conversations SET audio_url = $1 WHERE conversation_id = $2`,
+          [audioUrl, conversationId]
+        );
+        console.log('[ElevenLabs Webhook] Audio saved:', audioUrl, `(${(Buffer.from(base64Audio, 'base64').length / 1024).toFixed(0)}KB)`);
+      }
+      return res.json({ success: true, type: 'audio' });
+    }
+
+    // Handle transcription webhook
     console.log('[ElevenLabs Webhook] Received:', JSON.stringify(data).substring(0, 200));
 
     const conversationId = data.conversation_id || data.id || `conv_${Date.now()}`;
@@ -1397,7 +1425,6 @@ app.post('/api/webhooks/elevenlabs', async (req, res) => {
     // Build transcript from ElevenLabs transcript array or messages
     let transcript = '';
     if (data.transcript && Array.isArray(data.transcript)) {
-      // ElevenLabs format: [{ role: "agent"|"user", message: "...", ... }]
       transcript = data.transcript.map(m =>
         `${m.role === 'agent' ? 'Symprio AI' : 'User'}: ${m.message || m.content || ''}`
       ).join('\n');

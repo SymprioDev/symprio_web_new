@@ -1,5 +1,5 @@
 import express from 'express';
-import sqlite3 from 'sqlite3';
+import pg from 'pg';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
@@ -17,6 +17,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// PostgreSQL connection pool
+const { Pool } = pg;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Middleware
 app.use(cors());
@@ -48,37 +55,22 @@ const upload = multer({ storage });
 
 app.use('/uploads', express.static(uploadsDir));
 
-// Initialize SQLite Database
-const db = new sqlite3.Database(path.join(__dirname, 'users.db'), (err) => {
-  if (err) {
-    console.error('Database error:', err);
-  } else {
-    console.log('Connected to SQLite database');
-    initializeDatabase();
-  }
-});
-
 // Initialize database tables
-function initializeDatabase() {
-  db.run(`
+async function initializeDatabase() {
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       name TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating users table:', err);
-    } else {
-      console.log('Users table ready');
-    }
-  });
+  `);
+  console.log('Users table ready');
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS events (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT NOT NULL,
       date TEXT NOT NULL,
@@ -86,26 +78,15 @@ function initializeDatabase() {
       type TEXT DEFAULT 'event',
       link TEXT,
       created_by INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW(),
       FOREIGN KEY (created_by) REFERENCES users(id)
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating events table:', err);
-    } else {
-      console.log('Events table ready');
-      // Add link column if it doesn't exist
-      db.run(`ALTER TABLE events ADD COLUMN link TEXT`, (altErr) => {
-        if (altErr && !altErr.message.includes('duplicate column')) {
-          console.log('Link column added to events');
-        }
-      });
-    }
-  });
+  `);
+  console.log('Events table ready');
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS trainings (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT NOT NULL,
       date TEXT NOT NULL,
@@ -115,26 +96,15 @@ function initializeDatabase() {
       enrolled INTEGER DEFAULT 0,
       link TEXT,
       created_by INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW(),
       FOREIGN KEY (created_by) REFERENCES users(id)
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating trainings table:', err);
-    } else {
-      console.log('Trainings table ready');
-      // Add link column if it doesn't exist
-      db.run(`ALTER TABLE trainings ADD COLUMN link TEXT`, (altErr) => {
-        if (altErr && !altErr.message.includes('duplicate column')) {
-          console.log('Link column added to trainings');
-        }
-      });
-    }
-  });
+  `);
+  console.log('Trainings table ready');
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS jobs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       department TEXT NOT NULL,
       type TEXT NOT NULL,
@@ -142,37 +112,35 @@ function initializeDatabase() {
       location TEXT DEFAULT 'Remote',
       status TEXT DEFAULT 'active',
       created_by INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW(),
       FOREIGN KEY (created_by) REFERENCES users(id)
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating jobs table:', err);
-    } else {
-      console.log('Jobs table ready');
-      // Seed default jobs if table is empty
-      db.get('SELECT COUNT(*) as count FROM jobs', (err, row) => {
-        if (!err && row && row.count === 0) {
-          const seedJobs = [
-            ['Senior RPA Developer', 'Engineering', 'Full-time', 'Design and deploy enterprise RPA solutions using UiPath and Power Automate. Lead bot development, testing, and go-live support.', 'Kuala Lumpur, Malaysia'],
-            ['AI Solution Architect', 'Consulting', 'Full-time', 'Architect AI-powered applications including chatbots, RAG systems, and LLM pipelines for enterprise clients.', 'Singapore / Remote'],
-            ['Oracle Cloud Consultant', 'Consulting', 'Contract', 'Lead Oracle Cloud ERP implementations and migrations for APAC and Middle East clients.', 'India'],
-            ['Business Development Manager', 'Sales', 'Full-time', 'Drive new business in APAC by identifying prospects and closing AI & automation deals.', 'Kuala Lumpur, Malaysia'],
-            ['Digital Marketing Specialist', 'Marketing', 'Full-time', "Own Symprio's digital presence across LinkedIn, Google, and content channels.", 'Remote'],
-            ['UiPath RPA Trainer', 'Consulting', 'Contract', 'Deliver hands-on UiPath and Power Automate training to enterprise clients across APAC.', 'Remote / On-site']
-          ];
-          const stmt = db.prepare('INSERT INTO jobs (title, department, type, description, location, status) VALUES (?, ?, ?, ?, ?, ?)');
-          seedJobs.forEach(j => stmt.run([...j, 'active']));
-          stmt.finalize();
-          console.log('Seeded 6 default jobs');
-        }
-      });
-    }
-  });
+  `);
+  console.log('Jobs table ready');
 
-  db.run(`
+  // Seed default jobs if table is empty
+  const { rows: jobCountRows } = await pool.query('SELECT COUNT(*) as count FROM jobs');
+  if (parseInt(jobCountRows[0].count) === 0) {
+    const seedJobs = [
+      ['Senior RPA Developer', 'Engineering', 'Full-time', 'Design and deploy enterprise RPA solutions using UiPath and Power Automate. Lead bot development, testing, and go-live support.', 'Kuala Lumpur, Malaysia'],
+      ['AI Solution Architect', 'Consulting', 'Full-time', 'Architect AI-powered applications including chatbots, RAG systems, and LLM pipelines for enterprise clients.', 'Singapore / Remote'],
+      ['Oracle Cloud Consultant', 'Consulting', 'Contract', 'Lead Oracle Cloud ERP implementations and migrations for APAC and Middle East clients.', 'India'],
+      ['Business Development Manager', 'Sales', 'Full-time', 'Drive new business in APAC by identifying prospects and closing AI & automation deals.', 'Kuala Lumpur, Malaysia'],
+      ['Digital Marketing Specialist', 'Marketing', 'Full-time', "Own Symprio's digital presence across LinkedIn, Google, and content channels.", 'Remote'],
+      ['UiPath RPA Trainer', 'Consulting', 'Contract', 'Deliver hands-on UiPath and Power Automate training to enterprise clients across APAC.', 'Remote / On-site']
+    ];
+    for (const j of seedJobs) {
+      await pool.query(
+        'INSERT INTO jobs (title, department, type, description, location, status) VALUES ($1, $2, $3, $4, $5, $6)',
+        [...j, 'active']
+      );
+    }
+    console.log('Seeded 6 default jobs');
+  }
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS enquiries (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL,
       phone TEXT NOT NULL,
@@ -180,177 +148,127 @@ function initializeDatabase() {
       service TEXT NOT NULL,
       message TEXT NOT NULL,
       status TEXT DEFAULT 'new',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating enquiries table:', err);
-    } else {
-      console.log('Enquiries table ready');
-    }
-  });
+  `);
+  console.log('Enquiries table ready');
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS locations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       address TEXT NOT NULL,
       phone TEXT NOT NULL,
       email TEXT,
       image_url TEXT,
       created_by INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW(),
       FOREIGN KEY (created_by) REFERENCES users(id)
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating locations table:', err);
-    } else {
-      console.log('Locations table ready');
-    }
-  });
+  `);
+  console.log('Locations table ready');
 
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS job_applications (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT NOT NULL,
-      lastName TEXT NOT NULL,
-      mobileNumber TEXT NOT NULL,
-      email TEXT NOT NULL,
-      coverLetter TEXT,
-      cvFilePath TEXT,
-      jobTitle TEXT,
-      submittedDate DATETIME DEFAULT CURRENT_TIMESTAMP
+      id SERIAL PRIMARY KEY,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      mobile_number TEXT NOT NULL,
+      email TEXT,
+      cover_letter TEXT,
+      cv_file_path TEXT,
+      job_title TEXT,
+      status TEXT DEFAULT 'pending',
+      submitted_date TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating job_applications table:', err);
-    } else {
-      console.log('Job applications table ready');
-      // Add email column if it doesn't exist (for existing databases)
-      db.run(`ALTER TABLE job_applications ADD COLUMN email TEXT`, (alterErr) => {
-        if (alterErr && !alterErr.message.includes('duplicate column name')) {
-          console.error('Error adding email column:', alterErr);
-        }
-      });
-      
-      // Add status column if it doesn't exist (for existing databases)
-      db.run(`ALTER TABLE job_applications ADD COLUMN status TEXT DEFAULT 'pending'`, (alterErr) => {
-        if (alterErr && !alterErr.message.includes('duplicate column name')) {
-          console.error('Error adding status column:', alterErr);
-        }
-      });
-      
-      // Create indices for better query performance
-      db.run('CREATE INDEX IF NOT EXISTS idx_job_applications_status ON job_applications(status)', (idxErr) => {
-        if (idxErr) console.error('Error creating job_applications status index:', idxErr);
-      });
-      db.run('CREATE INDEX IF NOT EXISTS idx_job_applications_jobTitle ON job_applications(jobTitle)', (idxErr) => {
-        if (idxErr) console.error('Error creating job_applications jobTitle index:', idxErr);
-      });
-      db.run('CREATE INDEX IF NOT EXISTS idx_job_applications_submittedDate ON job_applications(submittedDate)', (idxErr) => {
-        if (idxErr) console.error('Error creating job_applications submittedDate index:', idxErr);
-      });
-    }
-  });
+  `);
+  console.log('Job applications table ready');
+
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_job_applications_status ON job_applications(status)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_job_applications_job_title ON job_applications(job_title)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_job_applications_submitted_date ON job_applications(submitted_date)');
 
   // Mail Configuration table
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS mail_config (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      MAILERSEND_API_KEY TEXT,
-      MAILERSEND_DOMAIN TEXT,
-      COMPANY_EMAIL TEXT,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+      id SERIAL PRIMARY KEY,
+      mailersend_api_key TEXT,
+      mailersend_domain TEXT,
+      company_email TEXT,
+      last_updated TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating mail_config table:', err);
-    } else {
-      console.log('Mail config table ready');
-    }
-  });
+  `);
+  console.log('Mail config table ready');
 
   // Subscription config table
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS subscription_config (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       rate INTEGER DEFAULT 50,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+      last_updated TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating subscription_config table:', err);
-    } else {
-      // Insert default rate if not exists
-      db.run('INSERT OR IGNORE INTO subscription_config (id, rate) VALUES (1, 50)');
-      console.log('Subscription config table ready');
-    }
-  });
+  `);
+  // Insert default rate if not exists
+  await pool.query('INSERT INTO subscription_config (id, rate) VALUES (1, 50) ON CONFLICT DO NOTHING');
+  console.log('Subscription config table ready');
 
   // Subscriptions table
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS subscriptions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT,
-      companyName TEXT,
-      contactNumber TEXT,
+      company_name TEXT,
+      email TEXT,
+      contact_number TEXT,
       message TEXT,
       hours INTEGER,
       rate INTEGER,
-      totalAmount INTEGER,
+      total_amount INTEGER,
       status TEXT DEFAULT 'pending',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating subscriptions table:', err);
-    } else {
-      console.log('Subscriptions table ready');
-      // Create indices for better query performance
-      db.run('CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)', (idxErr) => {
-        if (idxErr) console.error('Error creating subscriptions status index:', idxErr);
-      });
-      db.run('CREATE INDEX IF NOT EXISTS idx_subscriptions_created_at ON subscriptions(created_at)', (idxErr) => {
-        if (idxErr) console.error('Error creating subscriptions created_at index:', idxErr);
-      });
-    }
-  });
+  `);
+  console.log('Subscriptions table ready');
+
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_subscriptions_created_at ON subscriptions(created_at)');
 
   // Subscription Status Types table
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS subscription_status_types (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       status_name TEXT NOT NULL UNIQUE,
       color TEXT NOT NULL DEFAULT '#6b7280',
       display_order INTEGER DEFAULT 0,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
     )
-  `, (err) => {
-    if (err) {
-      console.error('Error creating subscription_status_types table:', err);
-    } else {
-      console.log('Subscription status types table ready');
-      // Insert default status types if table is empty
-      db.get('SELECT COUNT(*) as count FROM subscription_status_types', (countErr, result) => {
-        if (!countErr && result.count === 0) {
-          const defaultStatuses = [
-            { name: 'Pending', color: '#f59e0b', order: 1 },
-            { name: 'Reviewed', color: '#10b981', order: 2 },
-            { name: 'Approved', color: '#3b82f6', order: 3 },
-            { name: 'Rejected', color: '#ef4444', order: 4 }
-          ];
-          defaultStatuses.forEach((status, index) => {
-            db.run('INSERT INTO subscription_status_types (status_name, color, display_order) VALUES (?, ?, ?)',
-              [status.name, status.color, status.order]);
-          });
-          console.log('Default subscription status types created');
-        }
-      });
+  `);
+  console.log('Subscription status types table ready');
+
+  // Insert default status types if table is empty
+  const { rows: statusCountRows } = await pool.query('SELECT COUNT(*) as count FROM subscription_status_types');
+  if (parseInt(statusCountRows[0].count) === 0) {
+    const defaultStatuses = [
+      { name: 'Pending', color: '#f59e0b', order: 1 },
+      { name: 'Reviewed', color: '#10b981', order: 2 },
+      { name: 'Approved', color: '#3b82f6', order: 3 },
+      { name: 'Rejected', color: '#ef4444', order: 4 }
+    ];
+    for (const status of defaultStatuses) {
+      await pool.query(
+        'INSERT INTO subscription_status_types (status_name, color, display_order) VALUES ($1, $2, $3)',
+        [status.name, status.color, status.order]
+      );
     }
-  });
+    console.log('Default subscription status types created');
+  }
 }
+
+// Initialize database on startup
+initializeDatabase()
+  .then(() => console.log('Database initialized'))
+  .catch(err => console.error('Database initialization error:', err));
 
 // Register endpoint
 app.post('/api/auth/register', async (req, res) => {
@@ -362,6 +280,11 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
+    // Only allow @symprio.com email addresses
+    if (!email.toLowerCase().endsWith('@symprio.com')) {
+      return res.status(403).json({ error: 'Registration is restricted to @symprio.com email addresses only' });
+    }
+
     if (password.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
     }
@@ -370,33 +293,30 @@ app.post('/api/auth/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert user
-    db.run(
-      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)',
-      [email, hashedPassword, name],
-      function(err) {
-        if (err) {
-          if (err.message.includes('UNIQUE')) {
-            return res.status(400).json({ error: 'Email already registered' });
-          }
-          return res.status(500).json({ error: 'Registration failed' });
-        }
-
-        // Generate JWT
-        const token = jwt.sign({ id: this.lastID, email }, JWT_SECRET, { expiresIn: '7d' });
-        res.status(201).json({
-          success: true,
-          token,
-          user: { id: this.lastID, email, name }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id',
+      [email, hashedPassword, name]
     );
+
+    const userId = result.rows[0].id;
+
+    // Generate JWT
+    const token = jwt.sign({ id: userId, email }, JWT_SECRET, { expiresIn: '7d' });
+    res.status(201).json({
+      success: true,
+      token,
+      user: { id: userId, email, name }
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error.code === '23505') { // unique_violation
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+    res.status(500).json({ error: 'Registration failed' });
   }
 });
 
 // Login endpoint
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -404,28 +324,25 @@ app.post('/api/auth/login', (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = rows[0];
 
-      if (!user) {
-        return res.status(401).json({ error: 'Invalid email or password' });
-      }
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
-      // Compare passwords
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (!passwordMatch) {
-        return res.status(401).json({ error: 'Invalid email or password' });
-      }
+    // Compare passwords
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
-      // Generate JWT
-      const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-      res.json({
-        success: true,
-        token,
-        user: { id: user.id, email: user.email, name: user.name }
-      });
+    // Generate JWT
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({
+      success: true,
+      token,
+      user: { id: user.id, email: user.email, name: user.name }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -448,7 +365,7 @@ app.post('/api/auth/verify', (req, res) => {
 });
 
 // Get user profile
-app.get('/api/auth/profile', (req, res) => {
+app.get('/api/auth/profile', async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -456,12 +373,13 @@ app.get('/api/auth/profile', (req, res) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    db.get('SELECT id, email, name, created_at FROM users WHERE id = ?', [decoded.id], (err, user) => {
-      if (err || !user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      res.json(user);
-    });
+    const { rows } = await pool.query('SELECT id, email, name, created_at FROM users WHERE id = $1', [decoded.id]);
+    const user = rows[0];
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }
@@ -490,17 +408,17 @@ const verifyJWT = (req, res, next) => {
 // ========== EVENTS ENDPOINTS ==========
 
 // Get all events
-app.get('/api/events', (req, res) => {
-  db.all('SELECT * FROM events ORDER BY date DESC', [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' });
-    }
+app.get('/api/events', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM events ORDER BY date DESC');
     res.json(rows || []);
-  });
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // Add new event (admin only)
-app.post('/api/events', verifyJWT, (req, res) => {
+app.post('/api/events', verifyJWT, async (req, res) => {
   try {
     const { title, description, date, location, type, link } = req.body;
 
@@ -508,41 +426,33 @@ app.post('/api/events', verifyJWT, (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    db.run(
-      'INSERT INTO events (title, description, date, location, type, link, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [title, description, date, location, type || 'event', link || null, req.user.id],
-      function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to create event' });
-        }
-        res.status(201).json({
-          success: true,
-          event: {
-            id: this.lastID,
-            title,
-            description,
-            date,
-            location,
-            type: type || 'event',
-            link: link || null
-          }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO events (title, description, date, location, type, link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [title, description, date, location, type || 'event', link || null, req.user.id]
     );
+
+    res.status(201).json({
+      success: true,
+      event: {
+        id: result.rows[0].id,
+        title,
+        description,
+        date,
+        location,
+        type: type || 'event',
+        link: link || null
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete event (admin only)
-app.delete('/api/events/:id', verifyJWT, (req, res) => {
+app.delete('/api/events/:id', verifyJWT, async (req, res) => {
   try {
-    db.run('DELETE FROM events WHERE id = ? AND created_by = ?', [req.params.id, req.user.id], function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete event' });
-      }
-      res.json({ success: true, message: 'Event deleted' });
-    });
+    await pool.query('DELETE FROM events WHERE id = $1 AND created_by = $2', [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Event deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -551,17 +461,17 @@ app.delete('/api/events/:id', verifyJWT, (req, res) => {
 // ========== TRAININGS ENDPOINTS ==========
 
 // Get all trainings
-app.get('/api/trainings', (req, res) => {
-  db.all('SELECT * FROM trainings ORDER BY date DESC', [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' });
-    }
+app.get('/api/trainings', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM trainings ORDER BY date DESC');
     res.json(rows || []);
-  });
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // Add new training (admin only)
-app.post('/api/trainings', verifyJWT, (req, res) => {
+app.post('/api/trainings', verifyJWT, async (req, res) => {
   try {
     const { title, description, date, duration, instructor, capacity, link } = req.body;
 
@@ -569,43 +479,35 @@ app.post('/api/trainings', verifyJWT, (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    db.run(
-      'INSERT INTO trainings (title, description, date, duration, instructor, capacity, link, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, description, date, duration, instructor, capacity || 50, link || null, req.user.id],
-      function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to create training' });
-        }
-        res.status(201).json({
-          success: true,
-          training: {
-            id: this.lastID,
-            title,
-            description,
-            date,
-            duration,
-            instructor,
-            capacity: capacity || 50,
-            enrolled: 0,
-            link: link || null
-          }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO trainings (title, description, date, duration, instructor, capacity, link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
+      [title, description, date, duration, instructor, capacity || 50, link || null, req.user.id]
     );
+
+    res.status(201).json({
+      success: true,
+      training: {
+        id: result.rows[0].id,
+        title,
+        description,
+        date,
+        duration,
+        instructor,
+        capacity: capacity || 50,
+        enrolled: 0,
+        link: link || null
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete training (admin only)
-app.delete('/api/trainings/:id', verifyJWT, (req, res) => {
+app.delete('/api/trainings/:id', verifyJWT, async (req, res) => {
   try {
-    db.run('DELETE FROM trainings WHERE id = ? AND created_by = ?', [req.params.id, req.user.id], function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete training' });
-      }
-      res.json({ success: true, message: 'Training deleted' });
-    });
+    await pool.query('DELETE FROM trainings WHERE id = $1 AND created_by = $2', [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Training deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -614,17 +516,17 @@ app.delete('/api/trainings/:id', verifyJWT, (req, res) => {
 // ========== JOBS ENDPOINTS ==========
 
 // Get all active jobs
-app.get('/api/jobs', (req, res) => {
-  db.all('SELECT * FROM jobs WHERE status = "active" ORDER BY created_at DESC', [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' });
-    }
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM jobs WHERE status = 'active' ORDER BY created_at DESC");
     res.json(rows || []);
-  });
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // Post new job (admin only)
-app.post('/api/jobs', verifyJWT, (req, res) => {
+app.post('/api/jobs', verifyJWT, async (req, res) => {
   try {
     const { title, department, type, description, location } = req.body;
 
@@ -632,41 +534,33 @@ app.post('/api/jobs', verifyJWT, (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    db.run(
-      'INSERT INTO jobs (title, department, type, description, location, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [title, department, type, description, location || 'Remote', 'active', req.user.id],
-      function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to post job' });
-        }
-        res.status(201).json({
-          success: true,
-          job: {
-            id: this.lastID,
-            title,
-            department,
-            type,
-            description,
-            location: location || 'Remote',
-            status: 'active'
-          }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO jobs (title, department, type, description, location, status, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [title, department, type, description, location || 'Remote', 'active', req.user.id]
     );
+
+    res.status(201).json({
+      success: true,
+      job: {
+        id: result.rows[0].id,
+        title,
+        department,
+        type,
+        description,
+        location: location || 'Remote',
+        status: 'active'
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete job (admin only)
-app.delete('/api/jobs/:id', verifyJWT, (req, res) => {
+app.delete('/api/jobs/:id', verifyJWT, async (req, res) => {
   try {
-    db.run('DELETE FROM jobs WHERE id = ? AND created_by = ?', [req.params.id, req.user.id], function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete job' });
-      }
-      res.json({ success: true, message: 'Job deleted' });
-    });
+    await pool.query('DELETE FROM jobs WHERE id = $1 AND created_by = $2', [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Job deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -681,73 +575,64 @@ app.post('/api/enquiries', async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    db.run(
-      'INSERT INTO enquiries (name, email, phone, company, service, message, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [name, email, phone, company, service, message, 'new'],
-      async function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to submit enquiry' });
-        }
-
-        const enquiryId = this.lastID;
-        
-        // Prepare enquiry data for email
-        const enquiryData = {
-          fullName: name,
-          email: email,
-          phone: phone,
-          companyName: company,
-          service: service,
-          message: message
-        };
-
-        // Trigger email (non-blocking) - using dynamic import for ES6 module
-        try {
-          const { sendEnquiryEmails } = await import('./services/emailService.js');
-          // Don't await - let it run in background
-          sendEnquiryEmails(enquiryData);
-        } catch (emailErr) {
-          console.error('Email service error:', emailErr.message);
-          // Don't block - email failure shouldn't affect enquiry submission
-        }
-
-        res.status(201).json({
-          success: true,
-          message: 'Your enquiry has been submitted successfully',
-          enquiry: {
-            id: enquiryId,
-            name,
-            email,
-            phone,
-            company,
-            service,
-            message,
-            status: 'new'
-          }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO enquiries (name, email, phone, company, service, message, status) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [name, email, phone, company, service, message, 'new']
     );
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-// Get all enquiries (admin only)
-app.get('/api/enquiries', verifyJWT, (req, res) => {
-  try {
-    db.all('SELECT * FROM enquiries ORDER BY created_at DESC', (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to fetch enquiries' });
+    const enquiryId = result.rows[0].id;
+
+    // Prepare enquiry data for email
+    const enquiryData = {
+      fullName: name,
+      email: email,
+      phone: phone,
+      companyName: company,
+      service: service,
+      message: message
+    };
+
+    // Trigger email (non-blocking) - using dynamic import for ES6 module
+    try {
+      const { sendEnquiryEmails } = await import('./services/emailService.js');
+      // Don't await - let it run in background
+      sendEnquiryEmails(enquiryData);
+    } catch (emailErr) {
+      console.error('Email service error:', emailErr.message);
+      // Don't block - email failure shouldn't affect enquiry submission
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Your enquiry has been submitted successfully',
+      enquiry: {
+        id: enquiryId,
+        name,
+        email,
+        phone,
+        company,
+        service,
+        message,
+        status: 'new'
       }
-      res.json({ enquiries: rows || [] });
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// Get all enquiries (admin only)
+app.get('/api/enquiries', verifyJWT, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM enquiries ORDER BY created_at DESC');
+    res.json({ enquiries: rows || [] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Update enquiry status (admin only)
-app.patch('/api/enquiries/:id', verifyJWT, (req, res) => {
+app.patch('/api/enquiries/:id', verifyJWT, async (req, res) => {
   try {
     const { status } = req.body;
 
@@ -755,30 +640,18 @@ app.patch('/api/enquiries/:id', verifyJWT, (req, res) => {
       return res.status(400).json({ error: 'Status is required' });
     }
 
-    db.run(
-      'UPDATE enquiries SET status = ? WHERE id = ?',
-      [status, req.params.id],
-      function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to update enquiry' });
-        }
-        res.json({ success: true, message: 'Enquiry status updated' });
-      }
-    );
+    await pool.query('UPDATE enquiries SET status = $1 WHERE id = $2', [status, req.params.id]);
+    res.json({ success: true, message: 'Enquiry status updated' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete enquiry (admin only)
-app.delete('/api/enquiries/:id', verifyJWT, (req, res) => {
+app.delete('/api/enquiries/:id', verifyJWT, async (req, res) => {
   try {
-    db.run('DELETE FROM enquiries WHERE id = ?', [req.params.id], function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete enquiry' });
-      }
-      res.json({ success: true, message: 'Enquiry deleted' });
-    });
+    await pool.query('DELETE FROM enquiries WHERE id = $1', [req.params.id]);
+    res.json({ success: true, message: 'Enquiry deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -787,17 +660,17 @@ app.delete('/api/enquiries/:id', verifyJWT, (req, res) => {
 // ========== LOCATIONS ENDPOINTS ==========
 
 // Get all locations (public)
-app.get('/api/locations', (req, res) => {
-  db.all('SELECT * FROM locations ORDER BY created_at DESC', [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to fetch locations' });
-    }
+app.get('/api/locations', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM locations ORDER BY created_at DESC');
     res.json(rows || []);
-  });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch locations' });
+  }
 });
 
 // Add new location (admin only)
-app.post('/api/locations', verifyJWT, upload.single('image'), (req, res) => {
+app.post('/api/locations', verifyJWT, upload.single('image'), async (req, res) => {
   try {
     const { name, address, phone, email, imageUrl } = req.body;
     const filePath = req.file ? `/uploads/${req.file.filename}` : null;
@@ -807,40 +680,32 @@ app.post('/api/locations', verifyJWT, upload.single('image'), (req, res) => {
       return res.status(400).json({ error: 'Name, address, and phone are required' });
     }
 
-    db.run(
-      'INSERT INTO locations (name, address, phone, email, image_url, created_by) VALUES (?, ?, ?, ?, ?, ?)',
-      [name, address, phone, email || null, finalImageUrl, req.user.id],
-      function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to create location' });
-        }
-        res.status(201).json({
-          success: true,
-          location: {
-            id: this.lastID,
-            name,
-            address,
-            phone,
-            email: email || null,
-            image_url: finalImageUrl
-          }
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO locations (name, address, phone, email, image_url, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+      [name, address, phone, email || null, finalImageUrl, req.user.id]
     );
+
+    res.status(201).json({
+      success: true,
+      location: {
+        id: result.rows[0].id,
+        name,
+        address,
+        phone,
+        email: email || null,
+        image_url: finalImageUrl
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete location (admin only)
-app.delete('/api/locations/:id', verifyJWT, (req, res) => {
+app.delete('/api/locations/:id', verifyJWT, async (req, res) => {
   try {
-    db.run('DELETE FROM locations WHERE id = ? AND created_by = ?', [req.params.id, req.user.id], function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete location' });
-      }
-      res.json({ success: true, message: 'Location deleted' });
-    });
+    await pool.query('DELETE FROM locations WHERE id = $1 AND created_by = $2', [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Location deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -863,7 +728,7 @@ const cvStorage = multer.diskStorage({
   }
 });
 
-const cvUpload = multer({ 
+const cvUpload = multer({
   storage: cvStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
@@ -883,7 +748,7 @@ app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
     if (!firstName || !lastName || !mobileNumber || !email) {
       return res.status(400).json({ error: 'First name, last name, mobile number, and email are required' });
     }
-    
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -895,33 +760,33 @@ app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
     // Import email service
     const { sendJobApplicationEmails } = await import('./services/emailService.js');
 
-    db.run(
-      'INSERT INTO job_applications (firstName, lastName, mobileNumber, email, coverLetter, cvFilePath, jobTitle) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [firstName, lastName, mobileNumber, email, coverLetter || '', cvFilePath, jobTitle || ''],
-      function(err) {
-        if (err) {
-          console.error('Error inserting job application:', err);
-          return res.status(500).json({ error: 'Failed to submit application' });
-        }
-        
-        // Send emails asynchronously (won't block response)
-        // First fetch the mail config from database
-        db.get('SELECT MAILERSEND_API_KEY, MAILERSEND_DOMAIN, COMPANY_EMAIL FROM mail_config ORDER BY id DESC LIMIT 1', [], (dbErr, mailConfig) => {
-          const application = { firstName, lastName, mobileNumber, coverLetter, jobTitle, cvFilePath };
-          const config = mailConfig ? { 
-            apiKey: mailConfig.MAILERSEND_API_KEY, 
-            domain: mailConfig.MAILERSEND_DOMAIN 
-          } : null;
-          sendJobApplicationEmails(application, email, config, mailConfig?.COMPANY_EMAIL);
-        });
-        
-        res.status(201).json({ 
-          success: true, 
-          message: 'Application submitted successfully',
-          id: this.lastID 
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO job_applications (first_name, last_name, mobile_number, email, cover_letter, cv_file_path, job_title) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [firstName, lastName, mobileNumber, email, coverLetter || '', cvFilePath, jobTitle || '']
     );
+
+    const applicationId = result.rows[0].id;
+
+    // Send emails asynchronously (won't block response)
+    // First fetch the mail config from database
+    try {
+      const { rows: mailRows } = await pool.query('SELECT mailersend_api_key, mailersend_domain, company_email FROM mail_config ORDER BY id DESC LIMIT 1');
+      const mailConfig = mailRows[0];
+      const application = { firstName, lastName, mobileNumber, coverLetter, jobTitle, cvFilePath };
+      const config = mailConfig ? {
+        apiKey: mailConfig.mailersend_api_key,
+        domain: mailConfig.mailersend_domain
+      } : null;
+      sendJobApplicationEmails(application, email, config, mailConfig?.company_email);
+    } catch (emailErr) {
+      console.error('Email sending error:', emailErr.message);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Application submitted successfully',
+      id: applicationId
+    });
   } catch (error) {
     console.error('Job application error:', error);
     res.status(500).json({ error: error.message });
@@ -929,71 +794,67 @@ app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
 });
 
 // GET all job applications (admin)
-app.get('/api/job-applications', verifyJWT, (req, res) => {
+app.get('/api/job-applications', verifyJWT, async (req, res) => {
   try {
-    db.all('SELECT * FROM job_applications ORDER BY submittedDate DESC', [], (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to fetch job applications' });
-      }
-      res.json(rows);
-    });
+    const { rows } = await pool.query(
+      `SELECT id,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              mobile_number AS "mobileNumber",
+              email,
+              cover_letter AS "coverLetter",
+              cv_file_path AS "cvFilePath",
+              job_title AS "jobTitle",
+              status,
+              submitted_date AS "submittedDate"
+       FROM job_applications ORDER BY submitted_date DESC`
+    );
+    res.json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // DELETE job application (admin)
-app.delete('/api/job-applications/:id', verifyJWT, (req, res) => {
+app.delete('/api/job-applications/:id', verifyJWT, async (req, res) => {
   try {
     // First get the application to delete the file
-    db.get('SELECT cvFilePath FROM job_applications WHERE id = ?', [req.params.id], (err, row) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete application' });
+    const { rows } = await pool.query('SELECT cv_file_path FROM job_applications WHERE id = $1', [req.params.id]);
+    const row = rows[0];
+
+    // Delete the file if exists
+    if (row && row.cv_file_path) {
+      const filePath = path.join(__dirname, 'public', row.cv_file_path);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
       }
-      
-      // Delete the file if exists
-      if (row && row.cvFilePath) {
-        const filePath = path.join(__dirname, 'public', row.cvFilePath);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-      
-      // Delete from database
-      db.run('DELETE FROM job_applications WHERE id = ?', [req.params.id], function(err) {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to delete application' });
-        }
-        res.json({ success: true, message: 'Application deleted' });
-      });
-    });
+    }
+
+    // Delete from database
+    await pool.query('DELETE FROM job_applications WHERE id = $1', [req.params.id]);
+    res.json({ success: true, message: 'Application deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // PATCH job application status (admin)
-app.patch('/api/job-applications/:id/status', verifyJWT, (req, res) => {
+app.patch('/api/job-applications/:id/status', verifyJWT, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    
+
     // Validate status value
     const validStatuses = ['pending', 'reviewed', 'rejected'];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status value. Must be: pending, reviewed, or rejected' });
     }
-    
-    db.run('UPDATE job_applications SET status = ? WHERE id = ?', [status, id], function(err) {
-      if (err) {
-        console.error('Error updating status:', err);
-        return res.status(500).json({ error: 'Failed to update status' });
-      }
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Application not found' });
-      }
-      res.json({ success: true, message: 'Status updated successfully' });
-    });
+
+    const result = await pool.query('UPDATE job_applications SET status = $1 WHERE id = $2', [status, id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+    res.json({ success: true, message: 'Status updated successfully' });
   } catch (error) {
     console.error('Status update error:', error);
     res.status(500).json({ error: error.message });
@@ -1003,26 +864,24 @@ app.patch('/api/job-applications/:id/status', verifyJWT, (req, res) => {
 // ========== MAIL CONFIG ENDPOINTS ==========
 
 // Get mail config (admin only)
-app.get('/api/admin/mail-config', verifyJWT, (req, res) => {
+app.get('/api/admin/mail-config', verifyJWT, async (req, res) => {
   try {
-    db.get('SELECT * FROM mail_config ORDER BY id DESC LIMIT 1', [], (err, row) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to fetch mail config' });
-      }
-      if (!row) {
-        return res.json({
-          MAILERSEND_API_KEY: '',
-          MAILERSEND_DOMAIN: '',
-          COMPANY_EMAIL: '',
-          lastUpdated: null
-        });
-      }
-      res.json({
-        MAILERSEND_API_KEY: row.MAILERSEND_API_KEY || '',
-        MAILERSEND_DOMAIN: row.MAILERSEND_DOMAIN || '',
-        COMPANY_EMAIL: row.COMPANY_EMAIL || '',
-        lastUpdated: row.last_updated
+    const { rows } = await pool.query('SELECT * FROM mail_config ORDER BY id DESC LIMIT 1');
+    const row = rows[0];
+
+    if (!row) {
+      return res.json({
+        MAILERSEND_API_KEY: '',
+        MAILERSEND_DOMAIN: '',
+        COMPANY_EMAIL: '',
+        lastUpdated: null
       });
+    }
+    res.json({
+      MAILERSEND_API_KEY: row.mailersend_api_key || '',
+      MAILERSEND_DOMAIN: row.mailersend_domain || '',
+      COMPANY_EMAIL: row.company_email || '',
+      lastUpdated: row.last_updated
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1039,44 +898,33 @@ app.post('/api/admin/mail-config', verifyJWT, async (req, res) => {
     }
 
     // Check if config exists
-    db.get('SELECT id FROM mail_config ORDER BY id DESC LIMIT 1', [], async (err, existing) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to save mail config' });
-      }
+    const { rows: existingRows } = await pool.query('SELECT id FROM mail_config ORDER BY id DESC LIMIT 1');
+    const existing = existingRows[0];
 
-      const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-      // If existing config, update only if new API key is provided
-      if (existing) {
-        let updateQuery = 'UPDATE mail_config SET MAILERSEND_DOMAIN = ?, COMPANY_EMAIL = ?, last_updated = ?';
-        let params = [MAILERSEND_DOMAIN, COMPANY_EMAIL, now];
-
-        // Only update API key if a new one is provided (not empty string from masking)
-        if (MAILERSEND_API_KEY && MAILERSEND_API_KEY.trim() !== '') {
-          updateQuery = 'UPDATE mail_config SET MAILERSEND_API_KEY = ?, MAILERSEND_DOMAIN = ?, COMPANY_EMAIL = ?, last_updated = ?';
-          params = [MAILERSEND_API_KEY, MAILERSEND_DOMAIN, COMPANY_EMAIL, now];
-        }
-
-        db.run(updateQuery, params, function(err) {
-          if (err) {
-            return res.status(500).json({ error: 'Failed to update mail config' });
-          }
-          res.json({ success: true, message: 'Mail config updated', lastUpdated: now });
-        });
+    if (existing) {
+      // Only update API key if a new one is provided (not empty string from masking)
+      if (MAILERSEND_API_KEY && MAILERSEND_API_KEY.trim() !== '') {
+        await pool.query(
+          'UPDATE mail_config SET mailersend_api_key = $1, mailersend_domain = $2, company_email = $3, last_updated = $4 WHERE id = $5',
+          [MAILERSEND_API_KEY, MAILERSEND_DOMAIN, COMPANY_EMAIL, now, existing.id]
+        );
       } else {
-        // Insert new config
-        db.run(
-          'INSERT INTO mail_config (MAILERSEND_API_KEY, MAILERSEND_DOMAIN, COMPANY_EMAIL, last_updated) VALUES (?, ?, ?, ?)',
-          [MAILERSEND_API_KEY || '', MAILERSEND_DOMAIN, COMPANY_EMAIL, now],
-          function(err) {
-            if (err) {
-              return res.status(500).json({ error: 'Failed to create mail config' });
-            }
-            res.json({ success: true, message: 'Mail config created', lastUpdated: now });
-          }
+        await pool.query(
+          'UPDATE mail_config SET mailersend_domain = $1, company_email = $2, last_updated = $3 WHERE id = $4',
+          [MAILERSEND_DOMAIN, COMPANY_EMAIL, now, existing.id]
         );
       }
-    });
+      res.json({ success: true, message: 'Mail config updated', lastUpdated: now });
+    } else {
+      // Insert new config
+      await pool.query(
+        'INSERT INTO mail_config (mailersend_api_key, mailersend_domain, company_email, last_updated) VALUES ($1, $2, $3, $4)',
+        [MAILERSEND_API_KEY || '', MAILERSEND_DOMAIN, COMPANY_EMAIL, now]
+      );
+      res.json({ success: true, message: 'Mail config created', lastUpdated: now });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1086,79 +934,56 @@ app.post('/api/admin/mail-config', verifyJWT, async (req, res) => {
 app.post('/api/admin/mail-config/test', verifyJWT, async (req, res) => {
   try {
     // Get current config
-    db.get('SELECT * FROM mail_config ORDER BY id DESC LIMIT 1', [], async (err, config) => {
-      if (err) {
-        console.error('Database error fetching mail config:', err);
-        return res.status(500).json({ message: 'Failed to retrieve mail configuration' });
+    const { rows } = await pool.query('SELECT * FROM mail_config ORDER BY id DESC LIMIT 1');
+    const config = rows[0];
+
+    if (!config || !config.mailersend_api_key || !config.mailersend_domain || !config.company_email) {
+      return res.status(400).json({ message: 'Please configure mail settings first. API key, domain, and company email are required.' });
+    }
+
+    try {
+      // Import email service
+      const { sendTestEmail } = await import('./services/emailService.js');
+
+      console.log('Sending test email with domain:', config.mailersend_domain);
+      console.log('Sending test email to:', config.company_email);
+
+      const result = await sendTestEmail(config.mailersend_api_key, config.mailersend_domain, config.company_email);
+
+      if (result.success) {
+        res.json({ success: true, message: 'Test email sent successfully!' });
+      } else {
+        // The email service now returns more specific error messages
+        res.status(400).json({ message: result.message || 'Failed to send test email. Please check your configuration.' });
       }
-      
-      if (!config || !config.MAILERSEND_API_KEY || !config.MAILERSEND_DOMAIN || !config.COMPANY_EMAIL) {
-        return res.status(400).json({ message: 'Please configure mail settings first. API key, domain, and company email are required.' });
+    } catch (emailError) {
+      console.error('Test email error:', emailError);
+
+      // Check for authentication/unauthorized errors
+      const errorStr = JSON.stringify(emailError).toLowerCase();
+      if (errorStr.includes('unauthorized') || errorStr.includes('401') || errorStr.includes('unauthenticated')) {
+        return res.status(400).json({ message: 'Invalid or expired API key. Please update your MailerSend API key in the settings.' });
       }
 
-      try {
-        // Import email service
-        const { sendTestEmail } = await import('./services/emailService.js');
-        
-        console.log('Sending test email with domain:', config.MAILERSEND_DOMAIN);
-        console.log('Sending test email to:', config.COMPANY_EMAIL);
-        
-        const result = await sendTestEmail(config.MAILERSEND_API_KEY, config.MAILERSEND_DOMAIN, config.COMPANY_EMAIL);
-        
-        if (result.success) {
-          res.json({ success: true, message: 'Test email sent successfully!' });
-        } else {
-          // The email service now returns more specific error messages
-          res.status(400).json({ message: result.message || 'Failed to send test email. Please check your configuration.' });
-        }
-      } catch (emailError) {
-        console.error('Test email error:', emailError);
-        
-        // Check for authentication/unauthorized errors
-        const errorStr = JSON.stringify(emailError).toLowerCase();
-        if (errorStr.includes('unauthorized') || errorStr.includes('401') || errorStr.includes('unauthenticated')) {
-          return res.status(400).json({ message: 'Invalid or expired API key. Please update your MailerSend API key in the settings.' });
-        }
-        
-        // Check for domain errors
-        if (errorStr.includes('domain') || errorStr.includes('from address')) {
-          return res.status(400).json({ message: 'Invalid domain. Please verify your MailerSend domain is correctly configured.' });
-        }
-        
-        res.status(400).json({ message: emailError.message || 'Failed to send test email. Please check your configuration.' });
+      // Check for domain errors
+      if (errorStr.includes('domain') || errorStr.includes('from address')) {
+        return res.status(400).json({ message: 'Invalid domain. Please verify your MailerSend domain is correctly configured.' });
       }
-    });
+
+      res.status(400).json({ message: emailError.message || 'Failed to send test email. Please check your configuration.' });
+    }
   } catch (error) {
     console.error('Test email endpoint error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-// Helper function to get subscription config path
-const getSubscriptionConfigPath = () => {
-  return path.join(process.cwd(), 'config', 'subscription-config.json');
-};
-
-// Ensure subscription config file exists
-const ensureSubscriptionConfig = () => {
-  const configPath = getSubscriptionConfigPath();
-  if (!fs.existsSync(configPath)) {
-    fs.writeFileSync(configPath, JSON.stringify({ rate: 50 }, null, 2));
-    console.log('Created subscription-config.json with default rate: 50');
-  }
-};
-
 // GET subscription config
-app.get('/api/admin/subscription-config', (req, res) => {
+app.get('/api/admin/subscription-config', async (req, res) => {
   try {
-    const configPath = getSubscriptionConfigPath();
-    
-    if (!fs.existsSync(configPath)) {
-      return res.json({ rate: 50 });
-    }
-    
-    const data = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-    res.json({ rate: data.rate || 50 });
+    const { rows } = await pool.query('SELECT rate FROM subscription_config ORDER BY id ASC LIMIT 1');
+    const row = rows[0];
+    res.json({ rate: row ? row.rate : 50 });
   } catch (error) {
     console.error('Subscription config endpoint error:', error);
     res.status(500).json({ error: error.message });
@@ -1174,12 +999,17 @@ app.post('/api/admin/subscription-config', verifyJWT, async (req, res) => {
       return res.status(400).json({ error: 'Rate must be greater than 0' });
     }
 
-    const configPath = getSubscriptionConfigPath();
-    const configData = { rate: parseInt(rate) };
-    
-    fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-    
-    res.json({ success: true, message: 'Subscription config updated', rate: parseInt(rate) });
+    const parsedRate = parseInt(rate);
+
+    // Upsert: update existing row or insert
+    const { rows: existingRows } = await pool.query('SELECT id FROM subscription_config ORDER BY id ASC LIMIT 1');
+    if (existingRows.length > 0) {
+      await pool.query('UPDATE subscription_config SET rate = $1, last_updated = NOW() WHERE id = $2', [parsedRate, existingRows[0].id]);
+    } else {
+      await pool.query('INSERT INTO subscription_config (rate) VALUES ($1)', [parsedRate]);
+    }
+
+    res.json({ success: true, message: 'Subscription config updated', rate: parsedRate });
   } catch (error) {
     console.error('Subscription config POST endpoint error:', error);
     res.status(500).json({ error: error.message });
@@ -1187,15 +1017,10 @@ app.post('/api/admin/subscription-config', verifyJWT, async (req, res) => {
 });
 
 // GET subscription status types (admin only)
-app.get('/api/admin/subscription-status-types', verifyJWT, (req, res) => {
+app.get('/api/admin/subscription-status-types', verifyJWT, async (req, res) => {
   try {
-    db.all('SELECT * FROM subscription_status_types ORDER BY display_order ASC', [], (err, rows) => {
-      if (err) {
-        console.error('Error fetching subscription status types:', err);
-        return res.status(500).json({ error: 'Failed to fetch status types' });
-      }
-      res.json(rows);
-    });
+    const { rows } = await pool.query('SELECT * FROM subscription_status_types ORDER BY display_order ASC');
+    res.json(rows);
   } catch (error) {
     console.error('Get subscription status types error:', error);
     res.status(500).json({ error: error.message });
@@ -1203,7 +1028,7 @@ app.get('/api/admin/subscription-status-types', verifyJWT, (req, res) => {
 });
 
 // POST subscription status type (admin only)
-app.post('/api/admin/subscription-status-types', verifyJWT, (req, res) => {
+app.post('/api/admin/subscription-status-types', verifyJWT, async (req, res) => {
   try {
     const { status_name, color, display_order } = req.body;
 
@@ -1215,34 +1040,29 @@ app.post('/api/admin/subscription-status-types', verifyJWT, (req, res) => {
     const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     const validColor = color && hexColorRegex.test(color) ? color : '#6b7280';
 
-    db.run(
-      'INSERT INTO subscription_status_types (status_name, color, display_order) VALUES (?, ?, ?)',
-      [status_name.trim(), validColor, display_order || 0],
-      function(err) {
-        if (err) {
-          if (err.message.includes('UNIQUE')) {
-            return res.status(400).json({ error: 'Status name already exists' });
-          }
-          console.error('Error creating subscription status type:', err);
-          return res.status(500).json({ error: 'Failed to create status type' });
-        }
-        res.status(201).json({
-          success: true,
-          id: this.lastID,
-          status_name: status_name.trim(),
-          color: validColor,
-          display_order: display_order || 0
-        });
-      }
+    const result = await pool.query(
+      'INSERT INTO subscription_status_types (status_name, color, display_order) VALUES ($1, $2, $3) RETURNING id',
+      [status_name.trim(), validColor, display_order || 0]
     );
+
+    res.status(201).json({
+      success: true,
+      id: result.rows[0].id,
+      status_name: status_name.trim(),
+      color: validColor,
+      display_order: display_order || 0
+    });
   } catch (error) {
+    if (error.code === '23505') { // unique_violation
+      return res.status(400).json({ error: 'Status name already exists' });
+    }
     console.error('Create subscription status type error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // PUT subscription status type (admin only)
-app.put('/api/admin/subscription-status-types/:id', verifyJWT, (req, res) => {
+app.put('/api/admin/subscription-status-types/:id', verifyJWT, async (req, res) => {
   try {
     const { id } = req.params;
     const { status_name, color, display_order } = req.body;
@@ -1255,69 +1075,45 @@ app.put('/api/admin/subscription-status-types/:id', verifyJWT, (req, res) => {
     const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     const validColor = color && hexColorRegex.test(color) ? color : '#6b7280';
 
-    db.run(
-      'UPDATE subscription_status_types SET status_name = ?, color = ?, display_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [status_name.trim(), validColor, display_order || 0, id],
-      function(err) {
-        if (err) {
-          if (err.message.includes('UNIQUE')) {
-            return res.status(400).json({ error: 'Status name already exists' });
-          }
-          console.error('Error updating subscription status type:', err);
-          return res.status(500).json({ error: 'Failed to update status type' });
-        }
-        if (this.changes === 0) {
-          return res.status(404).json({ error: 'Status type not found' });
-        }
-        res.json({
-          success: true,
-          id: parseInt(id),
-          status_name: status_name.trim(),
-          color: validColor,
-          display_order: display_order || 0
-        });
-      }
+    const result = await pool.query(
+      'UPDATE subscription_status_types SET status_name = $1, color = $2, display_order = $3, updated_at = NOW() WHERE id = $4',
+      [status_name.trim(), validColor, display_order || 0, id]
     );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Status type not found' });
+    }
+    res.json({
+      success: true,
+      id: parseInt(id),
+      status_name: status_name.trim(),
+      color: validColor,
+      display_order: display_order || 0
+    });
   } catch (error) {
+    if (error.code === '23505') { // unique_violation
+      return res.status(400).json({ error: 'Status name already exists' });
+    }
     console.error('Update subscription status type error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // DELETE subscription status type (admin only)
-app.delete('/api/admin/subscription-status-types/:id', verifyJWT, (req, res) => {
+app.delete('/api/admin/subscription-status-types/:id', verifyJWT, async (req, res) => {
   try {
     const { id } = req.params;
 
-    db.run('DELETE FROM subscription_status_types WHERE id = ?', [id], function(err) {
-      if (err) {
-        console.error('Error deleting subscription status type:', err);
-        return res.status(500).json({ error: 'Failed to delete status type' });
-      }
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Status type not found' });
-      }
-      res.json({ success: true, message: 'Status type deleted' });
-    });
+    const result = await pool.query('DELETE FROM subscription_status_types WHERE id = $1', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Status type not found' });
+    }
+    res.json({ success: true, message: 'Status type deleted' });
   } catch (error) {
     console.error('Delete subscription status type error:', error);
     res.status(500).json({ error: error.message });
   }
 });
-
-// Helper function to get subscriptions file path
-const getSubscriptionsPath = () => {
-  return path.join(process.cwd(), 'config', 'subscriptions.json');
-};
-
-// Ensure subscriptions file exists
-const ensureSubscriptionsFile = () => {
-  const filePath = getSubscriptionsPath();
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify([], null, 2));
-    console.log('Created subscriptions.json');
-  }
-};
 
 // POST subscription (public)
 app.post('/api/subscription', async (req, res) => {
@@ -1333,41 +1129,25 @@ app.post('/api/subscription', async (req, res) => {
       return res.status(400).json({ message: 'Minimum subscription hours is 50' });
     }
 
-    // Read existing subscriptions
-    const subscriptionsPath = getSubscriptionsPath();
-    let subscriptions = [];
-    if (fs.existsSync(subscriptionsPath)) {
-      subscriptions = JSON.parse(fs.readFileSync(subscriptionsPath, 'utf-8'));
-    }
+    const result = await pool.query(
+      'INSERT INTO subscriptions (name, company_name, email, contact_number, message, hours, rate, total_amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
+      [name, companyName, email, contactNumber, message || '', hours, rate, totalAmount, 'pending']
+    );
 
-    // Add new subscription
-    const newSubscription = {
-      id: Date.now(),
-      name,
-      companyName,
-      email,
-      contactNumber,
-      message: message || '',
-      hours,
-      rate,
-      totalAmount,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
-    
-    subscriptions.push(newSubscription);
-    
-    // Save to file
-    fs.writeFileSync(subscriptionsPath, JSON.stringify(subscriptions, null, 2));
+    const newId = result.rows[0].id;
 
     // Send emails asynchronously (non-blocking)
-    const { sendSubscriptionEmails } = await import('./services/emailService.js');
-    sendSubscriptionEmails(newSubscription, email);
+    try {
+      const { sendSubscriptionEmails } = await import('./services/emailService.js');
+      sendSubscriptionEmails({ id: newId, name, companyName, email, contactNumber, message: message || '', hours, rate, totalAmount, status: 'pending' }, email);
+    } catch (emailErr) {
+      console.error('Subscription email error:', emailErr.message);
+    }
 
-    res.status(201).json({ 
-      success: true, 
+    res.status(201).json({
+      success: true,
       message: 'Subscription request submitted successfully',
-      id: newSubscription.id
+      id: newId
     });
   } catch (error) {
     console.error('Subscription endpoint error:', error);
@@ -1376,22 +1156,25 @@ app.post('/api/subscription', async (req, res) => {
 });
 
 // GET all subscriptions (admin only)
-// Changed from /api/subscriptions to /api/subscription to match POST endpoint
-app.get('/api/subscription', verifyJWT, (req, res) => {
+app.get('/api/subscription', verifyJWT, async (req, res) => {
   console.log('[GET] /api/subscription called - middleware passed');
   try {
-    const subscriptionsPath = getSubscriptionsPath();
-    console.log('Subscriptions path:', subscriptionsPath);
-    console.log('File exists:', fs.existsSync(subscriptionsPath));
-    
-    if (!fs.existsSync(subscriptionsPath)) {
-      console.log('Subscriptions file not found, returning empty array');
-      return res.json([]);
-    }
-    
-    const subscriptions = JSON.parse(fs.readFileSync(subscriptionsPath, 'utf-8'));
-    console.log('Returning subscriptions:', subscriptions.length);
-    res.json(subscriptions);
+    const { rows } = await pool.query(
+      `SELECT id,
+              name,
+              company_name AS "companyName",
+              email,
+              contact_number AS "contactNumber",
+              message,
+              hours,
+              rate,
+              total_amount AS "totalAmount",
+              status,
+              created_at AS "createdAt"
+       FROM subscriptions ORDER BY created_at DESC`
+    );
+    console.log('Returning subscriptions:', rows.length);
+    res.json(rows);
   } catch (error) {
     console.error('Get subscriptions endpoint error:', error);
     res.status(500).json({ error: error.message });
@@ -1399,24 +1182,15 @@ app.get('/api/subscription', verifyJWT, (req, res) => {
 });
 
 // DELETE subscription (admin only)
-app.delete('/api/subscription/:id', verifyJWT, (req, res) => {
+app.delete('/api/subscription/:id', verifyJWT, async (req, res) => {
   try {
     const { id } = req.params;
-    const subscriptionsPath = getSubscriptionsPath();
-    
-    if (!fs.existsSync(subscriptionsPath)) {
+    const result = await pool.query('DELETE FROM subscriptions WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Subscription not found' });
     }
-    
-    let subscriptions = JSON.parse(fs.readFileSync(subscriptionsPath, 'utf-8'));
-    const initialLength = subscriptions.length;
-    subscriptions = subscriptions.filter(sub => sub.id !== parseInt(id));
-    
-    if (subscriptions.length === initialLength) {
-      return res.status(404).json({ error: 'Subscription not found' });
-    }
-    
-    fs.writeFileSync(subscriptionsPath, JSON.stringify(subscriptions, null, 2));
+
     res.json({ success: true, message: 'Subscription deleted successfully' });
   } catch (error) {
     console.error('Delete subscription endpoint error:', error);
@@ -1425,56 +1199,66 @@ app.delete('/api/subscription/:id', verifyJWT, (req, res) => {
 });
 
 // PUT subscription status (admin only) - using /api/subscriptions (plural)
-app.put('/api/subscriptions/:id/status', verifyJWT, (req, res) => {
+app.put('/api/subscriptions/:id/status', verifyJWT, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    
+
     console.log("PUT /api/subscriptions/:id/status - Incoming ID:", id);
     console.log("PUT /api/subscriptions/:id/status - Incoming Status:", status);
-    
+
     if (!status) {
       return res.status(400).json({ error: 'Status is required' });
     }
-    
+
     const validStatuses = ['Pending', 'Reviewed', 'Rejected'];
     // Normalize status to title case for storage
     const normalizedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-    
+
     if (!validStatuses.includes(normalizedStatus)) {
       return res.status(400).json({ error: 'Invalid status value' });
     }
-    
-    const subscriptionsPath = getSubscriptionsPath();
-    
-    if (!fs.existsSync(subscriptionsPath)) {
+
+    const result = await pool.query('UPDATE subscriptions SET status = $1 WHERE id = $2', [normalizedStatus, id]);
+
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Subscription not found' });
     }
-    
-    let subscriptions = JSON.parse(fs.readFileSync(subscriptionsPath, 'utf-8'));
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === parseInt(id));
-    
-    console.log("PUT /api/subscriptions/:id/status - Subscription Index:", subscriptionIndex);
-    console.log("PUT /api/subscriptions/:id/status - Available IDs:", subscriptions.map(s => s.id));
-    
-    if (subscriptionIndex === -1) {
-      return res.status(404).json({ error: 'Subscription not found' });
-    }
-    
-    subscriptions[subscriptionIndex].status = normalizedStatus;
-    
-    fs.writeFileSync(subscriptionsPath, JSON.stringify(subscriptions, null, 2));
-    console.log("PUT /api/subscriptions/:id/status - Updated successfully:", subscriptions[subscriptionIndex]);
-    res.json({ success: true, message: 'Subscription status updated successfully', subscription: subscriptions[subscriptionIndex] });
+
+    // Fetch updated subscription to return
+    const { rows } = await pool.query(
+      `SELECT id,
+              name,
+              company_name AS "companyName",
+              email,
+              contact_number AS "contactNumber",
+              message,
+              hours,
+              rate,
+              total_amount AS "totalAmount",
+              status,
+              created_at AS "createdAt"
+       FROM subscriptions WHERE id = $1`,
+      [id]
+    );
+
+    console.log("PUT /api/subscriptions/:id/status - Updated successfully:", rows[0]);
+    res.json({ success: true, message: 'Subscription status updated successfully', subscription: rows[0] });
   } catch (error) {
     console.error('Update subscription status endpoint error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Ensure subscription config file exists
-ensureSubscriptionConfig();
-ensureSubscriptionsFile();
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, closing pool...');
+  pool.end();
+});
+process.on('SIGINT', () => {
+  console.log('SIGINT received, closing pool...');
+  pool.end();
+});
 
 // Start server
 app.listen(PORT, () => {

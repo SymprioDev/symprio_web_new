@@ -30,10 +30,29 @@ export default function TrainingLanding() {
   const handleEnquirySubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.workEmail,
+          company: formData.company,
+          service: formData.trainingType,
+          message: formData.message
+        })
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert('Failed to submit. Please try again.');
+      }
+    } catch (err) {
+      console.error('Enquiry error:', err);
+      alert('An error occurred. Please try again.');
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 1500);
+    }
   };
 
   useEffect(() => {

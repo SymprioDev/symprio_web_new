@@ -89,12 +89,32 @@ export default function Careers() {
   const [modalJob, setModalJob] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', linkedin: '', cover: '', cv: null });
   const [submitted, setSubmitted] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(true);
 
   useEffect(() => {
     AOS.init({ duration: 800, easing: 'ease-out', once: false });
   }, []);
 
-  const filteredJobs = activeFilter === 'All' ? JOBS : JOBS.filter(j => j.department === activeFilter);
+  useEffect(() => {
+    fetch('/api/jobs')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setJobs(data);
+        } else {
+          // Fallback to hardcoded jobs if no jobs in DB
+          setJobs(JOBS);
+        }
+        setLoadingJobs(false);
+      })
+      .catch(() => {
+        setJobs(JOBS); // Fallback
+        setLoadingJobs(false);
+      });
+  }, []);
+
+  const filteredJobs = activeFilter === 'All' ? jobs : jobs.filter(j => j.department === activeFilter);
 
   function openModal(job) {
     setModalJob(job);
@@ -113,9 +133,34 @@ export default function Careers() {
     setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      const fd = new FormData();
+      fd.append('firstName', formData.name.split(' ')[0] || formData.name);
+      fd.append('lastName', formData.name.split(' ').slice(1).join(' ') || '');
+      fd.append('email', formData.email);
+      fd.append('mobileNumber', formData.phone);
+      fd.append('coverLetter', formData.cover);
+      fd.append('jobTitle', modalJob.title);
+      if (formData.cv) {
+        fd.append('cv', formData.cv);
+      }
+
+      const res = await fetch('/api/job-applications', {
+        method: 'POST',
+        body: fd  // No Content-Type header — browser sets multipart/form-data automatically
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert('Failed to submit application. Please try again.');
+      }
+    } catch (err) {
+      console.error('Application error:', err);
+      alert('An error occurred. Please try again.');
+    }
   }
 
   const typeStyle = (type) => TYPE_COLORS[type] || { bg: '#F9FAFB', color: '#374151' };

@@ -104,7 +104,7 @@ export default function AIMode() {
   const [showHistory, setShowHistory] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [lastReply, setLastReply] = useState("Hello. I'm Symprio AI. Tap the mic or speak to begin.");
+  const [lastReply, setLastReply] = useState("Hello. I'm Symprio AI. Tap the mic button to start a voice conversation, or use Type to chat.");
   const [messages, setMessages] = useState([]);
   const [textInput, setTextInput] = useState('');
 
@@ -182,7 +182,13 @@ export default function AIMode() {
       conversationRef.current = conversation;
     } catch (err) {
       console.error('[ElevenLabs] Failed:', err.message, err);
-      setLastReply(`Voice agent connecting issue: ${err.message}. Use Type button or tap mic to retry.`);
+      if (err.name === 'NotFoundError' || err.message.includes('device not found')) {
+        setLastReply('No microphone detected. Please connect a mic and tap the mic button, or use Type to chat.');
+      } else if (err.name === 'NotAllowedError') {
+        setLastReply('Microphone access denied. Please allow mic permission and tap the mic button to retry.');
+      } else {
+        setLastReply(`Voice connection issue. Tap mic to retry, or use Type to chat.`);
+      }
       setStatus('idle');
     }
   }, []);
@@ -211,14 +217,14 @@ export default function AIMode() {
       themeAudioRef.current = audio;
     } catch { /* no audio */ }
 
-    // Mic stream for audio visualizer (not for speech recognition)
+    // Try to get mic for visualizer — don't auto-start ElevenLabs
+    // User clicks mic button to start voice conversation
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       micStreamRef.current = stream;
       setupAudioVisualizer(stream);
-    }).catch(() => { /* no mic */ });
-
-    // Auto-start ElevenLabs conversation
-    initElevenLabs();
+    }).catch(() => {
+      console.log('[AIMode] No mic available — visualizer will use idle animation');
+    });
 
     // Canvas animation loop
     const canvas = canvasRef.current;

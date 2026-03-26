@@ -799,6 +799,24 @@ app.delete('/api/events/:id', verifyJWT, async (req, res) => {
   }
 });
 
+// Regenerate event banner (admin only)
+app.post('/api/events/:id/regenerate-banner', verifyJWT, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM events WHERE id = $1', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Event not found' });
+    const event = rows[0];
+    const bannerUrl = await generateEventBanner(event.id, event.title, event.description, event.date, event.location);
+    if (bannerUrl) {
+      await pool.query('UPDATE events SET banner_image = $1 WHERE id = $2', [bannerUrl, event.id]);
+      res.json({ success: true, banner_image: bannerUrl });
+    } else {
+      res.status(500).json({ error: 'Banner generation failed' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ========== TRAININGS ENDPOINTS ==========
 
 // Get all trainings

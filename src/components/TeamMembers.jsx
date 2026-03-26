@@ -4,28 +4,28 @@ const TeamMembers = () => {
   const team = [
     {
       name: 'Vilhelm Bjermeland',
-      position: 'CEO',
+      position: 'COO, USA',
       image: '/vilhelm_New.jpg',
       id: 1,
       linkedin: 'https://www.linkedin.com/in/get2vil/'
     },
     {
       name: 'Prabin Vijay',
-      position: 'CTO',
+      position: 'Practice Lead, APAC',
       image: '/prabin_New.jpg',
       id: 2,
       linkedin: 'https://www.linkedin.com/in/prabin-vijay-89a2758/'
     },
     {
       name: 'Vivek Krishna',
-      position: 'Director - AI/Automation',
+      position: 'Director, Automation Services, APAC',
       image: '/vivek_New.jpg',
       id: 3,
       linkedin: 'https://www.linkedin.com/in/vivekkkrishna/'
     },
     {
       name: 'Ramalingam Dushyanth',
-      position: 'Regional Director - APAC',
+      position: 'Practice Head, Automation',
       image: '/dushy.jpeg',
       id: 4,
       linkedin: 'https://www.linkedin.com/in/ddr-dushy/'
@@ -154,9 +154,10 @@ const TeamMembers = () => {
                 {member.name}
               </h3>
               <p style={{
-                fontSize: '15px',
-                color: '#444444',
-                margin: '0'
+                fontSize: '14px',
+                color: '#6b7280',
+                margin: '0',
+                lineHeight: '1.4'
               }}>
                 {member.position}
               </p>

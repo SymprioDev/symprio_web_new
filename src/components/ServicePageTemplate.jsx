@@ -17,7 +17,6 @@ export default function ServicePageTemplate({
   subtitle,
   heroImage,
   breadcrumb,
-  breadcrumbPath,
   seoTitle,
   seoDescription,
   introHeading,
@@ -31,10 +30,10 @@ export default function ServicePageTemplate({
   children,
 }) {
   // Build breadcrumb items for navigation
+  // Shows: Home (link) / Services (link) / [Current Page] (non-clickable)
   const breadcrumbItems = [
     { label: 'Home', path: '/' },
     { label: 'Services', path: '/services' },
-    ...(breadcrumbPath ? [{ label: breadcrumb, path: breadcrumbPath }] : []),
     { label: breadcrumb || 'Page', path: '' }, // Current page (no path)
   ];
 

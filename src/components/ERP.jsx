@@ -9,7 +9,6 @@ export default function ERP() {
       subtitle="Transforming complex business operations into streamlined, cloud-native powerhouses."
       heroImage="/assets/images/erp-oracle.jpg"
       breadcrumb="ERP & Oracle"
-      breadcrumbPath="/services/erp-oracle"
       seoTitle="Oracle ERP Implementation & Consultancy"
       seoDescription="Expert Oracle Cloud and R12 ERP implementations, upgrades and integrations. Deep APAC expertise with proven delivery methodology."
       introHeading="Oracle Cloud Excellence"

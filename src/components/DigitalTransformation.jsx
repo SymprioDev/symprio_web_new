@@ -24,7 +24,6 @@ export default function DigitalTransformation() {
       subtitle="Partnering with enterprise leaders to evolve their culture, technology, and operations for the digital age."
       heroImage="/assets/images/digital-transformation.jpg"
       breadcrumb="Digital Transformation"
-      breadcrumbPath="/services/digital-transformation"
       seoTitle="Digital Transformation Services — Strategy to Execution"
       seoDescription="End-to-end digital transformation: strategy, roadmap, change management and execution. Proven methodology across APAC, US and UK."
       introHeading="Your Digital Transformation Partner"

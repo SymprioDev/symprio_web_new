@@ -24,7 +24,6 @@ export default function AIApplicationDevelopment() {
       subtitle="Custom AI applications that solve real-world business challenges, from intelligent chatbots to autonomous agents."
       heroImage="/assets/images/ai-development.jpg"
       breadcrumb="AI Development"
-      breadcrumbPath="/services/ai-development"
       seoTitle="AI Application Development — Chatbots, Agents, RAG"
       seoDescription="Build intelligent AI applications: chatbots, AI agents, RAG, LLM fine-tuning, computer vision and document intelligence."
       introHeading="Future-Proof Your Business with Intelligent AI"

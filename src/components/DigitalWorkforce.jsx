@@ -42,7 +42,6 @@ export default function DigitalWorkforce() {
       subtitle="Augmenting your success with elite, vetted global talent."
       heroImage="/assets/images/digital-workforce.jpg"
       breadcrumb="Digital Workforce"
-      breadcrumbPath="/services/digital-workforce"
       seoTitle="IT Staff Augmentation & Digital Workforce Services"
       seoDescription="Access expert RPA, AI, and IT talent with flexible engagement models. Staff augmentation, managed teams, and full outsourcing."
       introHeading="Flexible Talent Augmentation"

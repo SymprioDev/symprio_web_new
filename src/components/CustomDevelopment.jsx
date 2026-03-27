@@ -42,7 +42,6 @@ export default function CustomDevelopment() {
       subtitle="Full-stack excellence from initial concept to global scale."
       heroImage="/assets/images/custom-dev.jpg"
       breadcrumb="Custom Software"
-      breadcrumbPath="/services/custom-software"
       seoTitle="Custom Software Development — Web, Mobile & Cloud"
       seoDescription="Full-stack web apps, mobile apps, and cloud-native solutions. Agile methodology, modern frameworks, AI-integrated development."
       introHeading="Agile & DevOps Excellence"

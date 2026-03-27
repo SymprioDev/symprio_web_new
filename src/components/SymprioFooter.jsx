@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaLinkedin, FaYoutube, FaWhatsapp, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FaLinkedin, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 
 export default function SymprioFooter() {
   const navigate = useNavigate();
@@ -156,8 +156,6 @@ export default function SymprioFooter() {
             <div style={{ display: 'flex', gap: '12px' }}>
               <SocialIcon icon={<FaLinkedin />} url="https://www.linkedin.com/company/symprio/" />
               <SocialIcon icon={<FaYoutube />} url="https://www.youtube.com/@symprioautomation1485" />
-              <SocialIcon icon={<FaFacebook />} url="#" />
-              <SocialIcon icon={<FaTwitter />} url="#" />
               <SocialIcon icon={<FaWhatsapp />} url="https://wa.me/60138802574" />
             </div>
           </div>

@@ -91,15 +91,6 @@ export default function FeaturesGrid() {
               <p style={{ color: '#444444', fontSize: '15px', lineHeight: '1.7', margin: '0 0 24px 0', flex: 1 }}>
                 {f.desc}
               </p>
-              <a href="#" style={{
-                color: '#185ADB',
-                fontSize: '15px',
-                fontWeight: '600',
-                textDecoration: 'none',
-                display: 'inline-block'
-              }}>
-                Learn More →
-              </a>
             </div>
           ))}
         </div>

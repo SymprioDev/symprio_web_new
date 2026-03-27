@@ -9,6 +9,7 @@ export default function RPA() {
       subtitle="Intelligent bots created to automate high-volume, repetitive tasks—enhancing accuracy and scaling your digital workforce."
       heroImage="/assets/images/rpa.jpg"
       breadcrumb="RPA"
+      breadcrumbPath="/services/rpa"
       seoTitle="RPA Services — UiPath & Power Automate Experts"
       seoDescription="Comprehensive RPA services from assessment to deployment. UiPath, Power Automate, Automation Anywhere. 400+ bots deployed across APAC."
       introHeading="Robotic Process Automation Services"

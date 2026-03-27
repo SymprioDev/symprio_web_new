@@ -2,6 +2,7 @@ import React from 'react';
 import SEO from './SEO';
 import FAQSection from './FAQSection';
 import ConsultationForm from './ConsultationForm';
+import Breadcrumb from './Breadcrumb';
 
 const CheckIcon = () => (
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style={{ flexShrink: 0, marginTop: 2 }}>
@@ -16,6 +17,7 @@ export default function ServicePageTemplate({
   subtitle,
   heroImage,
   breadcrumb,
+  breadcrumbPath,
   seoTitle,
   seoDescription,
   introHeading,
@@ -28,6 +30,14 @@ export default function ServicePageTemplate({
   faqs,
   children,
 }) {
+  // Build breadcrumb items for navigation
+  const breadcrumbItems = [
+    { label: 'Home', path: '/' },
+    { label: 'Services', path: '/services' },
+    ...(breadcrumbPath ? [{ label: breadcrumb, path: breadcrumbPath }] : []),
+    { label: breadcrumb || 'Page', path: '' }, // Current page (no path)
+  ];
+
   // Helper: wrap the accent word in the heading with italic serif styling
   const renderHeadingWithAccent = (text, accentWord) => {
     if (!accentWord || !text) return text;
@@ -138,24 +148,15 @@ export default function ServicePageTemplate({
           {subtitle}
         </p>
 
-        {/* Breadcrumb */}
+        {/* Breadcrumb Navigation */}
         <div
           style={{
             position: 'absolute',
             bottom: 30,
             left: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            fontSize: 14,
-            color: 'rgba(255,255,255,0.5)',
           }}
         >
-          <span>Home</span>
-          <span>/</span>
-          <span>Services</span>
-          <span>/</span>
-          <span style={{ color: '#ffffff' }}>{breadcrumb}</span>
+          <Breadcrumb items={breadcrumbItems} />
         </div>
       </section>
 

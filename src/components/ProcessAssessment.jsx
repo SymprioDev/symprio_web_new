@@ -9,6 +9,7 @@ export default function ProcessAssessment() {
       subtitle="Understand your processes before you automate them."
       heroImage="/assets/images/process-assessment.jpg"
       breadcrumb="Process Assessment"
+      breadcrumbPath="/services/process-assessment"
       seoTitle="Process Assessment & Consultancy Services"
       seoDescription="Symprio studies your business processes and recommends the best automation strategy. Domain-agnostic consultancy for SMEs and enterprises."
       introHeading="Don't Automate Chaos. Optimize First."

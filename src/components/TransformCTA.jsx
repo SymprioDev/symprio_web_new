@@ -29,7 +29,7 @@ export default function TransformCTA() {
             lineHeight: '1.3',
             color: '#ffffff'
           }}>
-          Ready to Transform Your <em className="accent-text" style={{fontWeight:'400', color:'#fff'}}>Business?</em>
+          Start Your Automation <em className="accent-text" style={{fontWeight:'400', color:'#fff'}}>Journey</em>
         </h2>
 
         <p
@@ -45,7 +45,7 @@ export default function TransformCTA() {
             maxWidth: '700px',
             margin: '0 auto 40px'
           }}>
-          Let us help you navigate your digital transformation journey with proven strategies and innovative solutions
+          From RPA to Agentic AI — let us build the digital workforce that transforms your operations and scales your business
         </p>
 
         <div
@@ -72,7 +72,7 @@ export default function TransformCTA() {
               transition: 'all 0.3s ease',
               border: 'none'
             }}>
-            Get a Free Consultation →
+            Book a Free Consultation →
           </button>
 
           <button

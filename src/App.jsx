@@ -48,6 +48,8 @@ import BlogLatestPosts from './components/BlogLatestPosts';
 import Industries from './components/Industries';
 import AIMode from './components/AIMode';
 import PowerfulFeatures from './components/PowerfulFeatures';
+import UseCases from './components/UseCases';
+import HowItWorks from './components/HowItWorks';
 import EventPopupBanner from './components/EventPopupBanner';
 import AIModePrompt from './components/AIModePrompt';
 
@@ -63,13 +65,21 @@ const HomePage = () => {
       <SymprioNavbar />
       <HeroSection />
       <ClientsMarquee />
+      {/* Section 2 — What You Actually Do (About + Positioning) */}
       <AboutSnippet />
+      {/* Section 3 — Three Pillars + Capabilities */}
       <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />
       <FeaturesGrid />
       <CurvedDivider topColor="#F1F7F3" bottomColor="#ffffff" height={120} curve="smooth" />
+      {/* Section 4 — Use Cases (CRITICAL - clients buy solutions) */}
+      <UseCases />
+      {/* Section 5 — Proof Layer (Stats & Metrics) */}
+      <SymprioStats />
+      {/* Section 6 — How It Works (Discover → Automate → Scale) */}
+      <HowItWorks />
+      {/* Services Portfolio */}
       <Services />
       <TrainingBanner />
-      <SymprioStats />
       <Industries />
       <KeyBenefits />
       <PowerfulFeatures />
@@ -81,6 +91,7 @@ const HomePage = () => {
       <TeamMembers />
       <BlogLatestPosts />
       <FAQSection />
+      {/* Final CTA — Start Your Automation Journey */}
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />
       <SymprioFooter />

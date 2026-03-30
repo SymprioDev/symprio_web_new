@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function SymprioStats() {
   const stats = [
-    { number: '45', label: 'Customers', description: 'Leading organizations including Meta, Amway, JPA, HRDF and many others trust Symprio for their digital transformation initiatives.' },
-    { number: '15', label: 'Countries Serviced', description: 'Serving customers across the Indo-Pacific region including Silicon Valley, Singapore, Malaysia, and India with global expertise.' },
-    { number: '400', label: 'Robots Deployed', description: 'Successfully deployed over 400 robotic process automation solutions, delivering end-to-end RPA services from assessment to delivery.' },
-    { number: '50', label: 'Active Consultants', description: 'Expert RPA architects and developers providing high-level design, validation, and feedback for comprehensive automation solutions.' },
+    { number: '85', suffix: '%', label: 'Cost Reduction', description: 'Average cost savings achieved for our clients through intelligent automation and AI-powered digital workforce solutions.' },
+    { number: '400', suffix: '+', label: 'Bots Deployed', description: 'Successfully deployed over 400 robotic process automation solutions, delivering end-to-end RPA services from assessment to delivery.' },
+    { number: '45', suffix: '+', label: 'Enterprise Clients', description: 'Leading organizations including Meta, Amway, JPA, HRDF and many others trust Symprio for their AI transformation initiatives.' },
+    { number: '15', suffix: '+', label: 'Countries', description: 'Serving customers across the Indo-Pacific region including Silicon Valley, Singapore, Malaysia, and India with global expertise.' },
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function SymprioStats() {
                 color: '#185ADB',
                 display: 'inline'
               }}>
-                +
+                {stat.suffix}
               </span>
               <h6 style={{
                 fontSize: '16px',

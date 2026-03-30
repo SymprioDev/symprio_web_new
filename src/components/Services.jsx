@@ -90,7 +90,7 @@ const Services = () => {
       number: '01',
       icon: <RefreshIcon />,
       title: 'Digital Transformation',
-      description: 'Accelerate your business evolution with expert strategy and change management. We turn digital roadmaps into real-world success.',
+      description: 'We turn digital roadmaps into measurable outcomes — accelerating your business evolution with expert strategy and change management.',
       expanded: 'Our digital transformation services encompass strategic planning, technology assessment, change management, and end-to-end implementation to modernize your operations and unlock new growth.',
       link: '/services/digital-transformation'
     },
@@ -98,7 +98,7 @@ const Services = () => {
       number: '02',
       icon: <BrainIcon />,
       title: 'Agentic AI & AI Solutions',
-      description: 'Deploy autonomous AI agents that handle complex tasks and boost team productivity. Experience the next generation of generative AI for enterprise.',
+      description: 'Deploy autonomous AI agents that run operations, make decisions, and execute workflows end-to-end — the next generation of enterprise AI.',
       expanded: 'We design and deploy intelligent AI agents powered by large language models, custom-trained on your data, to automate workflows, enhance decision-making, and drive measurable outcomes.',
       link: '/services/agentic-ai'
     },
@@ -106,7 +106,7 @@ const Services = () => {
       number: '03',
       icon: <RobotIcon />,
       title: 'Intelligent RPA',
-      description: 'Eliminate manual errors and slash operational costs with Robotic Process Automation. Scale your output without increasing headcount.',
+      description: 'Eliminate manual errors and reduce operational costs by up to 85%. Scale your output without increasing headcount.',
       expanded: 'Our RPA solutions automate repetitive tasks across finance, HR, operations, and customer service — delivering faster processing, fewer errors, and significant cost savings.',
       link: '/services/rpa'
     },
@@ -122,7 +122,7 @@ const Services = () => {
       number: '05',
       icon: <UsersIcon />,
       title: 'Digital Workforce',
-      description: 'Access elite IT talent and flexible staff augmentation. Build your dream team with our managed workforce and outsourcing services.',
+      description: 'Build your AI-powered workforce — combining elite IT talent with intelligent automation to deliver more with less.',
       expanded: 'Whether you need dedicated teams, staff augmentation, or fully managed IT services, we provide the skilled professionals to keep your projects moving forward.',
       link: '/services/digital-workforce'
     },
@@ -156,7 +156,7 @@ const Services = () => {
             textAlign: 'center',
             marginBottom: '60px'
           }}>
-            <div className="section-tag" data-aos="fade-up">What We Do</div>
+            <div className="section-tag" data-aos="fade-up">Our Services</div>
             <h2 style={{
               color: '#010B1D',
               margin: '0',
@@ -168,6 +168,15 @@ const Services = () => {
             data-aos-once="false">
               End-to-End AI & Automation <em className="accent-text" style={{fontWeight:'400'}}>Services</em>
             </h2>
+            <p style={{
+              maxWidth: '600px',
+              margin: '20px auto 0',
+              color: '#444444',
+              fontSize: '16px',
+              lineHeight: '1.6'
+            }} data-aos="fade-up" data-aos-delay="150">
+              We don't just implement technology — we deliver business outcomes. Explore our full service portfolio.
+            </p>
           </div>
 
           <div style={{

@@ -7,11 +7,9 @@ import SymprioNavbar from './components/SymprioNavbar';
 import SymprioHero from './components/SymprioHero';
 import KeyBenefits from './components/KeyBenefits';
 import SymprioStats from './components/SymprioStats';
-import EventsAndTrainings from './components/EventsAndTrainings';
 import Services from './components/Services';
 import FeaturedCaseStudy from './components/FeaturedCaseStudy';
 import Testimonials from './components/Testimonials';
-import TeamMembers from './components/TeamMembers';
 import TransformCTA from './components/TransformCTA';
 import SymprioFooter from './components/SymprioFooter';
 import DigitalTransformation from './components/DigitalTransformation';
@@ -40,7 +38,6 @@ import CorporateWorkshops from './components/CorporateWorkshops';
 import CaseStudiesLanding from './components/CaseStudiesLanding';
 
 import FeaturesGrid from './components/FeaturesGrid';
-import FAQSection from './components/FAQSection';
 import ClientsMarquee from './components/ClientsMarquee';
 import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
@@ -83,14 +80,9 @@ const HomePage = () => {
       <Industries />
       <KeyBenefits />
       <PowerfulFeatures />
-      <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />
-      <EventsAndTrainings />
-      <CurvedDivider topColor="#F1F7F3" bottomColor="#ffffff" height={120} curve="smooth" />
       <FeaturedCaseStudy />
       <Testimonials />
-      <TeamMembers />
       <BlogLatestPosts />
-      <FAQSection />
       {/* Final CTA — Start Your Automation Journey */}
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />

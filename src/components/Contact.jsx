@@ -3,6 +3,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
 import SEO from './SEO';
+import FAQSection from './FAQSection';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -390,6 +391,8 @@ export default function Contact() {
           </div>
         </div>
       </section>
+
+      <FAQSection />
     </div>
   );
 }

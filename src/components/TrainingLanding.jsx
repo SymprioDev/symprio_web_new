@@ -4,6 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
 import SEO from './SEO';
+import EventsAndTrainings from './EventsAndTrainings';
 
 export default function TrainingLanding() {
   const navigate = useNavigate();
@@ -169,6 +170,8 @@ export default function TrainingLanding() {
           </div>
         </div>
       </section>
+
+      <EventsAndTrainings />
 
       {/* Training Enquiry Form */}
       <section className="py-24 bg-white">

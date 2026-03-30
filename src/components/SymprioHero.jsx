@@ -195,7 +195,7 @@ export default function SymprioHero() {
             letterSpacing: '-0.02em',
             color: 'var(--primary)'
           }}>
-            Empowering Your Business With Smart <span className="gradient-text">Automation</span>
+            Build Your AI-Powered <span className="gradient-text">Digital Workforce</span>
           </h1>
 
           <p style={{
@@ -203,19 +203,28 @@ export default function SymprioHero() {
             color: '#6b7280',
             lineHeight: '1.75',
             marginBottom: '48px',
-            maxWidth: '500px',
+            maxWidth: '520px',
             fontWeight: '300'
           }}>
-            Symprio empowers global enterprises to redefine productivity, reduce costs by up to 40%, and scale exponentially with intelligent Agentic AI solutions.
+            From RPA to Agentic AI — we automate operations, augment decisions, and build entire digital workforces that run your business.
           </p>
 
-          <button
-            onClick={() => navigate('/contact')}
-            className="btn-pill btn-primary"
-            style={{ padding: '20px 52px', fontSize: '17px' }}
-          >
-            Get Started <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-          </button>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => navigate('/contact')}
+              className="btn-pill btn-primary"
+              style={{ padding: '20px 48px', fontSize: '17px' }}
+            >
+              Book a Demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+            </button>
+            <button
+              onClick={() => navigate('/services')}
+              className="btn-pill btn-outline"
+              style={{ padding: '20px 48px', fontSize: '17px' }}
+            >
+              Explore Use Cases
+            </button>
+          </div>
         </div>
 
         {/* Right — 3D Logo Sphere with gradient bg */}

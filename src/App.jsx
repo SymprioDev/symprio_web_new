@@ -4,7 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useAuth } from './context/AuthContext';
 import SymprioNavbar from './components/SymprioNavbar';
-import SymprioHero from './components/SymprioHero';
+import HeroSection from './components/HeroSection';
 import KeyBenefits from './components/KeyBenefits';
 import SymprioStats from './components/SymprioStats';
 import EventsAndTrainings from './components/EventsAndTrainings';
@@ -61,7 +61,7 @@ const HomePage = () => {
       position: 'relative'
     }}>
       <SymprioNavbar />
-      <SymprioHero />
+      <HeroSection />
       <ClientsMarquee />
       <AboutSnippet />
       <CurvedDivider topColor="#ffffff" bottomColor="#F1F7F3" height={120} curve="smooth" />

@@ -4,11 +4,11 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const checklist = [
-  'Consultancy-first, technology-second approach',
-  'Microsoft Official Partner for RPA & AI Training',
+  'We eliminate manual work across departments',
+  'We build AI systems that run operations autonomously',
+  'We reduce processing time from days to hours',
   '45+ enterprise clients across 15+ countries',
-  'Domain-agnostic — we serve any industry',
-  'End-to-end delivery from assessment to support',
+  'End-to-end delivery from assessment to scale',
 ];
 
 const stats = [
@@ -135,17 +135,17 @@ export default function AboutSnippet() {
           <div className="section-tag">About Us</div>
 
           <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="100">
-            We Study Your Business. We Deliver{' '}
-            <em className="accent-text" style={{fontWeight:'400'}}>Real Results.</em>
+            Your AI Transformation{' '}
+            <em className="accent-text" style={{fontWeight:'400'}}>Partner.</em>
           </h2>
 
           <p style={styles.body} data-aos="fade-up" data-aos-delay="150">
-            At Symprio, we believe every business challenge is unique — whether rooted in people,
-            processes, or technology. We take a consultative-first approach: study your operations,
-            identify inefficiencies, and design tailored AI and automation solutions aligned with
-            your culture, budget, and capabilities. With offices in Silicon Valley and across the
-            Indo-Pacific — Singapore, Malaysia, India — we bring global innovation and local insight
-            to every engagement.
+            Symprio is not just an automation vendor — we are your strategic AI transformation partner.
+            We study your operations, identify bottlenecks, and deploy intelligent automation that
+            delivers measurable outcomes. From RPA that executes tasks, to AI that supports decisions,
+            to Agentic AI that runs entire operations — we build the digital workforce your business needs.
+            With offices in Silicon Valley, Singapore, Malaysia, and India, we bring global expertise
+            with local insight.
           </p>
 
           <div style={styles.checklistWrapper} data-aos="fade-up" data-aos-delay="200">

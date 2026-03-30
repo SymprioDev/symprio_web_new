@@ -41,14 +41,14 @@ export default function SymprioFooter() {
       ]
     },
     {
-      title: 'REGIONS',
+      title: 'INDUSTRIES',
       links: [
-        { name: 'Malaysia (HQ)', url: '#' },
-        { name: 'Singapore', url: '#' },
-        { name: 'India', url: '#' },
-        { name: 'Silicon Valley, USA', url: '#' },
-        { name: 'United Kingdom', url: '#' },
-        { name: 'Middle East', url: '#' }
+        { name: 'Financial Services (BFSI)', url: '#' },
+        { name: 'Government & Public Sector', url: '#' },
+        { name: 'Healthcare & Pharma', url: '#' },
+        { name: 'Manufacturing', url: '#' },
+        { name: 'Retail & E-Commerce', url: '#' },
+        { name: 'Telecommunications', url: '#' }
       ]
     }
   ];
@@ -144,7 +144,7 @@ export default function SymprioFooter() {
               color: 'rgba(255,255,255,0.5)',
               marginBottom: '16px'
             }}>
-              Intelligent AI & Automation Solutions for the Modern Enterprise. Helping organizations automate intelligently, build AI-powered products, and transform digitally.
+              Your AI Transformation Partner. We build AI-powered digital workforces that automate operations, augment decisions, and scale your business.
             </p>
             <p style={{
               fontSize: '14px',
@@ -153,11 +153,33 @@ export default function SymprioFooter() {
             }}>
               Mon - Fri: 9am - 6pm
             </p>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
               <SocialIcon icon={<FaLinkedin />} url="https://www.linkedin.com/company/symprio/" />
               <SocialIcon icon={<FaYoutube />} url="https://www.youtube.com/@symprioautomation1485" />
               <SocialIcon icon={<FaWhatsapp />} url="https://wa.me/60138802574" />
             </div>
+            <a
+              href="https://wa.me/60138802574"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#25D366',
+                color: '#fff',
+                borderRadius: '10px',
+                padding: '10px 20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+            >
+              <FaWhatsapp style={{ fontSize: '18px' }} /> Chat With Us
+            </a>
           </div>
 
           {/* Dynamic Columns */}

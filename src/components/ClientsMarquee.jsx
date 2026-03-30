@@ -5,7 +5,7 @@ const clients = [
   { name: 'Amway', logo: '/clients/amway.png' },
   { name: 'HRDF', logo: '/clients/hrdf.png' },
   { name: 'Coca-Cola', logo: '/clients/cocacola.png' },
-  { name: 'SeekAsia', logo: '/clients/seekasia.svg' },
+  { name: 'SeekAsia', logo: '/clients/seekasia.png' },
   { name: 'YMCA', logo: '/clients/ymca.png' },
   { name: 'Nextracker', logo: '/clients/nextracker.png' },
   { name: 'Uniqlo', logo: '/clients/uniqlo.png' }

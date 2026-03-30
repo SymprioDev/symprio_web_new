@@ -327,6 +327,98 @@ const Services = () => {
             ))}
           </div>
         </div>
+
+        {/* YouTube Videos Section */}
+        <div style={{ maxWidth: '1200px', margin: '100px auto 0', padding: '0 20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '50px' }} data-aos="fade-up">
+            <div className="section-tag">Video Insights</div>
+            <h2 style={{
+              color: '#010B1D',
+              margin: '16px 0 0 0',
+              fontWeight: 400,
+              fontSize: '32px'
+            }}>
+              See Our Solutions in <em className="accent-text" style={{fontWeight:'400'}}>Action</em>
+            </h2>
+            <p style={{
+              maxWidth: '600px',
+              margin: '16px auto 0',
+              color: '#444444',
+              fontSize: '16px',
+              lineHeight: '1.6'
+            }}>
+              Watch how we help enterprises transform their operations with AI and automation.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px'
+          }}>
+            {[
+              { id: 'coyjtNrYGAs', title: 'AI Solutions Overview' },
+              { id: '1uPlLRAp_g4', title: 'Automation in Action' },
+              { id: '4gzmo0TrLls', title: 'Digital Transformation' },
+              { id: 'EqwOLDQdQEA', title: 'Enterprise Success Story' }
+            ].map((video, idx) => (
+              <div
+                key={video.id}
+                style={{
+                  position: 'relative',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  border: '1px solid #e5e7eb'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(24,90,219,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+                }}
+                data-aos="fade-up"
+                data-aos-delay={idx * 100}
+              >
+                <div style={{
+                  position: 'relative',
+                  paddingBottom: '56.25%',
+                  height: 0,
+                  overflow: 'hidden'
+                }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${video.id}`}
+                    title={video.title}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      border: 'none'
+                    }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div style={{ padding: '16px 20px', background: '#ffffff' }}>
+                  <h4 style={{
+                    margin: 0,
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    color: '#010B1D'
+                  }}>
+                    {video.title}
+                  </h4>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <style>{`

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import PageBanner from './PageBanner';
+import Industries from './Industries';
+import PowerfulFeatures from './PowerfulFeatures';
+import VideoInsights from './VideoInsights';
 
 export default function ServicesLanding() {
   const navigate = useNavigate();
@@ -225,6 +228,10 @@ export default function ServicesLanding() {
           </div>
         </div>
       </section>
+
+      <Industries />
+      <PowerfulFeatures />
+      <VideoInsights />
 
       {/* CTA Section */}
       <section className="py-24">

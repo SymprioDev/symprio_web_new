@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import PageBanner from './PageBanner';
 import MeetOurExperts from './MeetOurExperts';
+import KeyBenefits from './KeyBenefits';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -128,6 +129,8 @@ export default function AboutUs() {
           </div>
         </div>
       </section>
+
+      <KeyBenefits />
 
       <MeetOurExperts />
     </div>

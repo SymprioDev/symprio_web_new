@@ -5,7 +5,6 @@ import 'aos/dist/aos.css';
 import { useAuth } from './context/AuthContext';
 import SymprioNavbar from './components/SymprioNavbar';
 import SymprioHero from './components/SymprioHero';
-import KeyBenefits from './components/KeyBenefits';
 import SymprioStats from './components/SymprioStats';
 import Services from './components/Services';
 import FeaturedCaseStudy from './components/FeaturedCaseStudy';
@@ -42,9 +41,7 @@ import ClientsMarquee from './components/ClientsMarquee';
 import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
 import BlogLatestPosts from './components/BlogLatestPosts';
-import Industries from './components/Industries';
 import AIMode from './components/AIMode';
-import PowerfulFeatures from './components/PowerfulFeatures';
 import UseCases from './components/UseCases';
 import HowItWorks from './components/HowItWorks';
 import EventPopupBanner from './components/EventPopupBanner';
@@ -75,11 +72,8 @@ const HomePage = () => {
       {/* Section 6 — How It Works (Discover → Automate → Scale) */}
       <HowItWorks />
       {/* Services Portfolio */}
-      <Services />
+      <Services limit={3} showVideoInsights={false} />
       <TrainingBanner />
-      <Industries />
-      <KeyBenefits />
-      <PowerfulFeatures />
       <FeaturedCaseStudy />
       <Testimonials />
       <BlogLatestPosts />

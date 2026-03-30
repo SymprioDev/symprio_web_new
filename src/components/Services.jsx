@@ -64,7 +64,7 @@ const CodeBracketIcon = () => (
   </svg>
 );
 
-const Services = () => {
+const Services = ({ limit = 6, showVideoInsights = true }) => {
   const navigate = useNavigate();
   const [expandedCards, setExpandedCards] = useState({});
 
@@ -136,6 +136,8 @@ const Services = () => {
     }
   ];
 
+  const displayedServices = services.slice(0, limit);
+
   return (
     <>
       <SEO
@@ -186,7 +188,7 @@ const Services = () => {
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
-            {services.map((service, idx) => (
+            {displayedServices.map((service, idx) => (
               <div
                 key={idx}
                 onClick={() => navigate(service.link)}
@@ -326,9 +328,21 @@ const Services = () => {
               </div>
             ))}
           </div>
+
+          {limit < services.length && (
+            <div style={{ textAlign: 'center', marginTop: '48px' }} data-aos="fade-up">
+              <button
+                onClick={() => navigate('/services')}
+                className="btn-pill btn-primary"
+                style={{ padding: '16px 44px', fontSize: '16px' }}
+              >
+                View All Services &rarr;
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* YouTube Videos Section */}
+        {showVideoInsights && (
         <div style={{ maxWidth: '1200px', margin: '100px auto 0', padding: '0 20px' }}>
           <div style={{ textAlign: 'center', marginBottom: '50px' }} data-aos="fade-up">
             <div className="section-tag">Video Insights</div>
@@ -419,6 +433,7 @@ const Services = () => {
             ))}
           </div>
         </div>
+        )}
       </section>
 
       <style>{`

@@ -24,33 +24,33 @@ const pillars = [
 const features = [
   {
     icon: '/assets/illustrations/fast-implementation.jpg',
-    title: 'Fast Implementation',
-    desc: 'Deploy automated workflows in weeks, not months, with our proven agile delivery methodology.'
+    title: 'RPA Executes Tasks',
+    desc: 'Automate repetitive, rules-based processes with intelligent software robots that work 24/7 with zero errors.'
   },
   {
     icon: '/assets/illustrations/enterprise-security.jpg',
-    title: 'Enterprise Security',
-    desc: 'Robust governance and ISO-standard security frameworks to protect your mission-critical data.'
+    title: 'AI Supports Decisions',
+    desc: 'Leverage advanced analytics and machine learning to gain insights and make data-driven business decisions.'
   },
   {
     icon: '/assets/illustrations/realtime-analytics.jpg',
-    title: 'Real-time Analytics',
-    desc: 'Monitor bot performance and ROI with dynamic AI-powered dashboards and predictive reporting.'
+    title: 'Agentic AI Runs Operations',
+    desc: 'Deploy autonomous AI agents that reason, plan, and execute complex workflows without constant human oversight.'
   },
   {
     icon: '/assets/illustrations/elite-support.jpg',
-    title: 'Elite Support',
-    desc: '24/7 expert support teams available globally to ensure 99.9% uptime for your digital workforce.'
+    title: 'Enterprise-Grade Security',
+    desc: 'ISO-standard security frameworks and robust governance to protect your mission-critical data and operations.'
   },
   {
     icon: '/assets/illustrations/scalability.jpg',
-    title: 'Infinite Scalability',
-    desc: 'Seamlessly scale your digital operations as your business grows without increasing human overhead.'
+    title: 'Unlimited Scalability',
+    desc: 'Scale your digital workforce instantly without hiring overhead. Handle spikes in demand effortlessly.'
   },
   {
     icon: '/assets/illustrations/ai-engine.jpg',
-    title: 'Agentic AI Engine',
-    desc: 'The only platform combining RPA with advanced LLMs for truly autonomous end-to-end execution.'
+    title: 'AI-Powered Analytics',
+    desc: 'Monitor performance, track ROI, and optimize your digital workforce with real-time AI-powered dashboards.'
   }
 ];
 
@@ -69,10 +69,10 @@ export default function FeaturesGrid() {
             marginBottom: '24px',
             lineHeight: '1.2'
           }}>
-            Three Pillars of Your <em className="accent-text" style={{fontWeight:'400'}}>Digital Workforce</em>
+            AI-Powered <em className="accent-text" style={{fontWeight:'400'}}>Digital Workforce</em>
           </h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#444444', fontSize: '16px', lineHeight: '1.6' }}>
-            We don't just automate tasks — we build an intelligent workforce that operates, decides, and scales with your business.
+            RPA executes tasks. AI supports decisions. Agentic AI runs entire operations. Build a digital workforce that never sleeps, never takes breaks, and scales instantly.
           </p>
         </div>
 

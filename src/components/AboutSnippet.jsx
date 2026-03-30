@@ -4,11 +4,11 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const checklist = [
-  'We eliminate manual work across departments',
-  'We build AI systems that run operations autonomously',
-  'We reduce processing time from days to hours',
-  '45+ enterprise clients across 15+ countries',
-  'End-to-end delivery from assessment to scale',
+  'RPA executes tasks — automate repetitive processes instantly',
+  'AI supports decisions — data-driven insights at scale',
+  'Agentic AI runs operations — autonomous end-to-end workflows',
+  'Enterprise-focused — built for large organizations',
+  'Global delivery — Silicon Valley, Singapore, Malaysia, India',
 ];
 
 const stats = [
@@ -135,17 +135,12 @@ export default function AboutSnippet() {
           <div className="section-tag">About Us</div>
 
           <h2 style={styles.heading} data-aos="fade-up" data-aos-delay="100">
-            Your AI Transformation{' '}
-            <em className="accent-text" style={{fontWeight:'400'}}>Partner.</em>
+            We Build Your{' '}
+            <em className="accent-text" style={{fontWeight:'400'}}>AI-Powered Digital Workforce</em>
           </h2>
 
           <p style={styles.body} data-aos="fade-up" data-aos-delay="150">
-            Symprio is not just an automation vendor — we are your strategic AI transformation partner.
-            We study your operations, identify bottlenecks, and deploy intelligent automation that
-            delivers measurable outcomes. From RPA that executes tasks, to AI that supports decisions,
-            to Agentic AI that runs entire operations — we build the digital workforce your business needs.
-            With offices in Silicon Valley, Singapore, Malaysia, and India, we bring global expertise
-            with local insight.
+            Symprio is an AI-powered Digital Workforce consultancy for enterprises. We combine RPA for task automation, AI for decision support, and Agentic AI for autonomous operations — creating digital workers that work 24/7, scale instantly, and deliver measurable ROI. With offices in Silicon Valley and across the Indo-Pacific — Singapore, Malaysia, India — we bring global innovation and local insight to every engagement.
           </p>
 
           <div style={styles.checklistWrapper} data-aos="fade-up" data-aos-delay="200">

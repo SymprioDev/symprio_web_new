@@ -3,16 +3,11 @@ import React from 'react';
 const clients = [
   { name: 'Meta', logo: '/meta-logo.png' },
   { name: 'Amway', logo: null },
-  { name: 'JPA', logo: null },
   { name: 'HRDF', logo: null },
   { name: 'Coca-Cola', logo: '/clients/cocacola.png' },
-  { name: 'Averis', logo: null },
   { name: 'SeekAsia', logo: null },
-  { name: 'Chemopharm', logo: null },
   { name: 'YMCA', logo: null },
   { name: 'Nextracker', logo: null },
-  { name: 'CXL', logo: null },
-  { name: 'Mitsubishi Motors', logo: null },
   { name: 'Uniqlo', logo: '/clients/uniqlo.png' }
 ];
 
@@ -20,24 +15,27 @@ export default function ClientsMarquee() {
   const doubled = [...clients, ...clients];
 
   return (
-    <section style={{ padding: '50px 0', background: '#F1F7F3', overflow: 'hidden' }}>
+    <section style={{ padding: '60px 0', background: '#F8FAFB', overflow: 'hidden' }}>
       {/* Section label */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <span style={{
-          fontSize: '12px',
+          fontSize: '13px',
           fontWeight: '700',
-          letterSpacing: '0.15em',
+          letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: '#185ADB'
+          color: '#185ADB',
+          background: 'rgba(24, 90, 219, 0.08)',
+          padding: '8px 20px',
+          borderRadius: '24px'
         }}>
           Trusted by Industry Leaders
         </span>
         <div style={{
-          width: '48px',
-          height: '2px',
+          width: '56px',
+          height: '3px',
           background: 'linear-gradient(90deg, #185ADB, #0D9488)',
-          margin: '10px auto 0',
-          borderRadius: '2px'
+          margin: '14px auto 0',
+          borderRadius: '3px'
         }} />
       </div>
 
@@ -46,7 +44,7 @@ export default function ClientsMarquee() {
         <div className="clients-marquee-track" style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
+          gap: '28px',
           width: 'max-content'
         }}>
           {doubled.map((client, i) => (
@@ -56,15 +54,16 @@ export default function ClientsMarquee() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: client.logo ? '12px 20px' : '12px 28px',
+                padding: client.logo ? '18px 36px' : '16px 36px',
                 background: '#ffffff',
-                border: '1px solid #DCDCDC',
-                borderRadius: '14px',
+                border: '1.5px solid #E5E7EB',
+                borderRadius: '16px',
                 whiteSpace: 'nowrap',
-                minWidth: client.logo ? '120px' : 'auto',
-                height: '56px',
+                minWidth: client.logo ? '160px' : 'auto',
+                height: '72px',
                 cursor: 'default',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
               }}
               className="client-chip"
             >
@@ -72,14 +71,14 @@ export default function ClientsMarquee() {
                 <img
                   src={client.logo}
                   alt={client.name}
-                  style={{ height: '28px', objectFit: 'contain', maxWidth: '100px' }}
+                  style={{ height: '38px', objectFit: 'contain', maxWidth: '130px', filter: 'brightness(1)' }}
                 />
               ) : (
                 <span style={{
-                  fontSize: '14px',
+                  fontSize: '16px',
                   fontWeight: '700',
-                  color: '#010B1D',
-                  letterSpacing: '0.01em'
+                  color: '#1f2937',
+                  letterSpacing: '0.02em'
                 }}>
                   {client.name}
                 </span>
@@ -95,14 +94,15 @@ export default function ClientsMarquee() {
           100% { transform: translateX(0); }
         }
         .clients-marquee-track {
-          animation: marqueeReverse 35s linear infinite;
+          animation: marqueeReverse 30s linear infinite;
         }
         .clients-marquee-track:hover {
           animation-play-state: paused;
         }
         .client-chip:hover {
           border-color: #185ADB !important;
-          box-shadow: 0 4px 14px rgba(24, 90, 219, 0.1);
+          box-shadow: 0 8px 24px rgba(24, 90, 219, 0.15);
+          transform: translateY(-2px);
         }
       `}</style>
     </section>

@@ -164,18 +164,6 @@ export default function SymprioNavbar() {
           <NavLink label="About" onClick={() => navigate('/about')} />
           <NavLink label="Insights" onClick={() => navigate('/blog')} />
 
-          {/* Subtle Admin Link */}
-          <Link to="/admin" style={{
-            color: '#010B1D',
-            opacity: 0.3,
-            fontSize: '12px',
-            textDecoration: 'none',
-            fontWeight: '800',
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }} className="hover-opacity-100">
-            Staff
-          </Link>
         </div>
 
         {/* CTA + AI Mode + Hamburger */}

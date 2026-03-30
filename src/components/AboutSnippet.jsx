@@ -11,13 +11,6 @@ const checklist = [
   'Global delivery — Silicon Valley, Singapore, Malaysia, India',
 ];
 
-const stats = [
-  { value: '2M+', label: 'Tasks Automated Weekly' },
-  { value: '99.9%', label: 'Digital Workforce Uptime' },
-  { value: '300%', label: 'Average ROI Achieved' },
-  { value: '40%', label: 'Operational Cost Reduction' },
-];
-
 export default function AboutSnippet() {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
@@ -89,37 +82,14 @@ export default function AboutSnippet() {
       backgroundColor: '#185ADB',
     },
     rightCol: {
-      flex: isMobile ? 'unset' : '0 0 360px',
-      width: isMobile ? '100%' : '360px',
+      flex: isMobile ? 'unset' : '0 0 420px',
+      width: isMobile ? '100%' : '420px',
     },
-    statsCard: {
-      background: 'linear-gradient(135deg, #185ADB 0%, #0D9488 100%)',
+    imageWrapper: {
+      width: '100%',
       borderRadius: '20px',
-      padding: '40px 32px',
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '32px',
-    },
-    statItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      textAlign: 'center',
-    },
-    statValue: {
-      fontSize: '48px',
-      fontWeight: '700',
-      color: '#ffffff',
-      lineHeight: '1',
-      marginBottom: '8px',
-      letterSpacing: '-0.02em',
-    },
-    statLabel: {
-      fontSize: '13px',
-      fontWeight: '400',
-      color: 'rgba(255, 255, 255, 0.7)',
-      lineHeight: '1.4',
-      textAlign: 'center',
+      overflow: 'hidden',
+      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
     },
   };
 
@@ -162,26 +132,19 @@ export default function AboutSnippet() {
           </button>
         </div>
 
-        {/* Right Column — Stats Card */}
+        {/* Right Column — Image */}
         <div style={styles.rightCol} data-aos="fade-up" data-aos-delay="100">
-          <img
-            src="/assets/images/about-bg.jpg"
-            alt="Symprio Team"
-            style={{
-              width: '100%',
-              borderRadius: '20px',
-              marginBottom: '24px',
-              objectFit: 'cover',
-              maxHeight: '280px'
-            }}
-          />
-          <div style={styles.statsCard}>
-            {stats.map((stat, index) => (
-              <div key={index} style={styles.statItem}>
-                <span style={styles.statValue}>{stat.value}</span>
-                <span style={styles.statLabel}>{stat.label}</span>
-              </div>
-            ))}
+          <div style={styles.imageWrapper}>
+            <img
+              src="/assets/images/about-bg.jpg"
+              alt="Symprio Team"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
           </div>
         </div>
       </div>

@@ -12,10 +12,10 @@ const checklist = [
 ];
 
 const stats = [
-  { value: '45+', label: 'Enterprise Clients' },
-  { value: '400+', label: 'Robots Deployed' },
-  { value: '15+', label: 'Countries' },
-  { value: '50+', label: 'Consultants' },
+  { value: '2M+', label: 'Tasks Automated Weekly' },
+  { value: '99.9%', label: 'Digital Workforce Uptime' },
+  { value: '300%', label: 'Average ROI Achieved' },
+  { value: '40%', label: 'Operational Cost Reduction' },
 ];
 
 export default function AboutSnippet() {

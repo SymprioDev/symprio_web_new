@@ -23,7 +23,8 @@ import {
   TrendingUp,
   Plus,
   X,
-  Brain
+  Brain,
+  Quote
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -32,6 +33,7 @@ const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [clientStories, setClientStories] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [locations, setLocations] = useState([]);
   const [jobApplications, setJobApplications] = useState([]);
@@ -41,6 +43,8 @@ const AdminDashboard = () => {
   const [showTrainingForm, setShowTrainingForm] = useState(false);
   const [showJobForm, setShowJobForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
+  const [showClientStoryForm, setShowClientStoryForm] = useState(false);
+  const [editingClientStory, setEditingClientStory] = useState(null);
   
   // Modal state for job application view
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -126,11 +130,24 @@ const AdminDashboard = () => {
     imageUrl: ''
   });
 
-  // Fetch events, trainings, and jobs
+  // Client Story form state
+  const [clientStoryForm, setClientStoryForm] = useState({
+    client_name: '',
+    company: '',
+    role: '',
+    quote: '',
+    avatar_url: '',
+    rating: 5,
+    industry: ''
+  });
+  });
+
+  // Fetch events, trainings, jobs, and client stories
   useEffect(() => {
     fetchEvents();
     fetchTrainings();
     fetchJobs();
+    fetchClientStories();
     fetchEnquiries();
     fetchLocations();
     fetchJobApplications();
@@ -167,6 +184,18 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error('Failed to fetch trainings:', error);
+    }
+  };
+
+  const fetchClientStories = async () => {
+    try {
+      const response = await fetch('/api/client-stories');
+      if (response.ok) {
+        const data = await response.json();
+        setClientStories(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch client stories:', error);
     }
   };
 
@@ -696,6 +725,105 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleAddClientStory = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/client-stories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(clientStoryForm)
+      });
+
+      if (response.ok) {
+        setClientStoryForm({
+          client_name: '',
+          company: '',
+          role: '',
+          quote: '',
+          avatar_url: '',
+          rating: 5,
+          industry: ''
+        });
+        setShowClientStoryForm(false);
+        setEditingClientStory(null);
+        fetchClientStories();
+      } else {
+        alert('Failed to add client story');
+      }
+    } catch (error) {
+      alert('Error adding client story: ' + error.message);
+    }
+  };
+
+  const handleEditClientStory = (story) => {
+    setEditingClientStory(story);
+    setClientStoryForm({
+      client_name: story.client_name,
+      company: story.company,
+      role: story.role,
+      quote: story.quote,
+      avatar_url: story.avatar_url || '',
+      rating: story.rating || 5,
+      industry: story.industry || ''
+    });
+    setShowClientStoryForm(true);
+  };
+
+  const handleUpdateClientStory = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/client-stories', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...clientStoryForm, id: editingClientStory.id })
+      });
+
+      if (response.ok) {
+        setClientStoryForm({
+          client_name: '',
+          company: '',
+          role: '',
+          quote: '',
+          avatar_url: '',
+          rating: 5,
+          industry: ''
+        });
+        setShowClientStoryForm(false);
+        setEditingClientStory(null);
+        fetchClientStories();
+      } else {
+        alert('Failed to update client story');
+      }
+    } catch (error) {
+      alert('Error updating client story: ' + error.message);
+    }
+  };
+
+  const handleDeleteClientStory = async (storyId) => {
+    if (!window.confirm('Are you sure you want to delete this client story?')) return;
+
+    try {
+      const response = await fetch(`/api/client-stories/${storyId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        fetchClientStories();
+      } else {
+        alert('Failed to delete client story');
+      }
+    } catch (error) {
+      alert('Error deleting client story: ' + error.message);
+    }
+  };
+
   const handleDeleteJob = async (jobId) => {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
 
@@ -783,6 +911,7 @@ const AdminDashboard = () => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'events', label: 'Events', icon: Calendar },
     { id: 'trainings', label: 'Trainings', icon: GraduationCap },
+    { id: 'clientStories', label: 'Client Stories', icon: Quote },
     { id: 'jobs', label: 'Job Listings', icon: Briefcase },
     { id: 'jobApplications', label: 'Job Applications', icon: Users, badge: pendingApplications },
     { id: 'locations', label: 'Locations', icon: MapPin },
@@ -1737,6 +1866,164 @@ const AdminDashboard = () => {
                           >
                             Delete
                           </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Client Stories Tab */}
+          {activeTab === 'clientStories' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-gray-800">Client Stories ({clientStories.length})</h2>
+                  <button
+                    onClick={() => {
+                      setShowClientStoryForm(!showClientStoryForm);
+                      setEditingClientStory(null);
+                      setClientStoryForm({
+                        client_name: '',
+                        company: '',
+                        role: '',
+                        quote: '',
+                        avatar_url: '',
+                        rating: 5,
+                        industry: ''
+                      });
+                    }}
+                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >
+                    {showClientStoryForm ? <X size={18} /> : <Plus size={18} />}
+                    {showClientStoryForm ? 'Cancel' : 'Add Client Story'}
+                  </button>
+                </div>
+                
+                {showClientStoryForm && (
+                  <form onSubmit={editingClientStory ? handleUpdateClientStory : handleAddClientStory} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Client Name</label>
+                        <input
+                          value={clientStoryForm.client_name}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, client_name: e.target.value })}
+                          placeholder="e.g., John Smith"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                        <input
+                          value={clientStoryForm.company}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, company: e.target.value })}
+                          placeholder="e.g., Fortune 500 Bank"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <input
+                          value={clientStoryForm.role}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, role: e.target.value })}
+                          placeholder="e.g., CEO"
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                        <input
+                          value={clientStoryForm.industry}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, industry: e.target.value })}
+                          placeholder="e.g., Financial Services"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Rating (1-5)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="5"
+                          value={clientStoryForm.rating}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, rating: parseInt(e.target.value) || 5 })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Avatar URL</label>
+                        <input
+                          value={clientStoryForm.avatar_url}
+                          onChange={(e) => setClientStoryForm({ ...clientStoryForm, avatar_url: e.target.value })}
+                          placeholder="https://..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Quote</label>
+                      <textarea
+                        value={clientStoryForm.quote}
+                        onChange={(e) => setClientStoryForm({ ...clientStoryForm, quote: e.target.value })}
+                        placeholder="Client testimonial quote..."
+                        rows="3"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      {editingClientStory ? 'Update Client Story' : 'Add Client Story'}
+                    </button>
+                  </form>
+                )}
+                
+                <div className="p-4">
+                  {clientStories.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">No client stories yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {clientStories.map((story) => (
+                        <div key={story.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                          <div className="flex items-center gap-3 mb-3">
+                            {story.avatar_url ? (
+                              <img src={story.avatar_url} alt={story.client_name} className="w-12 h-12 rounded-full object-cover" />
+                            ) : (
+                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold">
+                                {story.client_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                            <div>
+                              <h3 className="font-semibold text-gray-800">{story.client_name}</h3>
+                              <p className="text-sm text-gray-600">{story.role}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-1">🏢 {story.company}</p>
+                          {story.industry && <p className="text-sm text-gray-600 mb-1">🏭 {story.industry}</p>}
+                          <p className="text-sm text-yellow-500 mb-2">{'★'.repeat(story.rating || 5)}</p>
+                          <p className="text-sm text-gray-500 mb-4 italic line-clamp-3">"{story.quote}"</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditClientStory(story)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClientStory(story.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>

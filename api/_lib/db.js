@@ -49,6 +49,20 @@ export async function ensureTables() {
     created_by INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  await client.execute(`CREATE TABLE IF NOT EXISTS client_stories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_name TEXT NOT NULL,
+    company TEXT NOT NULL,
+    role TEXT NOT NULL,
+    quote TEXT NOT NULL,
+    avatar_url TEXT,
+    rating INTEGER DEFAULT 5,
+    industry TEXT,
+    is_active INTEGER DEFAULT 1,
+    created_by INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
 }
 
 export async function sql(strings, ...values) {

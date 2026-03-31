@@ -190,6 +190,13 @@ export default function SymprioNavbar() {
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0D9488', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
             AI Mode
           </button>
+          <button
+            onClick={() => navigate('/contact')}
+            className="btn-pill btn-primary hide-on-mobile"
+            style={{ padding: '12px 28px', fontSize: '14px' }}
+          >
+            Let's Talk &rarr;
+          </button>
           <a
             href="https://wa.me/60138802574"
             target="_blank"
@@ -219,18 +226,11 @@ export default function SymprioNavbar() {
             }}
           >
             <img
-              src="/whatsapp-logo.svg"
+              src="/assets/service%20images/whatsapp.png"
               alt="WhatsApp"
               style={{ width: '22px', height: '22px', objectFit: 'contain' }}
             />
           </a>
-          <button
-            onClick={() => navigate('/contact')}
-            className="btn-pill btn-primary hide-on-mobile"
-            style={{ padding: '12px 28px', fontSize: '14px' }}
-          >
-            Let's Talk &rarr;
-          </button>
           {/* Hamburger — mobile only */}
           <button
             onClick={() => setMobileOpen(o => !o)}

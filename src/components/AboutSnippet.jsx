@@ -82,8 +82,8 @@ export default function AboutSnippet() {
       backgroundColor: '#185ADB',
     },
     rightCol: {
-      flex: isMobile ? 'unset' : '0 0 420px',
-      width: isMobile ? '100%' : '420px',
+      flex: isMobile ? 'unset' : '0 0 580px',
+      width: isMobile ? '100%' : '580px',
     },
     imageWrapper: {
       width: '100%',

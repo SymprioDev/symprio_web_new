@@ -43,12 +43,14 @@ export default function SymprioFooter() {
     {
       title: 'INDUSTRIES',
       links: [
-        { name: 'Financial Services (BFSI)', url: '#' },
-        { name: 'Government & Public Sector', url: '#' },
-        { name: 'Healthcare & Pharma', url: '#' },
+        { name: 'Banking & Finance', url: '#' },
+        { name: 'Insurance', url: '#' },
+        { name: 'Fintech', url: '#' },
+        { name: 'Healthcare', url: '#' },
+        { name: 'Telecom', url: '#' },
         { name: 'Manufacturing', url: '#' },
-        { name: 'Retail & E-Commerce', url: '#' },
-        { name: 'Telecommunications', url: '#' }
+        { name: 'Retail', url: '#' },
+        { name: 'Government', url: '#' }
       ]
     }
   ];

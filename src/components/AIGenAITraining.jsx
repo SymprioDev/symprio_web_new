@@ -22,7 +22,7 @@ export default function AIGenAITraining() {
       <PageBanner
         title="AI & GenAI Training"
         breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'AI & GenAI' }]}
-        backgroundImage="/assets/images/ai-development.jpg"
+        backgroundImage="/assets/service%20images/ai%20training.jpg"
       />
       
       <section className="py-24">

@@ -23,7 +23,7 @@ export default function RPATraining() {
       <PageBanner
         title="RPA Developer Training"
         breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'RPA' }]}
-        backgroundImage="/assets/images/rpa.jpg"
+        backgroundImage="/assets/service%20images/rpa%20training.png"
       />
       
       <section className="py-24">

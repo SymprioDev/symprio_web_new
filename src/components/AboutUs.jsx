@@ -55,7 +55,7 @@ export default function AboutUs() {
       <PageBanner 
         title="About Symprio" 
         breadcrumb={[{ label: 'About Us' }]} 
-        backgroundImage="/assets/images/about-bg.jpg"
+        backgroundImage="/assets/service%20images/about-bg.jpg"
       />
 
       <section className="py-24">

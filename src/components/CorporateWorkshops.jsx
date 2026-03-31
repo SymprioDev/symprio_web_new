@@ -15,7 +15,7 @@ export default function CorporateWorkshops() {
       <PageBanner
         title="Corporate Workshops"
         breadcrumb={[{ label: 'Training', url: '/training' }, { label: 'Workshops' }]}
-        backgroundImage="/assets/images/process-assessment.jpg"
+        backgroundImage="/assets/service%20images/workshop.png"
       />
       
       <section className="py-24">

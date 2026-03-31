@@ -302,6 +302,24 @@ async function initializeDatabase() {
   // Add audio_url column if it doesn't exist (for existing tables)
   await pool.query(`ALTER TABLE ai_conversations ADD COLUMN IF NOT EXISTS audio_url TEXT`);
   console.log('AI Conversations table ready');
+
+  // Client Stories table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS client_stories (
+      id SERIAL PRIMARY KEY,
+      client_name TEXT NOT NULL,
+      company TEXT NOT NULL,
+      role TEXT NOT NULL,
+      quote TEXT NOT NULL,
+      avatar_url TEXT,
+      rating INTEGER DEFAULT 5,
+      industry TEXT,
+      is_active INTEGER DEFAULT 1,
+      created_by INTEGER,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  console.log('Client Stories table ready');
 }
 
 // Initialize database on startup
@@ -1828,10 +1846,108 @@ app.delete('/api/ai-conversations/:id', async (req, res) => {
   }
 });
 
+// ===================== CLIENT STORIES =====================
+
+// GET all active client stories (public)
+app.get('/api/client-stories', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM client_stories WHERE is_active = 1 ORDER BY created_at DESC'
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching client stories:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// POST new client story (admin only)
+app.post('/api/client-stories', verifyJWT, async (req, res) => {
+  try {
+    const { client_name, company, role, quote, avatar_url, rating, industry } = req.body;
+    
+    if (!client_name || !company || !role || !quote) {
+      return res.status(400).json({ error: 'Client name, company, role, and quote are required' });
+    }
+    
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    const { rows } = await pool.query(
+      `INSERT INTO client_stories (client_name, company, role, quote, avatar_url, rating, industry, created_by) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+      [client_name, company, role, quote, avatar_url || null, rating || 5, industry || null, decoded.id]
+    );
+    
+    const id = rows[0].id;
+    res.status(201).json({ 
+      success: true, 
+      clientStory: { 
+        id, 
+        client_name, 
+        company, 
+        role, 
+        quote, 
+        avatar_url: avatar_url || null, 
+        rating: rating || 5, 
+        industry: industry || null,
+        is_active: 1 
+      } 
+    });
+  } catch (error) {
+    console.error('Error creating client story:', error);
+    if (error.name === 'JsonWebTokenError') return res.status(401).json({ error: 'Invalid token' });
+    res.status(500).json({ error: 'Failed to create client story: ' + error.message });
+  }
+});
+
+// PUT update client story (admin only)
+app.put('/api/client-stories/:id', verifyJWT, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { client_name, company, role, quote, avatar_url, rating, industry, is_active } = req.body;
+    
+    if (!client_name || !company || !role || !quote) {
+      return res.status(400).json({ error: 'Client name, company, role, and quote are required' });
+    }
+    
+    await pool.query(
+      `UPDATE client_stories SET 
+        client_name = $1, company = $2, role = $3, quote = $4, 
+        avatar_url = $5, rating = $6, industry = $7, is_active = $8 
+       WHERE id = $9`,
+      [client_name, company, role, quote, avatar_url || null, rating || 5, industry || null, is_active !== undefined ? is_active : 1, id]
+    );
+    
+    res.json({ success: true, message: 'Client story updated' });
+  } catch (error) {
+    console.error('Error updating client story:', error);
+    if (error.name === 'JsonWebTokenError') return res.status(401).json({ error: 'Invalid token' });
+    res.status(500).json({ error: 'Failed to update client story' });
+  }
+});
+
+// DELETE client story (admin only)
+app.delete('/api/client-stories/:id', verifyJWT, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM client_stories WHERE id = $1', [req.params.id]);
+    res.json({ success: true, message: 'Client story deleted' });
+  } catch (error) {
+    console.error('Error deleting client story:', error);
+    if (error.name === 'JsonWebTokenError') return res.status(401).json({ error: 'Invalid token' });
+    res.status(500).json({ error: 'Failed to delete client story' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
   console.log('Available API routes:');
   console.log('  POST /api/webhooks/elevenlabs (webhook)');
   console.log('  GET /api/ai-conversations (admin)');
+  console.log('  GET /api/client-stories (public)');
+  console.log('  POST /api/client-stories (admin)');
+  console.log('  PUT /api/client-stories/:id (admin)');
+  console.log('  DELETE /api/client-stories/:id (admin)');
 });

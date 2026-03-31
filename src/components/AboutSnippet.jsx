@@ -136,7 +136,7 @@ export default function AboutSnippet() {
         <div style={styles.rightCol} data-aos="fade-up" data-aos-delay="100">
           <div style={styles.imageWrapper}>
             <img
-              src="/assets/images/about-bg.jpg"
+              src="/assets/service%20images/about-bg.jpg"
               alt="Symprio Team"
               style={{
                 width: '100%',

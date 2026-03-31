@@ -46,8 +46,9 @@ export default async function handler(req, res) {
           is_active: 1 
         } 
       });
-    } catch {
-      res.status(500).json({ error: 'Failed to create client story' });
+    } catch (err) {
+      console.error('Error creating client story:', err);
+      res.status(500).json({ error: 'Failed to create client story: ' + err.message });
     }
     return;
   }

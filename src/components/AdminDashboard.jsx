@@ -750,7 +750,8 @@ const AdminDashboard = () => {
         setEditingClientStory(null);
         fetchClientStories();
       } else {
-        alert('Failed to add client story');
+        const data = await response.json();
+        alert('Failed to add client story: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       alert('Error adding client story: ' + error.message);

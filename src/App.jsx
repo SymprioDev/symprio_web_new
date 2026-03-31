@@ -7,7 +7,6 @@ import SymprioNavbar from './components/SymprioNavbar';
 import SymprioHero from './components/SymprioHero';
 import SymprioStats from './components/SymprioStats';
 import Services from './components/Services';
-import Testimonials from './components/Testimonials';
 import TransformCTA from './components/TransformCTA';
 import SymprioFooter from './components/SymprioFooter';
 import DigitalTransformation from './components/DigitalTransformation';
@@ -73,7 +72,6 @@ const HomePage = () => {
       {/* Services Portfolio */}
       <Services limit={3} showVideoInsights={false} />
       <TrainingBanner />
-      <Testimonials />
       <ClientStories />
       {/* Final CTA — Start Your Automation Journey */}
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />

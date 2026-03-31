@@ -190,6 +190,40 @@ export default function SymprioNavbar() {
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0D9488', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
             AI Mode
           </button>
+          <a
+            href="https://wa.me/60138802574"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hide-on-mobile"
+            aria-label="Chat on WhatsApp"
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              background: '#25D366',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 24px rgba(37, 211, 102, 0.28)',
+              transition: 'all 0.3s ease',
+              textDecoration: 'none',
+              flexShrink: 0
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 14px 30px rgba(37, 211, 102, 0.34)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 24px rgba(37, 211, 102, 0.28)';
+            }}
+          >
+            <img
+              src="/whatsapp-logo.svg"
+              alt="WhatsApp"
+              style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+            />
+          </a>
           <button
             onClick={() => navigate('/contact')}
             className="btn-pill btn-primary hide-on-mobile"

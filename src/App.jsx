@@ -41,7 +41,7 @@ import TrainingBanner from './components/TrainingBanner';
 import AIMode from './components/AIMode';
 import UseCases from './components/UseCases';
 import HowItWorks from './components/HowItWorks';
-import ClientStories from './components/ClientStories';
+import ClientStoriesCarousel from './components/ClientStoriesCarousel';
 import EventPopupBanner from './components/EventPopupBanner';
 import AIModePrompt from './components/AIModePrompt';
 
@@ -72,7 +72,7 @@ const HomePage = () => {
       {/* Services Portfolio */}
       <Services limit={3} showVideoInsights={false} />
       <TrainingBanner />
-      <ClientStories />
+      <ClientStoriesCarousel />
       {/* Final CTA — Start Your Automation Journey */}
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />

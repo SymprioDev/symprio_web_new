@@ -117,7 +117,7 @@ export default function ServicesLanding() {
       <PageBanner 
         title="Our Services" 
         breadcrumb={[{ label: 'Services' }]} 
-        backgroundImage="/assets/images/hero-bg.jpg"
+        backgroundImage="/assets/service%20images/services.png"
       />
 
       {/* Services Grid Section */}

@@ -40,7 +40,7 @@ export default function CustomDevelopment() {
       title="Custom Software Development"
       titleAccent="Development"
       subtitle="Full-stack excellence from initial concept to global scale."
-      heroImage="/assets/images/custom-dev.jpg"
+      heroImage="/assets/service%20images/custom-dev.jpg"
       breadcrumb="Custom Software"
       seoTitle="Custom Software Development — Web, Mobile & Cloud"
       seoDescription="Full-stack web apps, mobile apps, and cloud-native solutions. Agile methodology, modern frameworks, AI-integrated development."
@@ -57,7 +57,7 @@ export default function CustomDevelopment() {
         'Data: PostgreSQL, MongoDB, Redis, Kafka',
         'Cloud/DevOps: AWS, Azure, Docker, Kubernetes',
       ]}
-      commitmentImage="/assets/images/custom-dev.jpg"
+      commitmentImage="/assets/service%20images/custom-dev.jpg"
       faqs={faqs}
     />
   );

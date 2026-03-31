@@ -22,7 +22,7 @@ export default function AgenticAI() {
       title="Agentic AI & LLM Solutions"
       titleAccent="Solutions"
       subtitle="The next evolution of AI: autonomous digital agents that reason, decide, and execute complex workflows without constant oversight."
-      heroImage="/assets/images/agentic-ai.jpg"
+      heroImage="/assets/service%20images/agentic-ai.jpg"
       breadcrumb="Agentic AI"
       seoTitle="Agentic AI & LLM Solutions — Autonomous AI Agents"
       seoDescription="Deploy autonomous AI agents, fine-tune LLMs and implement RAG for your business. Serving banks, insurers, fintechs and enterprises."
@@ -56,7 +56,7 @@ export default function AgenticAI() {
         'We tailor agentic AI agents to your processes and governance frameworks, ensuring security, compliance and alignment with your business objectives',
         'Integration with leading agentic AI platforms and workflow orchestration tools',
       ]}
-      commitmentImage="/assets/images/ai-development.jpg"
+      commitmentImage="/assets/service%20images/ai-development.jpg"
       faqs={agenticFaqs}
     />
   );

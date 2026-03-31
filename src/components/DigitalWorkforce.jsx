@@ -40,7 +40,7 @@ export default function DigitalWorkforce() {
       title="Digital Workforce & Staff Augmentation"
       titleAccent="Augmentation"
       subtitle="Augmenting your success with elite, vetted global talent."
-      heroImage="/assets/images/digital-workforce.jpg"
+      heroImage="/assets/service%20images/digital-workforce.jpg"
       breadcrumb="Digital Workforce"
       seoTitle="IT Staff Augmentation & Digital Workforce Services"
       seoDescription="Access expert RPA, AI, and IT talent with flexible engagement models. Staff augmentation, managed teams, and full outsourcing."
@@ -57,7 +57,7 @@ export default function DigitalWorkforce() {
         'Project Leadership: Scrum masters and PMs who deliver high-impact results',
         'Business Functions: Strategic roles in HR, digital marketing, and operations',
       ]}
-      commitmentImage="/assets/images/digital-workforce.jpg"
+      commitmentImage="/assets/service%20images/digital-workforce.jpg"
       faqs={faqs}
     />
   );

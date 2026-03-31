@@ -22,7 +22,7 @@ export default function AIApplicationDevelopment() {
       title="AI Application Development"
       titleAccent="Development"
       subtitle="Custom AI applications that solve real-world business challenges, from intelligent chatbots to autonomous agents."
-      heroImage="/assets/images/ai-development.jpg"
+      heroImage="/assets/service%20images/ai-development.jpg"
       breadcrumb="AI Development"
       seoTitle="AI Application Development — Chatbots, Agents, RAG"
       seoDescription="Build intelligent AI applications: chatbots, AI agents, RAG, LLM fine-tuning, computer vision and document intelligence."
@@ -57,7 +57,7 @@ export default function AIApplicationDevelopment() {
         'SAP, Oracle & Salesforce',
         'Enterprise Data Warehouses',
       ]}
-      commitmentImage="/assets/images/custom-dev.jpg"
+      commitmentImage="/assets/service%20images/custom-dev.jpg"
       faqs={aiFaqs}
     />
   );

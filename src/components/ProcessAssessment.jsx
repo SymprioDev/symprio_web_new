@@ -7,7 +7,7 @@ export default function ProcessAssessment() {
       title="Process Assessment &"
       titleAccent="Consultancy"
       subtitle="Understand your processes before you automate them."
-      heroImage="/assets/images/process-assessment.jpg"
+      heroImage="/assets/service%20images/process-assessment.jpg"
       breadcrumb="Process Assessment"
       seoTitle="Process Assessment & Consultancy Services"
       seoDescription="Symprio studies your business processes and recommends the best automation strategy. Domain-agnostic consultancy for SMEs and enterprises."
@@ -44,7 +44,7 @@ export default function ProcessAssessment() {
         "Bottleneck analysis — identifying manual handoffs, repetitive tasks, and operational inefficiencies",
         "Prioritized roadmap — clear timelines, resource requirements, and governance framework"
       ]}
-      commitmentImage="/assets/images/process-assessment.jpg"
+      commitmentImage="/assets/service%20images/process-assessment.jpg"
       faqs={[
         {
           q: 'How long does a process assessment take?',

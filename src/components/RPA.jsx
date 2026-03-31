@@ -7,7 +7,7 @@ export default function RPA() {
       title="Robotic Process"
       titleAccent="Automation"
       subtitle="Intelligent bots created to automate high-volume, repetitive tasks—enhancing accuracy and scaling your digital workforce."
-      heroImage="/assets/images/rpa.jpg"
+      heroImage="/assets/service%20images/rpa.jpg"
       breadcrumb="RPA"
       seoTitle="RPA Services — UiPath & Power Automate Experts"
       seoDescription="Comprehensive RPA services from assessment to deployment. UiPath, Power Automate, Automation Anywhere. 400+ bots deployed across APAC."
@@ -44,7 +44,7 @@ export default function RPA() {
         "24/7 availability without breaks — 100% uptime",
         "Cost reduced from $15,000-20,000/month to $2,000-3,000 — 85% savings"
       ]}
-      commitmentImage="/assets/images/rpa.jpg"
+      commitmentImage="/assets/service%20images/rpa.jpg"
       faqs={[
         {
           q: 'What types of processes can be automated with RPA?',

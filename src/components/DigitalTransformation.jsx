@@ -22,7 +22,7 @@ export default function DigitalTransformation() {
       title="Digital Transformation"
       titleAccent="Transformation"
       subtitle="Partnering with enterprise leaders to evolve their culture, technology, and operations for the digital age."
-      heroImage="/assets/images/digital-transformation.jpg"
+      heroImage="/assets/service%20images/digital-transformation.jpg"
       breadcrumb="Digital Transformation"
       seoTitle="Digital Transformation Services — Strategy to Execution"
       seoDescription="End-to-end digital transformation: strategy, roadmap, change management and execution. Proven methodology across APAC, US and UK."
@@ -57,7 +57,7 @@ export default function DigitalTransformation() {
         'Customer experience, innovation, and scalable technology platforms',
         'Workforce development and digital-first talent strategies',
       ]}
-      commitmentImage="/assets/images/digital-transformation.jpg"
+      commitmentImage="/assets/service%20images/digital-transformation.jpg"
       faqs={dtFaqs}
     />
   );

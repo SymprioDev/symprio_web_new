@@ -7,7 +7,7 @@ export default function ERP() {
       title="ERP & Oracle"
       titleAccent="Services"
       subtitle="Transforming complex business operations into streamlined, cloud-native powerhouses."
-      heroImage="/assets/images/erp-oracle.jpg"
+      heroImage="/assets/service%20images/erp.jpg"
       breadcrumb="ERP & Oracle"
       seoTitle="Oracle ERP Implementation & Consultancy"
       seoDescription="Expert Oracle Cloud and R12 ERP implementations, upgrades and integrations. Deep APAC expertise with proven delivery methodology."
@@ -44,7 +44,7 @@ export default function ERP() {
         "Real-time data visibility replacing siloed legacy systems — 24/7 live insights",
         "$2.3M annual operational savings with cloud-based efficiency"
       ]}
-      commitmentImage="/assets/images/erp-oracle.jpg"
+      commitmentImage="/assets/service%20images/erp.jpg"
       faqs={[
         {
           q: 'Why should we choose Oracle Cloud ERP over our legacy on-premise system?',

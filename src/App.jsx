@@ -39,7 +39,6 @@ import FeaturesGrid from './components/FeaturesGrid';
 import ClientsMarquee from './components/ClientsMarquee';
 import AboutSnippet from './components/AboutSnippet';
 import TrainingBanner from './components/TrainingBanner';
-import BlogLatestPosts from './components/BlogLatestPosts';
 import AIMode from './components/AIMode';
 import UseCases from './components/UseCases';
 import HowItWorks from './components/HowItWorks';
@@ -74,7 +73,6 @@ const HomePage = () => {
       <Services limit={3} showVideoInsights={false} />
       <TrainingBanner />
       <Testimonials />
-      <BlogLatestPosts />
       {/* Final CTA — Start Your Automation Journey */}
       <CurvedDivider topColor="#ffffff" bottomColor="#0A2D6E" height={120} curve="smooth" />
       <TransformCTA />

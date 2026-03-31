@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useLocation } from 'react-router-dom';
 import PageBanner from './PageBanner';
 import SEO from './SEO';
 
@@ -275,6 +276,8 @@ function CaseStudyCard({ study, index }) {
 }
 
 export default function CaseStudiesLanding() {
+  const location = useLocation();
+  const filtersRef = useRef(null);
   const [activeIndustry, setActiveIndustry] = useState('All');
   const [activeService, setActiveService] = useState('All');
 
@@ -285,6 +288,27 @@ export default function CaseStudiesLanding() {
   useEffect(() => {
     AOS.refresh();
   }, [activeIndustry, activeService]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const requestedIndustry = params.get('industry');
+
+    if (!requestedIndustry) {
+      return;
+    }
+
+    const matchedIndustry = INDUSTRIES.find((industry) => industry === requestedIndustry);
+    if (!matchedIndustry) {
+      return;
+    }
+
+    setActiveIndustry(matchedIndustry);
+    setActiveService('All');
+
+    window.requestAnimationFrame(() => {
+      filtersRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [location.search]);
 
   const filtered = CASE_STUDIES.filter(c => {
     const industryMatch = activeIndustry === 'All' || c.industry === activeIndustry;
@@ -339,7 +363,7 @@ export default function CaseStudiesLanding() {
       </section>
 
       {/* Filters + Grid */}
-      <section className="py-16">
+      <section id="industries" ref={filtersRef} className="py-16">
         <div className="container mx-auto px-6">
 
           {/* Filter rows */}

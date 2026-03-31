@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 
+const industryCaseStudiesUrl = (industry) => `/case-studies?industry=${encodeURIComponent(industry)}#industries`;
+
 export default function SymprioFooter() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -43,14 +45,14 @@ export default function SymprioFooter() {
     {
       title: 'INDUSTRIES',
       links: [
-        { name: 'Banking & Finance', url: '#' },
-        { name: 'Insurance', url: '#' },
-        { name: 'Fintech', url: '#' },
-        { name: 'Healthcare', url: '#' },
-        { name: 'Telecom', url: '#' },
-        { name: 'Manufacturing', url: '#' },
-        { name: 'Retail', url: '#' },
-        { name: 'Government', url: '#' }
+        { name: 'Banking & Finance', url: industryCaseStudiesUrl('Banking & Finance') },
+        { name: 'Insurance', url: industryCaseStudiesUrl('Insurance') },
+        { name: 'Fintech', url: industryCaseStudiesUrl('Fintech') },
+        { name: 'Healthcare', url: industryCaseStudiesUrl('Healthcare') },
+        { name: 'Telecom', url: industryCaseStudiesUrl('Telecom') },
+        { name: 'Manufacturing', url: industryCaseStudiesUrl('Manufacturing') },
+        { name: 'Retail', url: industryCaseStudiesUrl('Retail') },
+        { name: 'Government', url: industryCaseStudiesUrl('Government') }
       ]
     }
   ];

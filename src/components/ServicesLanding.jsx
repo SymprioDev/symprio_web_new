@@ -18,7 +18,7 @@ export default function ServicesLanding() {
     {
       title: 'Robotic Process Automation',
       description: 'Automate repetitive tasks with UiPath, Power Automate & Automation Anywhere.',
-      image: '/assets/images/rpa.jpg',
+      image: '/assets/service%20images/rpa.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
@@ -29,7 +29,7 @@ export default function ServicesLanding() {
     {
       title: 'AI Application Development',
       description: 'Chatbots, AI agents, document intelligence & computer vision.',
-      image: '/assets/images/ai-development.jpg',
+      image: '/assets/service%20images/ai-development.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -40,7 +40,7 @@ export default function ServicesLanding() {
     {
       title: 'Agentic AI & LLM Solutions',
       description: 'Autonomous agents, LLM fine-tuning & RAG implementation.',
-      image: '/assets/images/agentic-ai.jpg',
+      image: '/assets/service%20images/agentic-ai.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -51,7 +51,7 @@ export default function ServicesLanding() {
     {
       title: 'Process Assessment & Consultancy',
       description: 'We study your processes and recommend the best path forward.',
-      image: '/assets/images/process-assessment.jpg',
+      image: '/assets/service%20images/consult.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -62,7 +62,7 @@ export default function ServicesLanding() {
     {
       title: 'Digital Transformation',
       description: 'Strategy, roadmap, change management and execution.',
-      image: '/assets/images/digital-transformation.jpg',
+      image: '/assets/service%20images/digital-transformation.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -73,7 +73,7 @@ export default function ServicesLanding() {
     {
       title: 'ERP & Oracle Services',
       description: 'Oracle Cloud & R12 implementations, integrations and upgrades.',
-      image: '/assets/images/erp-oracle.jpg',
+      image: '/assets/service%20images/erp.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -84,7 +84,7 @@ export default function ServicesLanding() {
     {
       title: 'Custom Software Development',
       description: 'Full-stack web, mobile and cloud-native solutions.',
-      image: '/assets/images/custom-dev.jpg',
+      image: '/assets/service%20images/custom-dev.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -95,7 +95,7 @@ export default function ServicesLanding() {
     {
       title: 'Digital Workforce',
       description: 'Expert IT talent with flexible engagement models.',
-      image: '/assets/images/digital-workforce.jpg',
+      image: '/assets/service%20images/digital-workforce.jpg',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />

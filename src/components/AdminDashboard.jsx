@@ -140,7 +140,6 @@ const AdminDashboard = () => {
     rating: 5,
     industry: ''
   });
-  });
 
   // Fetch events, trainings, jobs, and client stories
   useEffect(() => {

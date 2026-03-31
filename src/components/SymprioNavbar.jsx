@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
 export default function SymprioNavbar() {
@@ -225,11 +226,7 @@ export default function SymprioNavbar() {
               e.currentTarget.style.boxShadow = '0 10px 24px rgba(37, 211, 102, 0.28)';
             }}
           >
-            <img
-              src="/assets/service%20images/whatsapp.png"
-              alt="WhatsApp"
-              style={{ width: '22px', height: '22px', objectFit: 'contain' }}
-            />
+            <FaWhatsapp style={{ fontSize: '22px', color: '#fff' }} />
           </a>
           {/* Hamburger — mobile only */}
           <button

@@ -70,6 +70,8 @@ const AdminDashboard = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loadingSubscriptions, setLoadingSubscriptions] = useState(true);
   const [subscriptionStatusTypes, setSubscriptionStatusTypes] = useState([]);
+  const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
+  const [loadingNewsletterSubscribers, setLoadingNewsletterSubscribers] = useState(true);
   
   // Subscription modal state
   const [selectedSubscription, setSelectedSubscription] = useState(null);
@@ -159,6 +161,7 @@ const AdminDashboard = () => {
     if (token) {
       fetchSubscriptions();
       fetchSubscriptionStatusTypes();
+      fetchNewsletterSubscribers();
     }
   }, [token]);
 
@@ -325,6 +328,27 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchNewsletterSubscribers = async () => {
+    if (!token) return;
+    setLoadingNewsletterSubscribers(true);
+    try {
+      const response = await fetch('/api/admin/newsletter-subscribers', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNewsletterSubscribers(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error('Error fetching newsletter subscribers:', error);
+    } finally {
+      setLoadingNewsletterSubscribers(false);
+    }
+  };
+
   const fetchConversations = async () => {
     setLoadingConversations(true);
     try {
@@ -447,6 +471,79 @@ const AdminDashboard = () => {
   const handleViewSubscription = (sub) => {
     setSelectedSubscription(sub);
     setShowSubscriptionModal(true);
+  };
+
+  const handleNewsletterStatusChange = async (id, status) => {
+    setNewsletterSubscribers(prev =>
+      prev.map(subscriber =>
+        subscriber.id === id ? { ...subscriber, status } : subscriber
+      )
+    );
+
+    try {
+      const response = await fetch(`/api/admin/newsletter-subscribers/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+
+      if (!response.ok) {
+        showNotification('error', 'Failed to update subscriber status');
+        fetchNewsletterSubscribers();
+      } else {
+        showNotification('success', 'Subscriber status updated');
+      }
+    } catch (error) {
+      console.error('Error updating subscriber status:', error);
+      showNotification('error', 'Error updating subscriber status');
+      fetchNewsletterSubscribers();
+    }
+  };
+
+  const handleDeleteNewsletterSubscriber = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this subscriber?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/newsletter-subscribers/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setNewsletterSubscribers(prev => prev.filter(subscriber => subscriber.id !== id));
+        showNotification('success', 'Subscriber deleted successfully');
+      } else {
+        showNotification('error', 'Failed to delete subscriber');
+      }
+    } catch (error) {
+      console.error('Error deleting subscriber:', error);
+      showNotification('error', 'Error deleting subscriber');
+    }
+  };
+
+  const handleCopyNewsletterEmails = async () => {
+    const activeEmails = newsletterSubscribers
+      .filter(subscriber => (subscriber.status || '').toLowerCase() === 'active')
+      .map(subscriber => subscriber.email)
+      .join(', ');
+
+    if (!activeEmails) {
+      showNotification('error', 'No active subscriber emails to copy');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(activeEmails);
+      showNotification('success', 'Active subscriber emails copied to clipboard');
+    } catch (error) {
+      console.error('Error copying subscriber emails:', error);
+      showNotification('error', 'Failed to copy subscriber emails');
+    }
   };
 
   const handleSaveSubscriptionConfig = async (e) => {
@@ -905,6 +1002,7 @@ const AdminDashboard = () => {
   const pendingEnquiries = enquiries.filter(e => (e.status || '').toLowerCase() === 'new').length;
   const pendingApplications = jobApplications.filter(a => !a.status || (a.status || '').toLowerCase() === 'pending').length;
   const pendingSubscriptions = subscriptions.filter(s => !s.status || (s.status || '').toLowerCase() === 'pending').length;
+  const activeNewsletterSubscribers = newsletterSubscribers.filter(s => (s.status || '').toLowerCase() === 'active').length;
 
   // Sidebar menu items
   const menuItems = [
@@ -916,6 +1014,7 @@ const AdminDashboard = () => {
     { id: 'jobApplications', label: 'Job Applications', icon: Users, badge: pendingApplications },
     { id: 'locations', label: 'Locations', icon: MapPin },
     { id: 'enquiries', label: 'Enquiries', icon: MessageSquare, badge: pendingEnquiries },
+    { id: 'newsletterSubscribers', label: 'Newsletter Subscribers', icon: Mail, badge: activeNewsletterSubscribers },
     { id: 'subscriptions', label: 'Support Subscriptions', icon: CheckCircle, badge: pendingSubscriptions },
     { id: 'aiConversations', label: 'AI Conversations', icon: Brain },
     { id: 'subscriptionConfig', label: 'Subscription Config', icon: Settings },
@@ -1094,6 +1193,13 @@ const AdminDashboard = () => {
                   trend={`${pendingSubscriptions} pending`}
                 />
                 <StatCard
+                  title="Newsletter Subscribers"
+                  value={newsletterSubscribers.length}
+                  icon={Mail}
+                  color="bg-emerald-600"
+                  trend={`${activeNewsletterSubscribers} active`}
+                />
+                <StatCard
                   title="AI Conversations"
                   value={conversations.length}
                   icon={Brain}
@@ -1124,6 +1230,13 @@ const AdminDashboard = () => {
                   >
                     <Briefcase className="w-8 h-8 text-purple-600 mx-auto mb-2" />
                     <p className="text-sm font-medium text-gray-700">Review Applications</p>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('newsletterSubscribers')}
+                    className="p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors text-center"
+                  >
+                    <Mail className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-700">Newsletter List</p>
                   </button>
                   <button 
                     onClick={() => setActiveTab('subscriptions')}
@@ -1382,6 +1495,95 @@ const AdminDashboard = () => {
                         </div>
                       )}
                     </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'newsletterSubscribers' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      Newsletter Subscribers ({newsletterSubscribers.length})
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Manage email subscribers collected from the website footer.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleCopyNewsletterEmails}
+                    className="bg-[#0a2d6e] text-white px-4 py-2 rounded-lg hover:bg-[#123b8c] text-sm font-medium"
+                  >
+                    Copy Active Emails
+                  </button>
+                </div>
+
+                <div className="p-4">
+                  {loadingNewsletterSubscribers && (
+                    <div className="text-center py-8 text-gray-500">Loading newsletter subscribers...</div>
+                  )}
+
+                  {!loadingNewsletterSubscribers && newsletterSubscribers.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">No newsletter subscribers yet.</div>
+                  )}
+
+                  {!loadingNewsletterSubscribers && newsletterSubscribers.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border rounded-lg overflow-hidden min-w-[760px]">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Email</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Source</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Subscribed</th>
+                            <th className="p-3 text-left text-sm font-semibold text-gray-700">Updated</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Status</th>
+                            <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {newsletterSubscribers.map((subscriber) => {
+                            const normalizedStatus = (subscriber.status || 'active').toLowerCase();
+                            return (
+                              <tr key={subscriber.id} className="border-t hover:bg-gray-50">
+                                <td className="p-3 text-gray-800 font-medium">{subscriber.email}</td>
+                                <td className="p-3 text-gray-600 capitalize">{subscriber.source || 'footer'}</td>
+                                <td className="p-3 text-gray-600">
+                                  {subscriber.subscribed_at ? new Date(subscriber.subscribed_at).toLocaleDateString('en-GB') : '-'}
+                                </td>
+                                <td className="p-3 text-gray-600">
+                                  {subscriber.updated_at ? new Date(subscriber.updated_at).toLocaleDateString('en-GB') : '-'}
+                                </td>
+                                <td className="p-3 text-center">
+                                  <select
+                                    value={normalizedStatus}
+                                    onChange={(e) => handleNewsletterStatusChange(subscriber.id, e.target.value)}
+                                    className={`px-3 py-1.5 border rounded text-sm font-medium ${
+                                      normalizedStatus === 'active'
+                                        ? 'bg-green-50 text-green-700 border-green-200'
+                                        : 'bg-gray-100 text-gray-700 border-gray-200'
+                                    }`}
+                                  >
+                                    <option value="active">Active</option>
+                                    <option value="unsubscribed">Unsubscribed</option>
+                                  </select>
+                                </td>
+                                <td className="p-3 text-center">
+                                  <button
+                                    onClick={() => handleDeleteNewsletterSubscriber(subscriber.id)}
+                                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   )}
                 </div>
               </div>

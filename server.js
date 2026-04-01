@@ -252,6 +252,21 @@ async function initializeDatabase() {
   await pool.query('CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)');
   await pool.query('CREATE INDEX IF NOT EXISTS idx_subscriptions_created_at ON subscriptions(created_at)');
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+      id SERIAL PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      source TEXT DEFAULT 'footer',
+      status TEXT DEFAULT 'active',
+      subscribed_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  console.log('Newsletter subscribers table ready');
+
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status)');
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_subscribed_at ON newsletter_subscribers(subscribed_at)');
+
   // Subscription Status Types table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS subscription_status_types (
@@ -1536,6 +1551,106 @@ app.post('/api/subscription', async (req, res) => {
   } catch (error) {
     console.error('Subscription endpoint error:', error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+// POST newsletter subscriber (public)
+app.post('/api/newsletter-subscribers', async (req, res) => {
+  try {
+    const email = (req.body.email || '').trim().toLowerCase();
+    const source = (req.body.source || 'footer').trim() || 'footer';
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
+    }
+
+    const { rows } = await pool.query(
+      `INSERT INTO newsletter_subscribers (email, source, status)
+       VALUES ($1, $2, 'active')
+       ON CONFLICT (email)
+       DO UPDATE SET
+         source = EXCLUDED.source,
+         status = 'active',
+         updated_at = NOW()
+       RETURNING id, email, source, status, subscribed_at, updated_at`,
+      [email, source]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Subscribed successfully',
+      subscriber: rows[0]
+    });
+  } catch (error) {
+    console.error('Newsletter subscription error:', error);
+    res.status(500).json({ message: 'Failed to subscribe. Please try again.' });
+  }
+});
+
+// GET newsletter subscribers (admin only)
+app.get('/api/admin/newsletter-subscribers', verifyJWT, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, email, source, status, subscribed_at, updated_at
+       FROM newsletter_subscribers
+       ORDER BY subscribed_at DESC`
+    );
+    res.json(rows || []);
+  } catch (error) {
+    console.error('Get newsletter subscribers error:', error);
+    res.status(500).json({ message: 'Failed to fetch newsletter subscribers' });
+  }
+});
+
+// PATCH newsletter subscriber status (admin only)
+app.patch('/api/admin/newsletter-subscribers/:id/status', verifyJWT, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const status = (req.body.status || '').trim().toLowerCase();
+    const allowedStatuses = ['active', 'unsubscribed'];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    const { rows } = await pool.query(
+      `UPDATE newsletter_subscribers
+       SET status = $1, updated_at = NOW()
+       WHERE id = $2
+       RETURNING id, email, source, status, subscribed_at, updated_at`,
+      [status, id]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ message: 'Subscriber not found' });
+    }
+
+    res.json({ success: true, subscriber: rows[0] });
+  } catch (error) {
+    console.error('Update newsletter subscriber status error:', error);
+    res.status(500).json({ message: 'Failed to update subscriber status' });
+  }
+});
+
+// DELETE newsletter subscriber (admin only)
+app.delete('/api/admin/newsletter-subscribers/:id', verifyJWT, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('DELETE FROM newsletter_subscribers WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Subscriber not found' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete newsletter subscriber error:', error);
+    res.status(500).json({ message: 'Failed to delete subscriber' });
   }
 });
 

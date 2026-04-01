@@ -7,6 +7,7 @@ const industryCaseStudiesUrl = (industry) => `/case-studies?industry=${encodeURI
 export default function SymprioFooter() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [subscribeState, setSubscribeState] = useState({ loading: false, type: '', message: '' });
 
   const footerSections = [
     {
@@ -59,8 +60,40 @@ export default function SymprioFooter() {
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    // Newsletter subscription logic here
-    setEmail('');
+    const submit = async () => {
+      setSubscribeState({ loading: true, type: '', message: '' });
+
+      try {
+        const response = await fetch('/api/newsletter-subscribers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, source: 'footer' })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to subscribe');
+        }
+
+        setEmail('');
+        setSubscribeState({
+          loading: false,
+          type: 'success',
+          message: 'You are subscribed to our newsletter.'
+        });
+      } catch (error) {
+        setSubscribeState({
+          loading: false,
+          type: 'error',
+          message: error.message || 'Subscription failed. Please try again.'
+        });
+      }
+    };
+
+    submit();
   };
 
   return (
@@ -110,6 +143,7 @@ export default function SymprioFooter() {
             />
             <button
               type="submit"
+              disabled={subscribeState.loading}
               style={{
                 background: '#185ADB',
                 color: '#fff',
@@ -119,14 +153,27 @@ export default function SymprioFooter() {
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                opacity: subscribeState.loading ? 0.7 : 1
               }}
               onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
             >
-              Subscribe
+              {subscribeState.loading ? 'Subscribing...' : 'Subscribe'}
             </button>
           </form>
+          {subscribeState.message && (
+            <p
+              style={{
+                width: '100%',
+                margin: '8px 0 0',
+                fontSize: '13px',
+                color: subscribeState.type === 'success' ? '#86EFAC' : '#FCA5A5'
+              }}
+            >
+              {subscribeState.message}
+            </p>
+          )}
         </div>
 
         <div className="footer-grid" style={{

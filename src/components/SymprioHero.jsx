@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 
 const logos = [
-  { name: 'UiPath', logo: '/uipath-logo.png' },
+  { name: 'UiPath', logo: '/UiPath.png' },
   { name: 'Microsoft', logo: '/microsoft-logo.png' },
   { name: 'Oracle', logo: '/oracle-logo.png' },
   { name: 'Salesforce', logo: '/salesforce-logo.png' },

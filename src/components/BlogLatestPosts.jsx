@@ -17,6 +17,12 @@ function stripHtml(html) {
   return html ? html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim() : '';
 }
 
+function extractPostImage(post) {
+  const content = post.content || post.description || '';
+  const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] || post.thumbnail || '';
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
@@ -59,7 +65,8 @@ function PostCard({ post, index }) {
   const [imgError, setImgError] = useState(false);
   const category = (post.categories && post.categories.length > 0) ? post.categories[0] : 'Article';
   const excerpt = stripHtml(post.description || post.content || '').slice(0, 320);
-  const hasImage = post.thumbnail && !imgError;
+  const imageSrc = extractPostImage(post);
+  const hasImage = imageSrc && !imgError;
 
   return (
     <div
@@ -88,7 +95,7 @@ function PostCard({ post, index }) {
       <div style={{ width: '100%', height: '200px', flexShrink: 0, overflow: 'hidden', position: 'relative' }}>
         {hasImage ? (
           <img
-            src={post.thumbnail}
+            src={imageSrc}
             alt={post.title || 'Blog post'}
             onError={() => setImgError(true)}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}

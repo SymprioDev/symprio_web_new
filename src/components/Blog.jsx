@@ -4,6 +4,12 @@ import 'aos/dist/aos.css';
 import PageBanner from './PageBanner';
 import SEO from './SEO';
 
+function extractPostImage(post) {
+  const content = post.content || post.description || '';
+  const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] || post.thumbnail || '/assets/images/hero-bg.jpg';
+}
+
 export default function Blog() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +74,7 @@ export default function Blog() {
                 >
                   <div className="relative h-48 overflow-hidden">
                     <img 
-                      src={post.thumbnail || '/assets/images/hero-bg.jpg'} 
+                      src={extractPostImage(post)} 
                       alt={post.title} 
                       className="w-full h-full object-cover transition-transform hover:scale-105"
                     />

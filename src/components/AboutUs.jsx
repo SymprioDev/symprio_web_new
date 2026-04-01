@@ -94,20 +94,127 @@ export default function AboutUs() {
         </div>
       </section>
 
-      <section className="py-24 bg-[#0A2D6E] text-white">
+      <section
+        className="py-24"
+        style={{ background: 'linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 100%)' }}
+      >
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="p-12 rounded-[3rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-              <h3 className="text-3xl font-bold mb-6 font-serif italic text-[#00F5D4]">Our Mission</h3>
-              <p className="text-xl text-blue-100/70 leading-relaxed">
-                To be the global leader in providing innovative and effective digital workforce solutions.
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-14" data-aos="fade-up">
+              <span className="inline-flex items-center rounded-full border border-[#D6E4FF] bg-white px-5 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-[#185ADB] shadow-sm">
+                Purpose & Direction
+              </span>
+              <h2 className="mt-6 text-4xl md:text-5xl font-bold text-[#0A2D6E] leading-tight">
+                The principles that shape
+                <span className="block text-[#0077B6]">how Symprio builds for the future</span>
+              </h2>
+              <p className="mt-5 max-w-3xl mx-auto text-lg leading-8 text-slate-600">
+                Our mission and vision guide every transformation program we deliver, balancing practical execution
+                with a long-term view of intelligent, scalable growth.
               </p>
             </div>
-            <div className="p-12 rounded-[3rem] bg-[#0077B6] shadow-2xl">
-              <h3 className="text-3xl font-bold mb-6 font-serif italic text-white">Our Vision</h3>
-              <p className="text-xl text-blue-50 leading-relaxed">
-                Empowering Enterprises through Intelligent Automation and Digital Transformations.
-              </p>
+
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-stretch">
+              <article
+                className="group relative overflow-hidden rounded-[2.5rem] border border-[#D9E6FF] bg-white p-8 md:p-12 shadow-[0_20px_60px_rgba(10,45,110,0.08)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(10,45,110,0.14)]"
+                data-aos="fade-up"
+              >
+                <div
+                  className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: 'linear-gradient(135deg, rgba(24,90,219,0.06), rgba(13,148,136,0.06))' }}
+                />
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between gap-4 mb-10">
+                    <div
+                      className="flex h-16 w-16 items-center justify-center rounded-[1.4rem] text-[#0A2D6E] shadow-sm"
+                      style={{ background: 'linear-gradient(135deg, #E8F1FF 0%, #D8FFF8 100%)' }}
+                    >
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                        <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
+                        <path d="M9.5 12l1.7 1.7L15 10" />
+                      </svg>
+                    </div>
+                    <span className="rounded-full border border-[#D6E4FF] px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-[#185ADB]">
+                      Our Mission
+                    </span>
+                  </div>
+
+                  <h3 className="text-3xl md:text-[2.1rem] font-semibold tracking-tight text-[#0A2D6E] mb-6">
+                    Deliver practical digital workforce solutions that create measurable progress.
+                  </h3>
+                  <p className="text-lg leading-8 text-slate-600 mb-8">
+                    We help organizations solve operational bottlenecks with automation, AI, and transformation programs
+                    that are designed for real adoption, sustainable ROI, and confident execution.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[
+                      'Built around real business outcomes',
+                      'Focused on adoption, not just deployment',
+                      'Designed for scalable enterprise delivery',
+                      'Aligned to cost, culture, and capability'
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-4 py-4 transition-colors duration-300 group-hover:bg-white"
+                      >
+                        <span className="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#0D9488]" />
+                        <span className="text-sm font-medium leading-6 text-slate-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </article>
+
+              <article
+                className="group relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 text-white shadow-[0_24px_70px_rgba(10,45,110,0.18)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(10,45,110,0.24)]"
+                data-aos="fade-up"
+                data-aos-delay="120"
+                style={{ background: 'linear-gradient(145deg, #0A2D6E 0%, #185ADB 56%, #0D9488 100%)' }}
+              >
+                <div
+                  className="absolute -right-16 -top-16 h-44 w-44 rounded-full"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                />
+                <div
+                  className="absolute -bottom-20 -left-10 h-52 w-52 rounded-full"
+                  style={{ background: 'rgba(255,255,255,0.07)' }}
+                />
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between gap-4 mb-10">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-white/12 text-white backdrop-blur-sm">
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                        <path d="M4 15l5-5 4 4 7-7" />
+                        <path d="M14 7h6v6" />
+                      </svg>
+                    </div>
+                    <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white/90">
+                      Our Vision
+                    </span>
+                  </div>
+
+                  <h3 className="text-3xl md:text-[2.1rem] font-semibold tracking-tight mb-6">
+                    Empower enterprises through intelligent automation and modern digital transformation.
+                  </h3>
+                  <p className="text-lg leading-8 text-blue-50/90 mb-10 max-w-2xl">
+                    We envision a future where organizations operate with more clarity, speed, and resilience by
+                    combining human expertise with AI-powered systems that continuously improve how work gets done.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[
+                      { label: 'Smarter', value: 'Decision-making at scale' },
+                      { label: 'Faster', value: 'Execution across complex workflows' },
+                      { label: 'Stronger', value: 'Teams augmented by digital intelligence' }
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-[1.75rem] border border-white/12 bg-white/10 px-5 py-5 backdrop-blur-sm">
+                        <div className="text-sm font-bold uppercase tracking-[0.18em] text-[#B9FFF3]">{item.label}</div>
+                        <div className="mt-3 text-base leading-7 text-white/90">{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </article>
             </div>
           </div>
         </div>

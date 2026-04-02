@@ -82,6 +82,53 @@ const AdminDashboard = () => {
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [expandedConversation, setExpandedConversation] = useState(null);
 
+  // Event & Training Registrations state
+  const [eventRegistrations, setEventRegistrations] = useState([]);
+  const [trainingRegistrations, setTrainingRegistrations] = useState([]);
+  const [loadingRegistrations, setLoadingRegistrations] = useState(true);
+  const [registrationFilter, setRegistrationFilter] = useState('all'); // 'all', 'events', 'trainings'
+
+  // Fetch event registrations
+  const fetchEventRegistrations = async () => {
+    try {
+      const response = await fetch('/api/events/registrations', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEventRegistrations(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch event registrations:', error);
+    }
+  };
+
+  // Fetch training registrations
+  const fetchTrainingRegistrations = async () => {
+    try {
+      const response = await fetch('/api/trainings/registrations', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTrainingRegistrations(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch training registrations:', error);
+    }
+  };
+
+  // Fetch all registrations
+  const fetchAllRegistrations = async () => {
+    setLoadingRegistrations(true);
+    await Promise.all([fetchEventRegistrations(), fetchTrainingRegistrations()]);
+    setLoadingRegistrations(false);
+  };
+
   // Show notification
   const showNotification = (type, message) => {
     setNotification({ type, message });
@@ -175,6 +222,7 @@ const AdminDashboard = () => {
       fetchSubscriptions();
       fetchSubscriptionStatusTypes();
       fetchNewsletterSubscribers();
+      fetchAllRegistrations();
     }
   }, [token]);
 
@@ -1065,6 +1113,7 @@ const AdminDashboard = () => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'events', label: 'Events & Training', icon: Calendar },
+    { id: 'registrations', label: 'Registrations', icon: Users, badge: eventRegistrations.length + trainingRegistrations.length },
     { id: 'clientStories', label: 'Client Stories', icon: Quote },
     { id: 'jobs', label: 'Job Listings', icon: Briefcase },
     { id: 'jobApplications', label: 'Job Applications', icon: Users, badge: pendingApplications },
@@ -2383,6 +2432,143 @@ const AdminDashboard = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Registrations Tab */}
+          {activeTab === 'registrations' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Event & Training Registrations
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setRegistrationFilter('all')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        registrationFilter === 'all' 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      All ({eventRegistrations.length + trainingRegistrations.length})
+                    </button>
+                    <button
+                      onClick={() => setRegistrationFilter('events')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        registrationFilter === 'events' 
+                          ? 'bg-cyan-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Events ({eventRegistrations.length})
+                    </button>
+                    <button
+                      onClick={() => setRegistrationFilter('trainings')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        registrationFilter === 'trainings' 
+                          ? 'bg-emerald-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Trainings ({trainingRegistrations.length})
+                    </button>
+                    <button
+                      onClick={fetchAllRegistrations}
+                      className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 flex items-center gap-2"
+                    >
+                      <span>🔄</span> Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {loadingRegistrations ? (
+                  <div className="p-8 text-center text-gray-500">
+                    Loading registrations...
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    {(registrationFilter === 'all' || registrationFilter === 'events') && eventRegistrations.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-md font-semibold text-cyan-700 px-4 pt-4 pb-2 bg-cyan-50">📅 Event Registrations</h3>
+                        <table className="w-full">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Organisation</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Event</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Registered</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {eventRegistrations.map((reg, idx) => (
+                              <tr key={`event-${reg.id}`} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                <td className="px-4 py-3 text-sm text-gray-800 font-medium">{reg.full_name}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.email}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.phone || '-'}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.organisation || '-'}</td>
+                                <td className="px-4 py-3 text-sm text-cyan-600 font-medium">{reg.event_title}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.event_date}</td>
+                                <td className="px-4 py-3 text-sm text-gray-500">{reg.registered_at ? new Date(reg.registered_at).toLocaleDateString() : '-'}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">
+                                  {reg.heard_from && <p className="text-xs">Heard from: {reg.heard_from}</p>}
+                                  {reg.interested_in_speaking && <p className="text-xs text-blue-600">Interested in speaking</p>}
+                                  {reg.questions && <p className="text-xs italic">"{reg.questions}"</p>}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {(registrationFilter === 'all' || registrationFilter === 'trainings') && trainingRegistrations.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-md font-semibold text-emerald-700 px-4 pt-4 pb-2 bg-emerald-50">🎓 Training Registrations</h3>
+                        <table className="w-full">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Organisation</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Training</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Registered</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heard From</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {trainingRegistrations.map((reg, idx) => (
+                              <tr key={`training-${reg.id}`} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                <td className="px-4 py-3 text-sm text-gray-800 font-medium">{reg.full_name}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.email}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.phone || '-'}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.organisation || '-'}</td>
+                                <td className="px-4 py-3 text-sm text-emerald-600 font-medium">{reg.training_title}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.training_date}</td>
+                                <td className="px-4 py-3 text-sm text-gray-500">{reg.registered_at ? new Date(reg.registered_at).toLocaleDateString() : '-'}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{reg.heard_from || '-'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {eventRegistrations.length === 0 && trainingRegistrations.length === 0 && (
+                      <div className="p-8 text-center text-gray-500">
+                        No registrations found yet. Registrations will appear here when users sign up for events or trainings.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

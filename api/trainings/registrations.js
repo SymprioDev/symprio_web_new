@@ -26,8 +26,7 @@ export default async function handler(req, res) {
           tr.heard_from,
           tr.registered_at,
           t.title as training_title,
-          t.date as training_date,
-          t.type as training_type
+          t.date as training_date
         FROM training_registrations tr
         JOIN trainings t ON t.id = tr.training_id
         ORDER BY tr.registered_at DESC

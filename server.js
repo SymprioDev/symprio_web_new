@@ -1083,14 +1083,14 @@ app.get('/api/events/registrations', verifyJWT, async (req, res) => {
         er.organisation,
         er.heard_from,
         er.interested_in_speaking,
-        er.questions,
-        er.registered_at,
+        NULL::TEXT as questions,
+        er.created_at as registered_at,
         e.title as event_title,
         e.date as event_date,
         e.type as event_type
       FROM event_registrations er
       JOIN events e ON e.id = er.event_id
-      ORDER BY er.registered_at DESC
+      ORDER BY er.created_at DESC
     `);
     res.json(result.rows || []);
   } catch (error) {
@@ -1111,13 +1111,12 @@ app.get('/api/trainings/registrations', verifyJWT, async (req, res) => {
         tr.phone,
         tr.organisation,
         tr.heard_from,
-        tr.registered_at,
+        tr.created_at as registered_at,
         t.title as training_title,
-        t.date as training_date,
-        t.type as training_type
+        t.date as training_date
       FROM training_registrations tr
       JOIN trainings t ON t.id = tr.training_id
-      ORDER BY tr.registered_at DESC
+      ORDER BY tr.created_at DESC
     `);
     res.json(result.rows || []);
   } catch (error) {

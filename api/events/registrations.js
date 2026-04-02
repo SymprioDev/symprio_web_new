@@ -25,7 +25,7 @@ export default async function handler(req, res) {
           er.organisation,
           er.heard_from,
           er.interested_in_speaking,
-          er.questions,
+          NULL as questions,
           er.registered_at,
           e.title as event_title,
           e.date as event_date,

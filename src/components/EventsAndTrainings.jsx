@@ -311,6 +311,24 @@ const EventsAndTrainings = () => {
                       }}>
                         Register Now
                       </button>
+                    ) : item.itemType === 'training' && !item.link && Number(item.registrations_count || 0) < Number(item.capacity || 0) ? (
+                      <button style={{
+                        flex: 1,
+                        padding: '10px 12px',
+                        background: 'linear-gradient(135deg, #065f46, #16a34a)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontWeight: '600',
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={() => {
+                        window.location.href = `/events/register?training=${item.id}`;
+                      }}>
+                        Register for Training
+                      </button>
                     ) : (item.registration_link || item.link) ? (
                       <button style={{
                         flex: 1,
@@ -344,7 +362,7 @@ const EventsAndTrainings = () => {
                         fontSize: '13px',
                         cursor: 'default'
                       }} disabled>
-                        {item.itemType === 'event' ? getRegistrationStatusLabel(item) : 'Coming Soon'}
+                        {item.itemType === 'training' && !item.link ? 'Training Full' : item.itemType === 'event' ? getRegistrationStatusLabel(item) : 'Coming Soon'}
                       </button>
                     )}
                   </div>

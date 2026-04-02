@@ -221,9 +221,9 @@ export default function TrainingsContainer() {
                   </p>
 
                   <a
-                    href={training.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={training.link || `/events/register?training=${training.id}`}
+                    target={training.link ? '_blank' : undefined}
+                    rel={training.link ? 'noopener noreferrer' : undefined}
                     style={{
                       background: '#fff',
                       color: '#3b82f6',

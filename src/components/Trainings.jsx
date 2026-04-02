@@ -184,16 +184,18 @@ const Trainings = () => {
                   borderRadius: '6px',
                   fontWeight: '600',
                   fontSize: '12px',
-                  cursor: training.link ? 'pointer' : 'default',
+                  cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  opacity: training.link ? 1 : 0.5
+                  opacity: 1
                 }}
                 onClick={() => {
                   if (training.link) {
                     window.open(training.link, '_blank');
+                  } else {
+                    window.location.href = `/events/register?training=${training.id}`;
                   }
                 }}>
-                  {training.link ? 'Enroll Now' : 'No Link'}
+                  {training.link ? 'Enroll Now' : 'Register Now'}
                 </button>
               </div>
             </div>

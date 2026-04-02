@@ -154,6 +154,23 @@ async function initializeDatabase() {
   console.log('Trainings table ready');
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS training_registrations (
+      id SERIAL PRIMARY KEY,
+      training_id INTEGER NOT NULL,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      organisation TEXT,
+      heard_from TEXT,
+      created_at TIMESTAMP DEFAULT NOW(),
+      FOREIGN KEY (training_id) REFERENCES trainings(id) ON DELETE CASCADE
+    )
+  `);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_training_registrations_training_id ON training_registrations(training_id)`);
+  await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_training_registrations_unique_email ON training_registrations(training_id, (LOWER(email)))`);
+  console.log('Training registrations table ready');
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS jobs (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
@@ -1086,7 +1103,15 @@ app.post('/api/events/:id/regenerate-banner', verifyJWT, async (req, res) => {
 // Get all trainings
 app.get('/api/trainings', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM trainings ORDER BY date DESC');
+    const { rows } = await pool.query(`
+      SELECT
+        t.*,
+        COUNT(tr.id)::INTEGER AS registrations_count
+      FROM trainings t
+      LEFT JOIN training_registrations tr ON tr.training_id = t.id
+      GROUP BY t.id
+      ORDER BY t.date DESC
+    `);
     res.json(rows || []);
   } catch (error) {
     res.status(500).json({ error: 'Database error' });
@@ -1120,6 +1145,87 @@ app.post('/api/trainings', verifyJWT, async (req, res) => {
         enrolled: 0,
         link: link || null
       }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/trainings/:id/register', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      fullName,
+      email,
+      phone,
+      organisation,
+      heardFrom
+    } = req.body;
+
+    if (!fullName || !email) {
+      return res.status(400).json({ error: 'Full name and email are required' });
+    }
+
+    const { rows } = await pool.query(
+      `
+        SELECT
+          t.*,
+          COUNT(tr.id)::INTEGER AS registrations_count
+        FROM trainings t
+        LEFT JOIN training_registrations tr ON tr.training_id = t.id
+        WHERE t.id = $1
+        GROUP BY t.id
+        LIMIT 1
+      `,
+      [id]
+    );
+
+    const training = rows[0];
+
+    if (!training) {
+      return res.status(404).json({ error: 'Training not found' });
+    }
+
+    if (training.link) {
+      return res.status(400).json({ error: 'This training uses an external enrollment link' });
+    }
+
+    const capacity = Number(training.capacity || 0);
+    const registrationsCount = Number(training.registrations_count || 0);
+
+    if (capacity > 0 && registrationsCount >= capacity) {
+      return res.status(400).json({ error: 'This training is fully booked' });
+    }
+
+    try {
+      await pool.query(
+        `INSERT INTO training_registrations (
+          training_id, full_name, email, phone, organisation, heard_from
+        ) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          training.id,
+          fullName,
+          email,
+          phone || null,
+          organisation || null,
+          heardFrom || null
+        ]
+      );
+    } catch (error) {
+      if (error.code === '23505') {
+        return res.status(400).json({ error: 'This email is already registered for the training' });
+      }
+      throw error;
+    }
+
+    await pool.query('UPDATE trainings SET enrolled = COALESCE(enrolled, 0) + 1 WHERE id = $1', [training.id]);
+
+    const remaining = capacity > 0 ? Math.max(capacity - (registrationsCount + 1), 0) : null;
+
+    res.status(201).json({
+      success: true,
+      message: 'Training registration completed successfully',
+      remainingSpots: remaining
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

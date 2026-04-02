@@ -321,13 +321,20 @@ function TrainingSessionCard({ training }) {
             >
               Enroll Now
             </a>
+          ) : Number(training.registrations_count || 0) < Number(training.capacity || 0) ? (
+            <a
+              href={`/events/register?training=${training.id}`}
+              className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+            >
+              Register for Training
+            </a>
           ) : (
             <button
               type="button"
               disabled
               className="inline-flex items-center justify-center rounded-full bg-slate-200 px-5 py-3 text-sm font-bold text-slate-500"
             >
-              Details Coming Soon
+              Training Full
             </button>
           )}
         </div>

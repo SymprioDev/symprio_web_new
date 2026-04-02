@@ -1064,8 +1064,7 @@ const AdminDashboard = () => {
   // Sidebar menu items
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'events', label: 'Events', icon: Calendar },
-    { id: 'trainings', label: 'Trainings', icon: GraduationCap },
+    { id: 'events', label: 'Events & Training', icon: Calendar },
     { id: 'clientStories', label: 'Client Stories', icon: Quote },
     { id: 'jobs', label: 'Job Listings', icon: Briefcase },
     { id: 'jobApplications', label: 'Job Applications', icon: Users, badge: pendingApplications },
@@ -1901,14 +1900,23 @@ const AdminDashboard = () => {
             <div className="space-y-4">
               <div className="bg-white rounded-xl shadow">
                 <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-gray-800">Events ({events.length})</h2>
-                  <button
-                    onClick={() => setShowEventForm(!showEventForm)}
-                    className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
-                  >
-                    {showEventForm ? <X size={18} /> : <Plus size={18} />}
-                    {showEventForm ? 'Cancel' : 'Add Event'}
-                  </button>
+                  <h2 className="text-lg font-semibold text-gray-800">Events & Training</h2>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowTrainingForm(!showTrainingForm)}
+                      className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600"
+                    >
+                      {showTrainingForm ? <X size={18} /> : <Plus size={18} />}
+                      {showTrainingForm ? 'Cancel Training' : 'Add Training'}
+                    </button>
+                    <button
+                      onClick={() => setShowEventForm(!showEventForm)}
+                      className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                    >
+                      {showEventForm ? <X size={18} /> : <Plus size={18} />}
+                      {showEventForm ? 'Cancel Event' : 'Add Event'}
+                    </button>
+                  </div>
                 </div>
                 
                 {showEventForm && (
@@ -2191,6 +2199,111 @@ const AdminDashboard = () => {
                 )}
                 
                 <div className="p-4">
+                  <div className="mb-8 rounded-xl border border-emerald-100 bg-emerald-50/60">
+                    <div className="p-4 border-b border-emerald-100 flex justify-between items-center">
+                      <h3 className="text-base font-semibold text-gray-800">Training Sessions ({trainings.length})</h3>
+                    </div>
+
+                    {showTrainingForm && (
+                      <form onSubmit={handleAddTraining} className="p-4 border-b border-emerald-100 bg-white">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input
+                              value={trainingForm.title}
+                              onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
+                              placeholder="Training title"
+                              required
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Instructor</label>
+                            <input
+                              value={trainingForm.instructor}
+                              onChange={(e) => setTrainingForm({ ...trainingForm, instructor: e.target.value })}
+                              placeholder="Instructor name"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input
+                              type="date"
+                              value={trainingForm.date}
+                              onChange={(e) => setTrainingForm({ ...trainingForm, date: e.target.value })}
+                              required
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                            <input
+                              value={trainingForm.duration}
+                              onChange={(e) => setTrainingForm({ ...trainingForm, duration: e.target.value })}
+                              placeholder="e.g., 2 hours"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
+                            <input
+                              type="number"
+                              value={trainingForm.capacity}
+                              onChange={(e) => setTrainingForm({ ...trainingForm, capacity: e.target.value })}
+                              placeholder="50"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                        </div>
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                          <textarea
+                            value={trainingForm.description}
+                            onChange={(e) => setTrainingForm({ ...trainingForm, description: e.target.value })}
+                            placeholder="Training description"
+                            rows="3"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <button type="submit" className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600">
+                          Add Training
+                        </button>
+                      </form>
+                    )}
+
+                    <div className="p-4">
+                      {trainings.length === 0 ? (
+                        <p className="text-center text-gray-500 py-6">No training sessions yet.</p>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {trainings.map((training) => (
+                            <div key={training.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white">
+                              <h3 className="font-semibold text-gray-800 mb-2">{training.title}</h3>
+                              <p className="text-sm text-gray-600 mb-1">Date: {training.date}</p>
+                              <p className="text-sm text-gray-600 mb-1">Duration: {training.duration}</p>
+                              <p className="text-sm text-gray-600 mb-1">Instructor: {training.instructor}</p>
+                              <p className="text-sm text-gray-600 mb-3">Capacity: {training.capacity}</p>
+                              <p className="text-sm text-gray-500 mb-4 line-clamp-2">{training.description}</p>
+                              <button
+                                onClick={() => handleDeleteTraining(training.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-base font-semibold text-gray-800">Event Sessions ({events.length})</h3>
+                  </div>
+
                   {events.length === 0 ? (
                     <p className="text-center text-gray-500 py-8">No events yet.</p>
                   ) : (

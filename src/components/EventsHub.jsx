@@ -6,6 +6,7 @@ import PastEventCard from './events/PastEventCard';
 import RegisterModal from './events/RegisterModal';
 import {
   fetchAdminEvents,
+  formatEventDate,
   getPastEvents,
   getUpcomingEvents
 } from '../data/events';
@@ -23,26 +24,52 @@ export default function EventsHub() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterMessage, setNewsletterMessage] = useState('');
   const [events, setEvents] = useState([]);
-  const [loadingEvents, setLoadingEvents] = useState(true);
+  const [trainings, setTrainings] = useState([]);
+  const [loadingContent, setLoadingContent] = useState(true);
 
   useEffect(() => {
-    const loadEvents = async () => {
+    const loadContent = async () => {
       try {
-        const adminEvents = await fetchAdminEvents();
+        const [adminEvents, trainingsResponse] = await Promise.all([
+          fetchAdminEvents(),
+          fetch('/api/trainings')
+        ]);
+
         setEvents(adminEvents);
+
+        if (trainingsResponse.ok) {
+          const trainingsData = await trainingsResponse.json();
+          setTrainings(Array.isArray(trainingsData) ? trainingsData.map(normalizeTrainingSession) : []);
+        } else {
+          setTrainings([]);
+        }
       } catch (error) {
-        console.error('Failed to load events:', error);
+        console.error('Failed to load sessions:', error);
         setEvents([]);
+        setTrainings([]);
       } finally {
-        setLoadingEvents(false);
+        setLoadingContent(false);
       }
     };
 
-    loadEvents();
+    loadContent();
   }, []);
 
-  const upcomingEvents = useMemo(() => getUpcomingEvents(events), [events]);
-  const pastEvents = useMemo(() => getPastEvents(events), [events]);
+  const upcomingItems = useMemo(
+    () => sortSessionsByDate([
+      ...getUpcomingEvents(events).map((event) => ({ ...event, itemType: 'event' })),
+      ...trainings.filter((training) => !training.isPast).map((training) => ({ ...training, itemType: 'training' }))
+    ]),
+    [events, trainings]
+  );
+
+  const pastItems = useMemo(
+    () => sortSessionsByDate([
+      ...getPastEvents(events).map((event) => ({ ...event, itemType: 'event' })),
+      ...trainings.filter((training) => training.isPast).map((training) => ({ ...training, itemType: 'training' }))
+    ]).reverse(),
+    [events, trainings]
+  );
 
   const openRegisterModal = (event) => {
     setSelectedEventSlug(event.slug);
@@ -55,7 +82,7 @@ export default function EventsHub() {
 
   const handleNewsletterSubmit = (event) => {
     event.preventDefault();
-    setNewsletterMessage(`Thanks for signing up, ${newsletterEmail}. We'll keep you posted on future events.`);
+    setNewsletterMessage(`Thanks for signing up, ${newsletterEmail}. We'll keep you posted on future sessions.`);
     setNewsletterEmail('');
   };
 
@@ -90,8 +117,7 @@ export default function EventsHub() {
                 UiPath Malaysia Chapter · Claude Malaysia Chapter · Students & Kids Workshops
               </p>
               <p className="mt-6 max-w-3xl text-base md:text-lg leading-8 text-white/70">
-                A warm, professional space for builders, students, and community members to learn together, watch live demos,
-                and connect around practical AI and automation.
+                Explore upcoming events and training sessions together in one place, organized so the next opportunity to join is easy to spot.
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <button
@@ -99,7 +125,7 @@ export default function EventsHub() {
                   onClick={handleHeroCta}
                   className="rounded-full bg-white px-6 py-3 text-sm font-bold text-[#0A2D6E] transition hover:bg-[#E6F1FB]"
                 >
-                  Register for Next Event
+                  View Upcoming Sessions
                 </button>
                 <button
                   type="button"
@@ -117,36 +143,40 @@ export default function EventsHub() {
           <div className="container mx-auto px-6">
             <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#185ADB]">Upcoming Events</p>
-                <h2 className="mt-3 text-4xl font-semibold text-[#0A2D6E]">Join the next session</h2>
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#185ADB]">Upcoming Sessions</p>
+                <h2 className="mt-3 text-4xl font-semibold text-[#0A2D6E]">Events and training in one timeline</h2>
               </div>
               <p className="max-w-2xl text-base leading-7 text-slate-600">
-                Register for our next live gathering and explore practical AI use cases, community conversations, and speaker-led demos.
+                See the next live event, meetup, webinar, or training session in one combined chronological list.
               </p>
             </div>
 
-            {loadingEvents ? (
+            {loadingContent ? (
               <div className="grid gap-8">
                 {[0, 1].map((index) => (
                   <div key={index} className="h-[420px] animate-pulse rounded-[2rem] border border-[#DCE7F7] bg-white shadow-sm" />
                 ))}
               </div>
-            ) : upcomingEvents.length === 0 ? (
+            ) : upcomingItems.length === 0 ? (
               <div className="rounded-[2rem] border border-dashed border-[#D6E4FF] bg-white px-8 py-14 text-center shadow-sm">
-                <h3 className="text-2xl font-semibold text-[#0A2D6E]">No upcoming events — check back soon</h3>
+                <h3 className="text-2xl font-semibold text-[#0A2D6E]">No upcoming sessions — check back soon</h3>
                 <p className="mt-3 text-base text-slate-600">
-                  We are planning the next chapter meetup now. Join the newsletter below and we’ll let you know first.
+                  We are planning the next event or training session now. Join the newsletter below and we'll let you know first.
                 </p>
               </div>
             ) : (
               <div className="space-y-8">
-                {upcomingEvents.map((event) => (
-                  <EventCard
-                    key={event.slug}
-                    event={event}
-                    onRegister={openRegisterModal}
-                    onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
-                  />
+                {upcomingItems.map((item) => (
+                  item.itemType === 'event' ? (
+                    <EventCard
+                      key={`event-${item.slug}`}
+                      event={item}
+                      onRegister={openRegisterModal}
+                      onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
+                    />
+                  ) : (
+                    <TrainingSessionCard key={`training-${item.id}`} training={item} />
+                  )
                 ))}
               </div>
             )}
@@ -157,15 +187,15 @@ export default function EventsHub() {
           <div className="container mx-auto px-6">
             <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0D9488]">Past Events</p>
-                <h2 className="mt-3 text-4xl font-semibold text-[#0A2D6E]">Recordings, slides, and recaps</h2>
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0D9488]">Past Sessions</p>
+                <h2 className="mt-3 text-4xl font-semibold text-[#0A2D6E]">A combined archive</h2>
               </div>
               <p className="max-w-2xl text-base leading-7 text-slate-600">
-                Catch up on the sessions you missed and revisit recordings, speaker highlights, and resources from recent community events.
+                Catch up on past events and completed training sessions from one shared archive.
               </p>
             </div>
 
-            {loadingEvents ? (
+            {loadingContent ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {[0, 1, 2].map((index) => (
                   <div key={index} className="h-[320px] animate-pulse rounded-[1.9rem] border border-slate-200 bg-slate-100" />
@@ -173,12 +203,16 @@ export default function EventsHub() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {pastEvents.map((event) => (
-                  <PastEventCard
-                    key={event.slug}
-                    event={event}
-                    onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
-                  />
+                {pastItems.map((item) => (
+                  item.itemType === 'event' ? (
+                    <PastEventCard
+                      key={`event-${item.slug}`}
+                      event={item}
+                      onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
+                    />
+                  ) : (
+                    <PastTrainingCard key={`training-${item.id}`} training={item} />
+                  )
                 ))}
               </div>
             )}
@@ -192,7 +226,7 @@ export default function EventsHub() {
                 <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#B9FFF3]">Stay in the loop</p>
                 <h2 className="mt-4 text-4xl font-semibold text-white">Stay in the loop</h2>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-white/72">
-                  Get notified about upcoming events, speaker announcements, and recordings.
+                  Get notified about upcoming events, training sessions, speaker announcements, and recordings.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   {communityLinks.map((link) => (
@@ -240,5 +274,100 @@ export default function EventsHub() {
         />
       </div>
     </>
+  );
+}
+
+function normalizeTrainingSession(training) {
+  return {
+    ...training,
+    isPast: new Date(`${training.date}T23:59:59`) < new Date()
+  };
+}
+
+function sortSessionsByDate(items) {
+  return [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+function TrainingSessionCard({ training }) {
+  return (
+    <article className="rounded-[2rem] border border-emerald-100 bg-white p-6 md:p-8 shadow-[0_20px_60px_rgba(13,148,136,0.08)]">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex-1">
+          <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+            Training Session
+          </span>
+          <h3 className="mt-5 text-2xl md:text-3xl font-semibold tracking-tight text-[#0A2D6E]">
+            {training.title}
+          </h3>
+          <p className="mt-4 text-sm md:text-base font-medium text-slate-600">
+            {formatEventDate(training.date)} · {training.duration || 'Duration to be announced'}
+          </p>
+          {training.instructor && (
+            <p className="mt-2 text-sm font-medium text-emerald-700">Instructor: {training.instructor}</p>
+          )}
+          {training.capacity && (
+            <p className="mt-2 text-sm text-slate-500">Capacity: {training.capacity}</p>
+          )}
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">{training.description}</p>
+        </div>
+
+        <div className="flex flex-col gap-3 lg:min-w-[220px]">
+          {training.link ? (
+            <a
+              href={training.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+            >
+              Enroll Now
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center justify-center rounded-full bg-slate-200 px-5 py-3 text-sm font-bold text-slate-500"
+            >
+              Details Coming Soon
+            </button>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function PastTrainingCard({ training }) {
+  return (
+    <article className="flex h-full flex-col rounded-[1.9rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(13,148,136,0.10)]">
+      <div className="flex items-start justify-between gap-3">
+        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+          Training Session
+        </span>
+        <span className="text-sm font-medium text-slate-500">{formatEventDate(training.date)}</span>
+      </div>
+
+      <h3 className="mt-5 text-xl font-semibold leading-8 text-[#0A2D6E]">{training.title}</h3>
+      <p className="mt-3 text-sm leading-7 text-slate-600">{training.description}</p>
+      {training.instructor && (
+        <p className="mt-4 text-sm font-medium text-emerald-700">Instructor: {training.instructor}</p>
+      )}
+      {training.duration && (
+        <p className="mt-2 text-sm text-slate-500">Duration: {training.duration}</p>
+      )}
+      <div className="mt-6">
+        {training.link ? (
+          <a
+            href={training.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full border border-emerald-200 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition hover:border-emerald-500 hover:text-emerald-800"
+          >
+            View Training Info
+          </a>
+        ) : (
+          <span className="text-sm text-slate-400">No additional link</span>
+        )}
+      </div>
+    </article>
   );
 }

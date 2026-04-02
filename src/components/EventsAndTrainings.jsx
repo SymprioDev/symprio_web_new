@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAdminEvents, formatEventDate, getTrackStyle } from '../data/events';
+import {
+  canUseInternalRegistration,
+  fetchAdminEvents,
+  formatEventDate,
+  getRegistrationStatusLabel,
+  getTrackStyle
+} from '../data/events';
 
 const EventsAndTrainings = () => {
   const [events, setEvents] = useState([]);
@@ -43,6 +49,8 @@ const EventsAndTrainings = () => {
       return {
         ...e,
         itemType: 'event',
+        registration_link: e.registrationLink,
+        link: e.registrationLink,
         badgeType: trackStyle.label,
         badgeColor: trackStyle.background,
         badgeTextColor: trackStyle.color
@@ -252,13 +260,18 @@ const EventsAndTrainings = () => {
                         )}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                          {item.location}
+                          {item.eventMode === 'virtual'
+                            ? `${item.virtualPlatform || 'Virtual event'}${item.virtualUrl ? ' · Online' : ''}`
+                            : item.location}
                         </div>
                         {item.isLiveStreamed && (
                           <div style={{ marginTop: '4px', color: '#dc2626', fontWeight: '700' }}>
                             Live on YouTube
                           </div>
                         )}
+                        <div style={{ marginTop: '4px', color: '#0D9488', fontWeight: '700' }}>
+                          {getRegistrationStatusLabel(item)}
+                        </div>
                       </>
                     ) : (
                       <>
@@ -280,7 +293,25 @@ const EventsAndTrainings = () => {
 
                   <div style={{ marginTop: 'auto', display: 'flex', gap: '8px' }}>
                     {/* Registration link takes priority */}
-                    {(item.registration_link || item.link) ? (
+                    {item.itemType === 'event' && canUseInternalRegistration(item) ? (
+                      <button style={{
+                        flex: 1,
+                        padding: '10px 12px',
+                        background: 'linear-gradient(135deg, #185ADB, #0D9488)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontWeight: '600',
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={() => {
+                        window.location.href = `/events/register?event=${item.slug}`;
+                      }}>
+                        Register Now
+                      </button>
+                    ) : (item.registration_link || item.link) ? (
                       <button style={{
                         flex: 1,
                         padding: '10px 12px',
@@ -299,7 +330,7 @@ const EventsAndTrainings = () => {
                         const url = item.registration_link || item.link;
                         window.open(url, '_blank');
                       }}>
-                        {item.itemType === 'event' ? 'Register Now' : 'Enroll Now'}
+                        {item.itemType === 'event' ? 'Register Externally' : 'Enroll Now'}
                       </button>
                     ) : (
                       <button style={{
@@ -313,7 +344,7 @@ const EventsAndTrainings = () => {
                         fontSize: '13px',
                         cursor: 'default'
                       }} disabled>
-                        Coming Soon
+                        {item.itemType === 'event' ? getRegistrationStatusLabel(item) : 'Coming Soon'}
                       </button>
                     )}
                   </div>

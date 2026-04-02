@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchAdminEvents, getUpcomingEvents } from '../../data/events';
+import {
+  canUseInternalRegistration,
+  fetchAdminEvents,
+  getRegistrationStatusLabel,
+  getUpcomingEvents
+} from '../../data/events';
 
 // Update this webhook URL to your Google Form, Airtable, or n8n endpoint when ready.
 const EVENTS_WEBHOOK_URL = '';
@@ -9,6 +14,18 @@ const sourceOptions = ['LinkedIn', 'WhatsApp', 'Friend', 'Other'];
 export default function RegisterForm({ initialEventSlug = '', onSuccess, compact = false }) {
   const [events, setEvents] = useState([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    organisation: '',
+    eventSlug: '',
+    heardFrom: '',
+    interestedInSpeaking: 'No'
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -28,71 +45,100 @@ export default function RegisterForm({ initialEventSlug = '', onSuccess, compact
 
   const eventOptions = useMemo(() => {
     const upcoming = getUpcomingEvents(events);
-    return upcoming.length > 0 ? upcoming : events;
+    return (upcoming.length > 0 ? upcoming : events).filter(canUseInternalRegistration);
   }, [events]);
+
+  const selectedEvent = useMemo(
+    () => eventOptions.find((option) => option.slug === formData.eventSlug),
+    [eventOptions, formData.eventSlug]
+  );
 
   useEffect(() => {
     if (!eventOptions.length) return;
 
-    const matchingEvent = eventOptions.find((option) => option.slug === formData.eventSlug);
-    if (!matchingEvent) {
-      setFormData((prev) => ({
-        ...prev,
-        eventSlug: initialEventSlug || eventOptions[0]?.slug || ''
-      }));
-    }
-  }, [eventOptions, formData.eventSlug, initialEventSlug]);
+    const nextSlug = eventOptions.some((option) => option.slug === initialEventSlug)
+      ? initialEventSlug
+      : eventOptions[0].slug;
 
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    organisation: '',
-    eventSlug: initialEventSlug || eventOptions[0]?.slug || '',
-    heardFrom: '',
-    interestedInSpeaking: 'No'
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+    setFormData((prev) => (
+      prev.eventSlug && eventOptions.some((option) => option.slug === prev.eventSlug)
+        ? prev
+        : { ...prev, eventSlug: nextSlug }
+    ));
+  }, [eventOptions, initialEventSlug]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      fullName: '',
+      email: '',
+      phone: '',
+      organisation: '',
+      eventSlug: eventOptions[0]?.slug || '',
+      heardFrom: '',
+      interestedInSpeaking: 'No'
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!selectedEvent) {
+      setErrorMessage('No event is currently available for internal registration.');
+      return;
+    }
+
     setSubmitting(true);
     setErrorMessage('');
 
     try {
-      if (EVENTS_WEBHOOK_URL) {
-        const response = await fetch(EVENTS_WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        });
+      const registrationPayload = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        organisation: formData.organisation,
+        heardFrom: formData.heardFrom,
+        interestedInSpeaking: formData.interestedInSpeaking
+      };
 
-        if (!response.ok) {
-          throw new Error('Unable to complete your registration right now.');
-        }
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, 700));
+      const response = await fetch(`/api/events/${selectedEvent.slug}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(registrationPayload)
+      });
+
+      const responseData = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(responseData.error || 'Unable to complete your registration right now.');
       }
 
-      const message = `You're registered! We'll send a confirmation to ${formData.email}.`;
+      if (EVENTS_WEBHOOK_URL) {
+        try {
+          await fetch(EVENTS_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...registrationPayload,
+              eventSlug: selectedEvent.slug,
+              eventTitle: selectedEvent.title
+            })
+          });
+        } catch (webhookError) {
+          console.error('Failed to notify external registration webhook:', webhookError);
+        }
+      }
+
+      const remainingText = responseData.remainingSpots == null ? '' : ` Remaining spots: ${responseData.remainingSpots}.`;
+      const message = `You're registered! We'll send a confirmation to ${formData.email}.${remainingText}`;
       setSuccessMessage(message);
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        organisation: '',
-        eventSlug: initialEventSlug || eventOptions[0]?.slug || '',
-        heardFrom: '',
-        interestedInSpeaking: 'No'
-      });
+      resetForm();
 
       if (onSuccess) {
         onSuccess(message);
@@ -117,6 +163,11 @@ export default function RegisterForm({ initialEventSlug = '', onSuccess, compact
       {successMessage ? (
         <div className="rounded-[1.6rem] border border-emerald-200 bg-emerald-50 px-5 py-5 text-emerald-800">
           <p className="font-semibold">{successMessage}</p>
+        </div>
+      ) : eventOptions.length === 0 && !loadingEvents ? (
+        <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 px-5 py-5 text-slate-700">
+          <p className="font-semibold">No events are currently open for internal registration.</p>
+          <p className="mt-2 text-sm">Events using external registration links or already sold out will not appear here.</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -179,6 +230,9 @@ export default function RegisterForm({ initialEventSlug = '', onSuccess, compact
                 </option>
               ))}
             </select>
+            {selectedEvent && (
+              <p className="mt-2 text-xs text-slate-500">{getRegistrationStatusLabel(selectedEvent)}</p>
+            )}
           </FormField>
 
           <div className="grid gap-5 md:grid-cols-2">
@@ -224,7 +278,7 @@ export default function RegisterForm({ initialEventSlug = '', onSuccess, compact
 
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || loadingEvents || eventOptions.length === 0}
             className="inline-flex items-center justify-center rounded-full bg-[#0A2D6E] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#185ADB] disabled:cursor-not-allowed disabled:opacity-70"
           >
             {submitting ? 'Submitting...' : 'Complete Registration'}

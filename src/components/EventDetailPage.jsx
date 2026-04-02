@@ -6,8 +6,10 @@ import RegisterModal from './events/RegisterModal';
 import SpeakerCard from './events/SpeakerCard';
 import TrackBadge from './events/TrackBadge';
 import {
+  canUseInternalRegistration,
   fetchAdminEvents,
   formatEventMeta,
+  getRegistrationStatusLabel,
   isPastEvent
 } from '../data/events';
 
@@ -72,6 +74,7 @@ export default function EventDetailPage() {
   }
 
   const past = isPastEvent(event);
+  const canRegisterInternally = canUseInternalRegistration(event);
 
   return (
     <>
@@ -93,9 +96,12 @@ export default function EventDetailPage() {
               <TrackBadge track={event.track} />
               <h1 className="mt-6 text-5xl md:text-6xl font-semibold leading-[1.05] text-white">{event.title}</h1>
               <p className="mt-5 text-lg leading-8 text-white/74">{formatEventMeta(event)}</p>
+              <p className="mt-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#B9FFF3]">
+                {event.eventMode === 'virtual' ? 'Virtual event' : 'Physical event'} · {getRegistrationStatusLabel(event)}
+              </p>
               <p className="mt-6 max-w-3xl text-base md:text-lg leading-8 text-white/72">{event.description}</p>
               <div className="mt-8 flex flex-wrap gap-4">
-                {!past && (
+                {!past && canRegisterInternally && (
                   <button
                     type="button"
                     onClick={() => setRegisterModalOpen(true)}
@@ -103,6 +109,16 @@ export default function EventDetailPage() {
                   >
                     Register for this event
                   </button>
+                )}
+                {!past && event.useExternalRegistration && event.registrationLink && (
+                  <a
+                    href={event.registrationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full bg-white px-6 py-3 text-sm font-bold text-[#0A2D6E] transition hover:bg-[#E6F1FB]"
+                  >
+                    Register externally
+                  </a>
                 )}
                 {past && event.youtubeUrl && (
                   <a
@@ -131,13 +147,69 @@ export default function EventDetailPage() {
             <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
               <AgendaTimeline agenda={event.agenda} title="Full Agenda" defaultMobileOpen />
 
-              <div className="rounded-[2rem] border border-[#DCE7F7] bg-white p-6 md:p-8 shadow-sm">
-                <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#185ADB]">Speakers</p>
-                <div className="mt-5 space-y-4">
-                  {event.speakers.map((speaker) => (
-                    <SpeakerCard key={`${event.slug}-${speaker.name}`} speaker={speaker} />
-                  ))}
+              <div className="space-y-6">
+                <div className="rounded-[2rem] border border-[#DCE7F7] bg-white p-6 md:p-8 shadow-sm">
+                  <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#185ADB]">Speakers</p>
+                  <div className="mt-5 space-y-4">
+                    {event.speakers.map((speaker) => (
+                      <SpeakerCard key={`${event.slug}-${speaker.name}`} speaker={speaker} />
+                    ))}
+                  </div>
                 </div>
+                <div className="rounded-[2rem] border border-[#DCE7F7] bg-white p-6 md:p-8 shadow-sm">
+                  <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#185ADB]">Event Details</p>
+                  <div className="mt-4 space-y-3 text-sm text-slate-600">
+                    {event.eventMode === 'physical' ? (
+                      <p><span className="font-semibold text-slate-900">Location:</span> {event.location || 'To be announced'}</p>
+                    ) : (
+                      <>
+                        <p><span className="font-semibold text-slate-900">Platform:</span> {event.virtualPlatform || 'Online'}</p>
+                        {event.virtualUrl && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Join URL:</span>{' '}
+                            <a href={event.virtualUrl} target="_blank" rel="noopener noreferrer" className="text-[#185ADB] hover:underline">
+                              {event.virtualUrl}
+                            </a>
+                          </p>
+                        )}
+                      </>
+                    )}
+                    {event.registrationCloseAt && (
+                      <p><span className="font-semibold text-slate-900">Registration closes:</span> {new Date(event.registrationCloseAt).toLocaleString('en-GB')}</p>
+                    )}
+                    {event.seatingCapacity != null && (
+                      <p><span className="font-semibold text-slate-900">Capacity:</span> {event.registrationsCount} / {event.seatingCapacity} registered</p>
+                    )}
+                  </div>
+                </div>
+                {!!event.sponsors?.length && (
+                  <div className="rounded-[2rem] border border-[#DCE7F7] bg-white p-6 md:p-8 shadow-sm">
+                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#185ADB]">Sponsors</p>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                      {event.sponsors.map((sponsor, index) => (
+                        <a
+                          key={`${event.slug}-sponsor-${index}`}
+                          href={sponsor.website || '#'}
+                          target={sponsor.website ? '_blank' : undefined}
+                          rel={sponsor.website ? 'noopener noreferrer' : undefined}
+                          className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                        >
+                          {sponsor.logo ? (
+                            <img src={sponsor.logo} alt={sponsor.name} className="h-12 w-12 rounded-xl object-contain bg-white p-2" />
+                          ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-xs font-bold text-slate-500">
+                              {sponsor.name?.slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-semibold text-slate-900">{sponsor.name}</p>
+                            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{sponsor.tier || 'Partner'}</p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

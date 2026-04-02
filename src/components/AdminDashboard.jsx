@@ -99,13 +99,20 @@ const AdminDashboard = () => {
     event_time: '',
     end_time: '',
     location: '',
+    event_mode: 'physical',
+    virtual_platform: '',
+    virtual_url: '',
     type: 'event',
     link: '',
     registration_link: '',
+    use_external_registration: false,
+    seating_capacity: '',
+    registration_close_at: '',
     slug: '',
     youtube_url: '',
     slides_url: '',
-    is_live_streamed: false
+    is_live_streamed: false,
+    sponsors: []
   });
 
   // Training form state
@@ -659,6 +666,29 @@ const AdminDashboard = () => {
     }
   };
 
+  const addSponsorRow = () => {
+    setEventForm((prev) => ({
+      ...prev,
+      sponsors: [...prev.sponsors, { name: '', logo: '', website: '', tier: 'Partner' }]
+    }));
+  };
+
+  const updateSponsorRow = (index, field, value) => {
+    setEventForm((prev) => ({
+      ...prev,
+      sponsors: prev.sponsors.map((sponsor, sponsorIndex) => (
+        sponsorIndex === index ? { ...sponsor, [field]: value } : sponsor
+      ))
+    }));
+  };
+
+  const removeSponsorRow = (index) => {
+    setEventForm((prev) => ({
+      ...prev,
+      sponsors: prev.sponsors.filter((_, sponsorIndex) => sponsorIndex !== index)
+    }));
+  };
+
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
@@ -679,13 +709,20 @@ const AdminDashboard = () => {
           event_time: '',
           end_time: '',
           location: '',
+          event_mode: 'physical',
+          virtual_platform: '',
+          virtual_url: '',
           type: 'event',
           link: '',
           registration_link: '',
+          use_external_registration: false,
+          seating_capacity: '',
+          registration_close_at: '',
           slug: '',
           youtube_url: '',
           slides_url: '',
-          is_live_streamed: false
+          is_live_streamed: false,
+          sponsors: []
         });
         setShowEventForm(false);
         fetchEvents();
@@ -1897,7 +1934,8 @@ const AdminDashboard = () => {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <input
@@ -1926,17 +1964,6 @@ const AdminDashboard = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <input
-                          value={eventForm.location}
-                          onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
-                          placeholder="Event location"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Track / Type</label>
                         <select
@@ -1951,8 +1978,67 @@ const AdminDashboard = () => {
                         </select>
                       </div>
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Event Mode</label>
+                        <select
+                          value={eventForm.event_mode}
+                          onChange={(e) => setEventForm({ ...eventForm, event_mode: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="physical">Physical Event</option>
+                          <option value="virtual">Virtual Event</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Registration Mode</label>
+                        <select
+                          value={eventForm.use_external_registration ? 'external' : 'internal'}
+                          onChange={(e) => setEventForm({ ...eventForm, use_external_registration: e.target.value === 'external' })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="internal">Internal form registration</option>
+                          <option value="external">External registration link</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {eventForm.event_mode === 'physical' ? (
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input
+                          value={eventForm.location}
+                          onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                          placeholder="Required for physical events"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Virtual Platform</label>
+                          <input
+                            value={eventForm.virtual_platform}
+                            onChange={(e) => setEventForm({ ...eventForm, virtual_platform: e.target.value })}
+                            placeholder="Zoom, Google Meet, Teams..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Virtual URL</label>
+                          <input
+                            value={eventForm.virtual_url}
+                            onChange={(e) => setEventForm({ ...eventForm, virtual_url: e.target.value })}
+                            placeholder="https://..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
                       <textarea
                         value={eventForm.description}
                         onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
@@ -1961,9 +2047,35 @@ const AdminDashboard = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Seating Capacity</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={eventForm.seating_capacity}
+                          onChange={(e) => setEventForm({ ...eventForm, seating_capacity: e.target.value })}
+                          placeholder="Optional"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Registration Close Date</label>
+                        <input
+                          type="datetime-local"
+                          value={eventForm.registration_close_at}
+                          onChange={(e) => setEventForm({ ...eventForm, registration_close_at: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Registration Link</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {eventForm.use_external_registration ? 'External Registration Link' : 'Optional Registration Link'}
+                        </label>
                         <input
                           value={eventForm.registration_link}
                           onChange={(e) => setEventForm({ ...eventForm, registration_link: e.target.value })}
@@ -1981,6 +2093,65 @@ const AdminDashboard = () => {
                         />
                       </div>
                     </div>
+
+                    <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Sponsors</label>
+                          <p className="text-xs text-gray-500 mt-1">Add multiple sponsors with logo, website, and tier.</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={addSponsorRow}
+                          className="text-sm bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600"
+                        >
+                          Add Sponsor
+                        </button>
+                      </div>
+                      <div className="space-y-3">
+                        {eventForm.sponsors.map((sponsor, index) => (
+                          <div key={`sponsor-${index}`} className="grid grid-cols-1 md:grid-cols-4 gap-3 rounded-lg border border-gray-200 p-3">
+                            <input
+                              value={sponsor.name}
+                              onChange={(e) => updateSponsorRow(index, 'name', e.target.value)}
+                              placeholder="Sponsor name"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                              value={sponsor.logo}
+                              onChange={(e) => updateSponsorRow(index, 'logo', e.target.value)}
+                              placeholder="Logo URL"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                              value={sponsor.website}
+                              onChange={(e) => updateSponsorRow(index, 'website', e.target.value)}
+                              placeholder="Website URL"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                value={sponsor.tier}
+                                onChange={(e) => updateSponsorRow(index, 'tier', e.target.value)}
+                                placeholder="Gold / Partner"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeSponsorRow(index)}
+                                className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        {eventForm.sponsors.length === 0 && (
+                          <p className="text-sm text-gray-500">No sponsors added for this event.</p>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
@@ -2009,6 +2180,9 @@ const AdminDashboard = () => {
                       />
                       <span className="text-sm font-medium text-gray-700">Live streamed on YouTube</span>
                     </label>
+                    <p className="text-xs text-gray-400 mt-1 mb-2">
+                      Only title and date are always required. Physical events require a location. Virtual events require a platform and URL.
+                    </p>
                     <p className="text-xs text-gray-400 mt-1 mb-4">AI will auto-generate a banner image from event content</p>
                     <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
                       Add Event
@@ -2052,6 +2226,29 @@ const AdminDashboard = () => {
                                 )}
                                 {event.is_live_streamed && (
                                   <p className="text-xs text-red-500 font-medium">Live streamed on YouTube</p>
+                                )}
+                                {event.event_mode && (
+                                  <p className="text-xs text-gray-500">Mode: {event.event_mode}</p>
+                                )}
+                                {event.virtual_platform && (
+                                  <p className="text-xs text-gray-500">Platform: {event.virtual_platform}</p>
+                                )}
+                                {event.virtual_url && (
+                                  <p className="text-xs text-sky-600 truncate">Virtual URL: {event.virtual_url}</p>
+                                )}
+                                <p className="text-xs text-gray-500">
+                                  Registration: {event.use_external_registration ? 'External link' : 'Internal form'}
+                                </p>
+                                {event.seating_capacity && (
+                                  <p className="text-xs text-gray-500">
+                                    Seats: {event.registrations_count || 0} / {event.seating_capacity}
+                                  </p>
+                                )}
+                                {event.registration_close_at && (
+                                  <p className="text-xs text-gray-500">Closes: {event.registration_close_at}</p>
+                                )}
+                                {Array.isArray(event.sponsors) && event.sponsors.length > 0 && (
+                                  <p className="text-xs text-gray-500">Sponsors: {event.sponsors.length}</p>
                                 )}
                               </div>
                             )}

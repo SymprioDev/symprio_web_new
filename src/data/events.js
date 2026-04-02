@@ -30,7 +30,7 @@ export const supplementalEvents = [
       {
         time: '4:40 PM',
         title: 'Welcome & Chapter Intro',
-        description: "What the UiPath Malaysia Chapter is building and what’s coming next.",
+        description: "What the UiPath Malaysia Chapter is building and what's coming next.",
         tag: '5 min'
       },
       {
@@ -193,7 +193,45 @@ export function formatEventDate(dateString) {
 
 export function formatEventMeta(event) {
   const timeLabel = event.endTime ? `${event.time} - ${event.endTime}` : event.time;
-  return `${formatEventDate(event.date)} · ${timeLabel} · ${event.location}`;
+  const venueLabel = event.eventMode === 'virtual'
+    ? [event.virtualPlatform, event.virtualUrl ? 'Online event' : 'Virtual session'].filter(Boolean).join(' · ')
+    : event.location || 'Location to be announced';
+
+  return `${formatEventDate(event.date)} · ${timeLabel} · ${venueLabel}`;
+}
+
+export function isRegistrationClosed(event) {
+  if (!event.registrationCloseAt) return false;
+
+  const closeAt = new Date(event.registrationCloseAt);
+  return !Number.isNaN(closeAt.getTime()) && closeAt < new Date();
+}
+
+export function getRemainingSpots(event) {
+  if (event.seatingCapacity == null || event.seatingCapacity === '') return null;
+  return Math.max(Number(event.seatingCapacity) - Number(event.registrationsCount || 0), 0);
+}
+
+export function isEventSoldOut(event) {
+  const remaining = getRemainingSpots(event);
+  return remaining !== null && remaining <= 0;
+}
+
+export function canUseInternalRegistration(event) {
+  return !event.useExternalRegistration && !isRegistrationClosed(event) && !isEventSoldOut(event) && !isPastEvent(event);
+}
+
+export function getRegistrationStatusLabel(event) {
+  if (event.useExternalRegistration) return 'External registration';
+  if (isRegistrationClosed(event)) return 'Registration closed';
+  if (isEventSoldOut(event)) return 'Sold out';
+
+  const remaining = getRemainingSpots(event);
+  if (remaining !== null) {
+    return `${remaining} spot${remaining === 1 ? '' : 's'} left`;
+  }
+
+  return 'Open registration';
 }
 
 export function normalizeAdminEvent(rawEvent) {
@@ -210,14 +248,22 @@ export function normalizeAdminEvent(rawEvent) {
     date: rawEvent.date,
     time: rawEvent.event_time || rawEvent.time || 'TBD',
     endTime: rawEvent.end_time || rawEvent.endTime || '',
-    location: rawEvent.location,
+    location: rawEvent.location || '',
+    eventMode: rawEvent.event_mode || 'physical',
+    virtualPlatform: rawEvent.virtual_platform || '',
+    virtualUrl: rawEvent.virtual_url || '',
     isLiveStreamed: Boolean(rawEvent.is_live_streamed),
     youtubeUrl: rawEvent.youtube_url || rawEvent.youtubeUrl || '',
     slidesUrl: rawEvent.slides_url || rawEvent.slidesUrl || '',
-    description: rawEvent.description,
+    description: rawEvent.description || '',
     registrationLink: rawEvent.registration_link || rawEvent.link || '',
+    useExternalRegistration: Boolean(rawEvent.use_external_registration),
+    seatingCapacity: rawEvent.seating_capacity ?? null,
+    registrationsCount: Number(rawEvent.registrations_count || 0),
+    registrationCloseAt: rawEvent.registration_close_at || '',
     bannerImage: rawEvent.banner_image || '',
     type: rawEvent.type || 'event',
+    sponsors: Array.isArray(rawEvent.sponsors) ? rawEvent.sponsors : [],
     agenda: supplemental?.agenda || [],
     speakers: supplemental?.speakers || [],
     recap: supplemental?.recap || '',

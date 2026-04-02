@@ -86,9 +86,9 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS events (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
-      description TEXT NOT NULL,
+      description TEXT,
       date TEXT NOT NULL,
-      location TEXT NOT NULL,
+      location TEXT,
       type TEXT DEFAULT 'event',
       link TEXT,
       registration_link TEXT,
@@ -107,8 +107,33 @@ async function initializeDatabase() {
   await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS youtube_url TEXT`);
   await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS slides_url TEXT`);
   await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS is_live_streamed BOOLEAN DEFAULT FALSE`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS use_external_registration BOOLEAN DEFAULT FALSE`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS seating_capacity INTEGER`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS registration_close_at TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS event_mode TEXT DEFAULT 'physical'`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS virtual_platform TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS virtual_url TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS sponsors JSONB DEFAULT '[]'::jsonb`);
   await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_events_slug_unique ON events(slug) WHERE slug IS NOT NULL`);
   console.log('Events table ready');
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS event_registrations (
+      id SERIAL PRIMARY KEY,
+      event_id INTEGER NOT NULL,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      organisation TEXT,
+      heard_from TEXT,
+      interested_in_speaking BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT NOW(),
+      FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+    )
+  `);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_event_registrations_event_id ON event_registrations(event_id)`);
+  await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_event_registrations_unique_email ON event_registrations(event_id, (LOWER(email)))`);
+  console.log('Event registrations table ready');
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS trainings (
@@ -499,7 +524,15 @@ function slugifyEventTitle(input = '') {
 // Get all events
 app.get('/api/events', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM events ORDER BY date DESC');
+    const { rows } = await pool.query(`
+      SELECT
+        e.*,
+        COUNT(er.id)::INTEGER AS registrations_count
+      FROM events e
+      LEFT JOIN event_registrations er ON er.event_id = e.id
+      GROUP BY e.id
+      ORDER BY e.date DESC
+    `);
     res.json(rows || []);
   } catch (error) {
     res.status(500).json({ error: 'Database error' });
@@ -813,11 +846,28 @@ app.post('/api/events', verifyJWT, async (req, res) => {
       end_time,
       youtube_url,
       slides_url,
-      is_live_streamed
+      is_live_streamed,
+      use_external_registration,
+      seating_capacity,
+      registration_close_at,
+      event_mode,
+      virtual_platform,
+      virtual_url,
+      sponsors
     } = req.body;
 
-    if (!title || !description || !date || !location) {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (!title || !date) {
+      return res.status(400).json({ error: 'Title and date are required' });
+    }
+
+    const normalizedMode = event_mode === 'virtual' ? 'virtual' : 'physical';
+
+    if (normalizedMode === 'physical' && !location) {
+      return res.status(400).json({ error: 'Location is required for physical events' });
+    }
+
+    if (normalizedMode === 'virtual' && (!virtual_platform || !virtual_url)) {
+      return res.status(400).json({ error: 'Platform and URL are required for virtual events' });
     }
 
     let baseSlug = slugifyEventTitle(slug || title);
@@ -834,16 +884,29 @@ app.post('/api/events', verifyJWT, async (req, res) => {
       slugCounter += 1;
     }
 
+    const normalizedSponsors = Array.isArray(sponsors)
+      ? sponsors
+          .filter((sponsor) => sponsor && sponsor.name)
+          .map((sponsor) => ({
+            name: sponsor.name,
+            logo: sponsor.logo || '',
+            website: sponsor.website || '',
+            tier: sponsor.tier || 'Partner'
+          }))
+      : [];
+
     const result = await pool.query(
       `INSERT INTO events (
         title, description, date, location, type, link, registration_link, created_by,
-        slug, event_time, end_time, youtube_url, slides_url, is_live_streamed
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`,
+        slug, event_time, end_time, youtube_url, slides_url, is_live_streamed,
+        use_external_registration, seating_capacity, registration_close_at, event_mode,
+        virtual_platform, virtual_url, sponsors
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING id`,
       [
         title,
-        description,
+        description || null,
         date,
-        location,
+        location || null,
         type || 'event',
         link || null,
         registration_link || null,
@@ -853,7 +916,14 @@ app.post('/api/events', verifyJWT, async (req, res) => {
         end_time || null,
         youtube_url || null,
         slides_url || null,
-        Boolean(is_live_streamed)
+        Boolean(is_live_streamed),
+        Boolean(use_external_registration),
+        seating_capacity ? Number(seating_capacity) : null,
+        registration_close_at || null,
+        normalizedMode,
+        virtual_platform || null,
+        virtual_url || null,
+        JSON.stringify(normalizedSponsors)
       ]
     );
 
@@ -883,8 +953,100 @@ app.post('/api/events', verifyJWT, async (req, res) => {
         youtube_url: youtube_url || null,
         slides_url: slides_url || null,
         is_live_streamed: Boolean(is_live_streamed),
+        use_external_registration: Boolean(use_external_registration),
+        seating_capacity: seating_capacity ? Number(seating_capacity) : null,
+        registration_close_at: registration_close_at || null,
+        event_mode: normalizedMode,
+        virtual_platform: virtual_platform || null,
+        virtual_url: virtual_url || null,
+        sponsors: normalizedSponsors,
         banner_image: null // Will be generated async
       }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/events/:slug/register', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const {
+      fullName,
+      email,
+      phone,
+      organisation,
+      heardFrom,
+      interestedInSpeaking
+    } = req.body;
+
+    if (!fullName || !email) {
+      return res.status(400).json({ error: 'Full name and email are required' });
+    }
+
+    const { rows } = await pool.query(
+      `
+        SELECT
+          e.*,
+          COUNT(er.id)::INTEGER AS registrations_count
+        FROM events e
+        LEFT JOIN event_registrations er ON er.event_id = e.id
+        WHERE e.slug = $1
+        GROUP BY e.id
+        LIMIT 1
+      `,
+      [slug]
+    );
+
+    const event = rows[0];
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    if (event.use_external_registration) {
+      return res.status(400).json({ error: 'This event uses an external registration link' });
+    }
+
+    const closeAt = event.registration_close_at ? new Date(event.registration_close_at) : null;
+    if (closeAt && !Number.isNaN(closeAt.getTime()) && closeAt < new Date()) {
+      return res.status(400).json({ error: 'Registration for this event is closed' });
+    }
+
+    const capacity = event.seating_capacity ? Number(event.seating_capacity) : null;
+    const registrationsCount = Number(event.registrations_count || 0);
+    if (capacity !== null && registrationsCount >= capacity) {
+      return res.status(400).json({ error: 'This event is fully booked' });
+    }
+
+    try {
+      await pool.query(
+        `INSERT INTO event_registrations (
+          event_id, full_name, email, phone, organisation, heard_from, interested_in_speaking
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          event.id,
+          fullName,
+          email,
+          phone || null,
+          organisation || null,
+          heardFrom || null,
+          String(interestedInSpeaking).toLowerCase() === 'yes'
+        ]
+      );
+    } catch (error) {
+      if (error.code === '23505') {
+        return res.status(400).json({ error: 'This email is already registered for the event' });
+      }
+      throw error;
+    }
+
+    const remaining = capacity === null ? null : Math.max(capacity - (registrationsCount + 1), 0);
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration completed successfully',
+      remainingSpots: remaining
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

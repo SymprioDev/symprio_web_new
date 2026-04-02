@@ -3,7 +3,6 @@ import React from 'react';
 const clients = [
   { name: 'Meta', logo: '/clients/meta.png' },
   { name: 'Amway', logo: '/clients/amway.png' },
-  { name: 'HRDF', logo: '/clients/hrdf.png' },
   { name: 'Coca-Cola', logo: '/clients/cocacola.png' },
   { name: 'SeekAsia', logo: '/clients/seekasia.png' },
   { name: 'YMCA', logo: '/clients/ymca.png' },

@@ -96,10 +96,16 @@ const AdminDashboard = () => {
     title: '',
     description: '',
     date: '',
+    event_time: '',
+    end_time: '',
     location: '',
     type: 'event',
     link: '',
-    registration_link: ''
+    registration_link: '',
+    slug: '',
+    youtube_url: '',
+    slides_url: '',
+    is_live_streamed: false
   });
 
   // Training form state
@@ -666,7 +672,21 @@ const AdminDashboard = () => {
       });
 
       if (response.ok) {
-        setEventForm({ title: '', description: '', date: '', location: '', type: 'event', link: '', registration_link: '' });
+        setEventForm({
+          title: '',
+          description: '',
+          date: '',
+          event_time: '',
+          end_time: '',
+          location: '',
+          type: 'event',
+          link: '',
+          registration_link: '',
+          slug: '',
+          youtube_url: '',
+          slides_url: '',
+          is_live_streamed: false
+        });
         setShowEventForm(false);
         fetchEvents();
         // Re-fetch after delay to pick up AI-generated banner image
@@ -1868,6 +1888,17 @@ const AdminDashboard = () => {
                         />
                       </div>
                       <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                        <input
+                          value={eventForm.slug}
+                          onChange={(e) => setEventForm({ ...eventForm, slug: e.target.value })}
+                          placeholder="agentic-ai-demo-night"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <input
                           type="date"
@@ -1877,15 +1908,48 @@ const AdminDashboard = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                        <input
+                          value={eventForm.event_time}
+                          onChange={(e) => setEventForm({ ...eventForm, event_time: e.target.value })}
+                          placeholder="4:30 PM"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                        <input
+                          value={eventForm.end_time}
+                          onChange={(e) => setEventForm({ ...eventForm, end_time: e.target.value })}
+                          placeholder="5:30 PM"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                      <input
-                        value={eventForm.location}
-                        onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
-                        placeholder="Event location"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input
+                          value={eventForm.location}
+                          onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                          placeholder="Event location"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Track / Type</label>
+                        <select
+                          value={eventForm.type}
+                          onChange={(e) => setEventForm({ ...eventForm, type: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="uipath">UiPath Chapter</option>
+                          <option value="claude">Claude Chapter</option>
+                          <option value="students">Students Workshop</option>
+                          <option value="event">General Event</option>
+                        </select>
+                      </div>
                     </div>
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -1897,16 +1961,55 @@ const AdminDashboard = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Registration Link</label>
-                      <input
-                        value={eventForm.registration_link}
-                        onChange={(e) => setEventForm({ ...eventForm, registration_link: e.target.value })}
-                        placeholder="https://example.com/register"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                      <p className="text-xs text-gray-400 mt-1">AI will auto-generate a banner image from event content</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Registration Link</label>
+                        <input
+                          value={eventForm.registration_link}
+                          onChange={(e) => setEventForm({ ...eventForm, registration_link: e.target.value })}
+                          placeholder="https://example.com/register"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Fallback Link</label>
+                        <input
+                          value={eventForm.link}
+                          onChange={(e) => setEventForm({ ...eventForm, link: e.target.value })}
+                          placeholder="https://example.com"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
+                        <input
+                          value={eventForm.youtube_url}
+                          onChange={(e) => setEventForm({ ...eventForm, youtube_url: e.target.value })}
+                          placeholder="https://youtube.com/..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Slides URL</label>
+                        <input
+                          value={eventForm.slides_url}
+                          onChange={(e) => setEventForm({ ...eventForm, slides_url: e.target.value })}
+                          placeholder="https://drive.google.com/..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <label className="inline-flex items-center gap-3 mb-4">
+                      <input
+                        type="checkbox"
+                        checked={eventForm.is_live_streamed}
+                        onChange={(e) => setEventForm({ ...eventForm, is_live_streamed: e.target.checked })}
+                      />
+                      <span className="text-sm font-medium text-gray-700">Live streamed on YouTube</span>
+                    </label>
+                    <p className="text-xs text-gray-400 mt-1 mb-4">AI will auto-generate a banner image from event content</p>
                     <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
                       Add Event
                     </button>
@@ -1925,6 +2028,33 @@ const AdminDashboard = () => {
                           )}
                           <div className="p-4">
                             <h3 className="font-semibold text-gray-800 mb-2">{event.title}</h3>
+                            {(event.event_time || event.end_time || event.type || event.slug || event.link || event.youtube_url || event.slides_url || event.is_live_streamed) && (
+                              <div className="mb-2 space-y-1">
+                                {(event.event_time || event.end_time) && (
+                                  <p className="text-sm text-gray-600">
+                                    Time: {event.event_time || 'TBD'}{event.end_time ? ` - ${event.end_time}` : ''}
+                                  </p>
+                                )}
+                                {event.type && (
+                                  <p className="text-xs text-gray-500 uppercase tracking-wide">Track: {event.type}</p>
+                                )}
+                                {event.slug && (
+                                  <p className="text-xs text-gray-500">Slug: {event.slug}</p>
+                                )}
+                                {event.link && (
+                                  <p className="text-xs text-sky-600 truncate">Link: {event.link}</p>
+                                )}
+                                {event.youtube_url && (
+                                  <p className="text-xs text-red-500 truncate">YouTube: {event.youtube_url}</p>
+                                )}
+                                {event.slides_url && (
+                                  <p className="text-xs text-emerald-600 truncate">Slides: {event.slides_url}</p>
+                                )}
+                                {event.is_live_streamed && (
+                                  <p className="text-xs text-red-500 font-medium">Live streamed on YouTube</p>
+                                )}
+                              </div>
+                            )}
                             <p className="text-sm text-gray-600 mb-1">📅 {event.date}</p>
                             <p className="text-sm text-gray-600 mb-2">📍 {event.location}</p>
                             {event.registration_link && (

@@ -101,6 +101,13 @@ async function initializeDatabase() {
   // Add columns for existing tables
   await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS registration_link TEXT`);
   await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS banner_image TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS slug TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS event_time TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS end_time TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS youtube_url TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS slides_url TEXT`);
+  await pool.query(`ALTER TABLE events ADD COLUMN IF NOT EXISTS is_live_streamed BOOLEAN DEFAULT FALSE`);
+  await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_events_slug_unique ON events(slug) WHERE slug IS NOT NULL`);
   console.log('Events table ready');
 
   await pool.query(`
@@ -479,6 +486,16 @@ const verifyJWT = (req, res, next) => {
 
 // ========== EVENTS ENDPOINTS ==========
 
+function slugifyEventTitle(input = '') {
+  return input
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+}
+
 // Get all events
 app.get('/api/events', async (req, res) => {
   try {
@@ -783,15 +800,61 @@ function roundRect(ctx, x, y, w, h, r) {
 // Add new event (admin only)
 app.post('/api/events', verifyJWT, async (req, res) => {
   try {
-    const { title, description, date, location, type, link, registration_link } = req.body;
+    const {
+      title,
+      description,
+      date,
+      location,
+      type,
+      link,
+      registration_link,
+      slug,
+      event_time,
+      end_time,
+      youtube_url,
+      slides_url,
+      is_live_streamed
+    } = req.body;
 
     if (!title || !description || !date || !location) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
+    let baseSlug = slugifyEventTitle(slug || title);
+    if (!baseSlug) {
+      baseSlug = `event-${Date.now()}`;
+    }
+
+    let uniqueSlug = baseSlug;
+    let slugCounter = 1;
+    while (true) {
+      const { rows: existingSlugRows } = await pool.query('SELECT id FROM events WHERE slug = $1 LIMIT 1', [uniqueSlug]);
+      if (!existingSlugRows.length) break;
+      uniqueSlug = `${baseSlug}-${slugCounter}`;
+      slugCounter += 1;
+    }
+
     const result = await pool.query(
-      'INSERT INTO events (title, description, date, location, type, link, registration_link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
-      [title, description, date, location, type || 'event', link || null, registration_link || null, req.user.id]
+      `INSERT INTO events (
+        title, description, date, location, type, link, registration_link, created_by,
+        slug, event_time, end_time, youtube_url, slides_url, is_live_streamed
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`,
+      [
+        title,
+        description,
+        date,
+        location,
+        type || 'event',
+        link || null,
+        registration_link || null,
+        req.user.id,
+        uniqueSlug,
+        event_time || null,
+        end_time || null,
+        youtube_url || null,
+        slides_url || null,
+        Boolean(is_live_streamed)
+      ]
     );
 
     const eventId = result.rows[0].id;
@@ -814,6 +877,12 @@ app.post('/api/events', verifyJWT, async (req, res) => {
         type: type || 'event',
         link: link || null,
         registration_link: registration_link || null,
+        slug: uniqueSlug,
+        event_time: event_time || null,
+        end_time: end_time || null,
+        youtube_url: youtube_url || null,
+        slides_url: slides_url || null,
+        is_live_streamed: Boolean(is_live_streamed),
         banner_image: null // Will be generated async
       }
     });

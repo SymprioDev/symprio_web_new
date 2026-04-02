@@ -13,22 +13,18 @@ export const TRACK_STYLES = {
     label: 'Students Workshop',
     background: '#FAEEDA',
     color: '#633806'
+  },
+  event: {
+    label: 'General Event',
+    background: '#EEF2FF',
+    color: '#3730A3'
   }
 };
 
-export const communityEvents = [
+export const supplementalEvents = [
   {
     slug: 'uipath-apr-2026',
-    title: 'Agentic AI Demo Night',
     track: 'uipath',
-    date: '2026-04-26',
-    time: '4:30 PM',
-    endTime: '5:30 PM',
-    location: 'Company Office, Kuala Lumpur',
-    isLiveStreamed: true,
-    youtubeUrl: 'https://youtube.com/@isai-alai',
-    description:
-      'Our inaugural UiPath Malaysia Chapter meetup featuring a live demo of agentic AI workflows built on UiPath, with practical enterprise automation examples and a friendly community Q&A.',
     agenda: [
       { time: '4:30 PM', title: 'Arrival & Registration', tag: '10 min' },
       {
@@ -63,17 +59,7 @@ export const communityEvents = [
   },
   {
     slug: 'claude-mar-2026',
-    title: 'Claude Prompt Jam: Building Better AI Assistants',
     track: 'claude',
-    date: '2026-03-15',
-    time: '5:00 PM',
-    endTime: '6:30 PM',
-    location: 'Community Studio, Kuala Lumpur',
-    isLiveStreamed: true,
-    youtubeUrl: 'https://youtube.com/@isai-alai',
-    slidesUrl: 'https://drive.google.com',
-    description:
-      'A practical community session on prompt design, workflows, and everyday AI assistant patterns for teams and builders.',
     recap:
       'Members explored practical Claude workflows, prompt patterns, and lightweight AI copilots for community and business use.',
     agenda: [
@@ -103,16 +89,7 @@ export const communityEvents = [
   },
   {
     slug: 'students-feb-2026',
-    title: 'Kids AI Discovery Workshop',
     track: 'students',
-    date: '2026-02-22',
-    time: '10:00 AM',
-    endTime: '12:00 PM',
-    location: 'Learning Lab, PJ',
-    isLiveStreamed: false,
-    slidesUrl: 'https://drive.google.com',
-    description:
-      'A warm and playful hands-on workshop introducing students and kids to AI thinking, creative prompting, and safe experimentation.',
     recap:
       'Students built their first AI-assisted mini projects and left with a simple starter guide for learning safely at home.',
     agenda: [
@@ -143,17 +120,7 @@ export const communityEvents = [
   },
   {
     slug: 'uipath-dec-2025',
-    title: 'Automation Community Kickoff',
     track: 'uipath',
-    date: '2025-12-12',
-    time: '6:00 PM',
-    endTime: '7:30 PM',
-    location: 'Company Office, Kuala Lumpur',
-    isLiveStreamed: true,
-    youtubeUrl: 'https://youtube.com/@isai-alai',
-    slidesUrl: 'https://drive.google.com',
-    description:
-      'The first community kickoff for automation enthusiasts, featuring demos, networking, and a roadmap for the year ahead.',
     recap:
       'A strong opening meetup that brought together automation builders, students, and community leaders around shared learning.',
     agenda: [
@@ -180,7 +147,15 @@ export const communityEvents = [
 ];
 
 export function getTrackStyle(track) {
-  return TRACK_STYLES[track] || TRACK_STYLES.uipath;
+  return TRACK_STYLES[track] || TRACK_STYLES.event;
+}
+
+export function inferTrack(rawType = '') {
+  const type = rawType.toLowerCase();
+  if (type.includes('claude')) return 'claude';
+  if (type.includes('student') || type.includes('kid')) return 'students';
+  if (type.includes('uipath')) return 'uipath';
+  return 'event';
 }
 
 export function isPastEvent(event) {
@@ -193,18 +168,18 @@ export function sortEventsByDate(events) {
   return [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-export function getUpcomingEvents(events = communityEvents) {
+export function getUpcomingEvents(events = []) {
   return sortEventsByDate(events).filter((event) => !isPastEvent(event));
 }
 
-export function getPastEvents(events = communityEvents) {
+export function getPastEvents(events = []) {
   return sortEventsByDate(events)
     .filter((event) => isPastEvent(event))
     .reverse();
 }
 
-export function getEventBySlug(slug) {
-  return communityEvents.find((event) => event.slug === slug);
+export function getSupplementalEventBySlug(slug) {
+  return supplementalEvents.find((event) => event.slug === slug);
 }
 
 export function formatEventDate(dateString) {
@@ -217,5 +192,45 @@ export function formatEventDate(dateString) {
 }
 
 export function formatEventMeta(event) {
-  return `${formatEventDate(event.date)} · ${event.time} · ${event.location}`;
+  const timeLabel = event.endTime ? `${event.time} - ${event.endTime}` : event.time;
+  return `${formatEventDate(event.date)} · ${timeLabel} · ${event.location}`;
+}
+
+export function normalizeAdminEvent(rawEvent) {
+  if (!rawEvent) return null;
+
+  const supplemental = getSupplementalEventBySlug(rawEvent.slug);
+  const track = rawEvent.track || inferTrack(rawEvent.type);
+
+  return {
+    id: rawEvent.id,
+    slug: rawEvent.slug || `event-${rawEvent.id}`,
+    title: rawEvent.title,
+    track,
+    date: rawEvent.date,
+    time: rawEvent.event_time || rawEvent.time || 'TBD',
+    endTime: rawEvent.end_time || rawEvent.endTime || '',
+    location: rawEvent.location,
+    isLiveStreamed: Boolean(rawEvent.is_live_streamed),
+    youtubeUrl: rawEvent.youtube_url || rawEvent.youtubeUrl || '',
+    slidesUrl: rawEvent.slides_url || rawEvent.slidesUrl || '',
+    description: rawEvent.description,
+    registrationLink: rawEvent.registration_link || rawEvent.link || '',
+    bannerImage: rawEvent.banner_image || '',
+    type: rawEvent.type || 'event',
+    agenda: supplemental?.agenda || [],
+    speakers: supplemental?.speakers || [],
+    recap: supplemental?.recap || '',
+    isPast: isPastEvent({ date: rawEvent.date })
+  };
+}
+
+export async function fetchAdminEvents() {
+  const response = await fetch('/api/events');
+  if (!response.ok) {
+    throw new Error('Failed to fetch events');
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data.map(normalizeAdminEvent).filter(Boolean) : [];
 }

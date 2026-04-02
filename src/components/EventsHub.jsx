@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import EventCard from './events/EventCard';
 import PastEventCard from './events/PastEventCard';
 import RegisterModal from './events/RegisterModal';
 import {
-  communityEvents,
+  fetchAdminEvents,
   getPastEvents,
   getUpcomingEvents
 } from '../data/events';
@@ -22,9 +22,27 @@ export default function EventsHub() {
   const [selectedEventSlug, setSelectedEventSlug] = useState('');
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterMessage, setNewsletterMessage] = useState('');
+  const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
 
-  const upcomingEvents = useMemo(() => getUpcomingEvents(communityEvents), []);
-  const pastEvents = useMemo(() => getPastEvents(communityEvents), []);
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const adminEvents = await fetchAdminEvents();
+        setEvents(adminEvents);
+      } catch (error) {
+        console.error('Failed to load events:', error);
+        setEvents([]);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+
+    loadEvents();
+  }, []);
+
+  const upcomingEvents = useMemo(() => getUpcomingEvents(events), [events]);
+  const pastEvents = useMemo(() => getPastEvents(events), [events]);
 
   const openRegisterModal = (event) => {
     setSelectedEventSlug(event.slug);
@@ -107,7 +125,13 @@ export default function EventsHub() {
               </p>
             </div>
 
-            {upcomingEvents.length === 0 ? (
+            {loadingEvents ? (
+              <div className="grid gap-8">
+                {[0, 1].map((index) => (
+                  <div key={index} className="h-[420px] animate-pulse rounded-[2rem] border border-[#DCE7F7] bg-white shadow-sm" />
+                ))}
+              </div>
+            ) : upcomingEvents.length === 0 ? (
               <div className="rounded-[2rem] border border-dashed border-[#D6E4FF] bg-white px-8 py-14 text-center shadow-sm">
                 <h3 className="text-2xl font-semibold text-[#0A2D6E]">No upcoming events — check back soon</h3>
                 <p className="mt-3 text-base text-slate-600">
@@ -141,15 +165,23 @@ export default function EventsHub() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {pastEvents.map((event) => (
-                <PastEventCard
-                  key={event.slug}
-                  event={event}
-                  onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
-                />
-              ))}
-            </div>
+            {loadingEvents ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {[0, 1, 2].map((index) => (
+                  <div key={index} className="h-[320px] animate-pulse rounded-[1.9rem] border border-slate-200 bg-slate-100" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {pastEvents.map((event) => (
+                  <PastEventCard
+                    key={event.slug}
+                    event={event}
+                    onViewDetails={(selectedEvent) => navigate(`/events/${selectedEvent.slug}`)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 import AgendaTimeline from './events/AgendaTimeline';
@@ -6,9 +6,8 @@ import RegisterModal from './events/RegisterModal';
 import SpeakerCard from './events/SpeakerCard';
 import TrackBadge from './events/TrackBadge';
 import {
-  communityEvents,
+  fetchAdminEvents,
   formatEventMeta,
-  getEventBySlug,
   isPastEvent
 } from '../data/events';
 
@@ -16,12 +15,41 @@ export default function EventDetailPage() {
   const navigate = useNavigate();
   const { slug } = useParams();
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
-  const event = getEventBySlug(slug);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const adminEvents = await fetchAdminEvents();
+        setEvents(adminEvents);
+      } catch (error) {
+        console.error('Failed to load event detail:', error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvents();
+  }, []);
+
+  const event = useMemo(() => events.find((item) => item.slug === slug), [events, slug]);
 
   const relatedEvents = useMemo(() => {
     if (!event) return [];
-    return communityEvents.filter((item) => item.slug !== event.slug).slice(0, 3);
-  }, [event]);
+    return events.filter((item) => item.slug !== event.slug).slice(0, 3);
+  }, [event, events]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F7FAFD] pt-32 pb-20">
+        <div className="container mx-auto px-6">
+          <div className="h-[420px] animate-pulse rounded-[2rem] bg-slate-200" />
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (

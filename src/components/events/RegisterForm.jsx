@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { communityEvents, getUpcomingEvents } from '../../data/events';
+import React, { useEffect, useMemo, useState } from 'react';
+import { fetchAdminEvents, getUpcomingEvents } from '../../data/events';
 
 // Update this webhook URL to your Google Form, Airtable, or n8n endpoint when ready.
 const EVENTS_WEBHOOK_URL = '';
@@ -7,10 +7,41 @@ const EVENTS_WEBHOOK_URL = '';
 const sourceOptions = ['LinkedIn', 'WhatsApp', 'Friend', 'Other'];
 
 export default function RegisterForm({ initialEventSlug = '', onSuccess, compact = false }) {
-  const eventOptions = useMemo(() => {
-    const upcoming = getUpcomingEvents(communityEvents);
-    return upcoming.length > 0 ? upcoming : communityEvents;
+  const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const adminEvents = await fetchAdminEvents();
+        setEvents(adminEvents);
+      } catch (error) {
+        console.error('Failed to load events for registration:', error);
+        setEvents([]);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+
+    loadEvents();
   }, []);
+
+  const eventOptions = useMemo(() => {
+    const upcoming = getUpcomingEvents(events);
+    return upcoming.length > 0 ? upcoming : events;
+  }, [events]);
+
+  useEffect(() => {
+    if (!eventOptions.length) return;
+
+    const matchingEvent = eventOptions.find((option) => option.slug === formData.eventSlug);
+    if (!matchingEvent) {
+      setFormData((prev) => ({
+        ...prev,
+        eventSlug: initialEventSlug || eventOptions[0]?.slug || ''
+      }));
+    }
+  }, [eventOptions, formData.eventSlug, initialEventSlug]);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -138,8 +169,10 @@ export default function RegisterForm({ initialEventSlug = '', onSuccess, compact
               value={formData.eventSlug}
               onChange={(e) => handleChange('eventSlug', e.target.value)}
               required
+              disabled={loadingEvents || eventOptions.length === 0}
               className={inputClassName}
             >
+              {eventOptions.length === 0 && <option value="">No events available</option>}
               {eventOptions.map((option) => (
                 <option key={option.slug} value={option.slug}>
                   {option.title}

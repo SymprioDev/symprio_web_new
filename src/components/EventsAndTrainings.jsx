@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchAdminEvents, formatEventDate, getTrackStyle } from '../data/events';
 
 const EventsAndTrainings = () => {
   const [events, setEvents] = useState([]);
@@ -13,19 +14,12 @@ const EventsAndTrainings = () => {
 
   const fetchData = async () => {
     try {
-      const [eventsRes, trainingsRes] = await Promise.all([
-        fetch('/api/events'),
+      const [eventData, trainingsRes] = await Promise.all([
+        fetchAdminEvents(),
         fetch('/api/trainings')
       ]);
 
-      if (eventsRes.ok) {
-        const eventData = await eventsRes.json();
-        if (eventData && eventData.length > 0) {
-          setEvents(eventData);
-        } else {
-          setEvents([]);
-        }
-      }
+      setEvents(eventData && eventData.length > 0 ? eventData : []);
 
       if (trainingsRes.ok) {
         const trainingData = await trainingsRes.json();
@@ -44,9 +38,18 @@ const EventsAndTrainings = () => {
 
   // Combine and sort by date
   const allItems = [
-    ...events.map(e => ({ ...e, itemType: 'event', badgeType: 'Featured', badgeColor: '#fef08a', badgeTextColor: '#b45309' })),
+    ...events.map((e) => {
+      const trackStyle = getTrackStyle(e.track);
+      return {
+        ...e,
+        itemType: 'event',
+        badgeType: trackStyle.label,
+        badgeColor: trackStyle.background,
+        badgeTextColor: trackStyle.color
+      };
+    }),
     ...trainings.map(t => ({ ...t, itemType: 'training', badgeType: 'Live', badgeColor: '#fecaca', badgeTextColor: '#dc2626' }))
-  ];
+  ].sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const hasData = allItems.length > 0;
 
@@ -239,12 +242,23 @@ const EventsAndTrainings = () => {
                       <>
                         <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                          {item.date}
+                          {item.itemType === 'event' ? formatEventDate(item.date) : item.date}
                         </div>
+                        {item.time && (
+                          <div style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            {item.endTime ? `${item.time} - ${item.endTime}` : item.time}
+                          </div>
+                        )}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                           {item.location}
                         </div>
+                        {item.isLiveStreamed && (
+                          <div style={{ marginTop: '4px', color: '#dc2626', fontWeight: '700' }}>
+                            Live on YouTube
+                          </div>
+                        )}
                       </>
                     ) : (
                       <>

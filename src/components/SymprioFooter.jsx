@@ -39,7 +39,6 @@ export default function SymprioFooter() {
         { name: 'Blog', url: '/blog' },
         { name: 'Careers', url: '/careers' },
         { name: 'Contact Us', url: '/contact' },
-        { name: 'Support Subscription', url: '/support-subscription' },
         { name: 'Staff Login', url: '/admin' }
       ]
     },

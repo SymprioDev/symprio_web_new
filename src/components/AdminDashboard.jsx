@@ -1015,10 +1015,7 @@ const AdminDashboard = () => {
     { id: 'locations', label: 'Locations', icon: MapPin },
     { id: 'enquiries', label: 'Enquiries', icon: MessageSquare, badge: pendingEnquiries },
     { id: 'newsletterSubscribers', label: 'Newsletter Subscribers', icon: Mail, badge: activeNewsletterSubscribers },
-    { id: 'subscriptions', label: 'Support Subscriptions', icon: CheckCircle, badge: pendingSubscriptions },
     { id: 'aiConversations', label: 'AI Conversations', icon: Brain },
-    { id: 'subscriptionConfig', label: 'Subscription Config', icon: Settings },
-    { id: 'statusTypes', label: 'Status Types', icon: TrendingUp },
     { id: 'mailConfig', label: 'Mail Configuration', icon: Mail },
   ];
 
@@ -1185,13 +1182,6 @@ const AdminDashboard = () => {
                   color="bg-[#0d9488]"
                   trend={`${pendingApplications} pending`}
                 />
-                <StatCard 
-                  title="Subscriptions" 
-                  value={subscriptions.length} 
-                  icon={Users}
-                  color="bg-[#0a2d6e]"
-                  trend={`${pendingSubscriptions} pending`}
-                />
                 <StatCard
                   title="Newsletter Subscribers"
                   value={newsletterSubscribers.length}
@@ -1237,13 +1227,6 @@ const AdminDashboard = () => {
                   >
                     <Mail className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
                     <p className="text-sm font-medium text-gray-700">Newsletter List</p>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('subscriptions')}
-                    className="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-center"
-                  >
-                    <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-gray-700">Manage Subscriptions</p>
                   </button>
                   <button
                     onClick={() => setActiveTab('mailConfig')}

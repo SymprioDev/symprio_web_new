@@ -163,6 +163,7 @@ export default function SymprioNavbar() {
           </div>
 
           <NavLink label="About" onClick={() => navigate('/about')} />
+          <NavLink label="Events" onClick={() => navigate('/events')} />
           <NavLink label="Insights" onClick={() => navigate('/blog')} />
 
         </div>
@@ -327,6 +328,7 @@ export default function SymprioNavbar() {
             </div>
 
             <MobileNavLink label="About" onClick={() => { navigate('/about'); setMobileOpen(false); }} />
+            <MobileNavLink label="Events" onClick={() => { navigate('/events'); setMobileOpen(false); }} />
             <MobileNavLink label="Case Studies" onClick={() => { navigate('/case-studies'); setMobileOpen(false); }} />
             <MobileNavLink label="Blog" onClick={() => { navigate('/blog'); setMobileOpen(false); }} />
             <MobileNavLink label="Careers" onClick={() => { navigate('/careers'); setMobileOpen(false); }} />

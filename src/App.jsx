@@ -33,6 +33,9 @@ import RPATraining from './components/RPATraining';
 import AIGenAITraining from './components/AIGenAITraining';
 import CorporateWorkshops from './components/CorporateWorkshops';
 import CaseStudiesLanding from './components/CaseStudiesLanding';
+import EventsHub from './components/EventsHub';
+import EventRegisterPage from './components/EventRegisterPage';
+import EventDetailPage from './components/EventDetailPage';
 
 import FeaturesGrid from './components/FeaturesGrid';
 import ClientsMarquee from './components/ClientsMarquee';
@@ -161,6 +164,9 @@ function App() {
       <Route path="/training/corporate-workshops" element={<ServicePage component={CorporateWorkshops} />} />
 
       <Route path="/case-studies" element={<ServicePage component={CaseStudiesLanding} />} />
+      <Route path="/events" element={<ServicePage component={EventsHub} />} />
+      <Route path="/events/register" element={<ServicePage component={EventRegisterPage} />} />
+      <Route path="/events/:slug" element={<ServicePage component={EventDetailPage} />} />
       <Route path="/blog" element={<ServicePage component={Blog} />} />
       <Route path="/careers" element={<ServicePage component={Careers} />} />
       <Route path="/contact" element={<ServicePage component={Contact} />} />

@@ -63,6 +63,34 @@ export async function ensureTables() {
     created_by INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  // Event registrations table
+  await client.execute(`CREATE TABLE IF NOT EXISTS event_registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER NOT NULL,
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    organisation TEXT,
+    heard_from TEXT,
+    interested_in_speaking INTEGER DEFAULT 0,
+    questions TEXT,
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES events(id)
+  )`);
+
+  // Training registrations table
+  await client.execute(`CREATE TABLE IF NOT EXISTS training_registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    training_id INTEGER NOT NULL,
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    organisation TEXT,
+    heard_from TEXT,
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (training_id) REFERENCES trainings(id)
+  )`);
 }
 
 export async function sql(strings, ...values) {

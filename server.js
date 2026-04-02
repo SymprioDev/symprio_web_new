@@ -1070,6 +1070,62 @@ app.post('/api/events/:slug/register', async (req, res) => {
   }
 });
 
+// GET all event registrations (admin only)
+app.get('/api/events/registrations', verifyJWT, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        er.id,
+        er.event_id,
+        er.full_name,
+        er.email,
+        er.phone,
+        er.organisation,
+        er.heard_from,
+        er.interested_in_speaking,
+        er.questions,
+        er.registered_at,
+        e.title as event_title,
+        e.date as event_date,
+        e.type as event_type
+      FROM event_registrations er
+      JOIN events e ON e.id = er.event_id
+      ORDER BY er.registered_at DESC
+    `);
+    res.json(result.rows || []);
+  } catch (error) {
+    console.error('Error fetching event registrations:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET all training registrations (admin only)
+app.get('/api/trainings/registrations', verifyJWT, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        tr.id,
+        tr.training_id,
+        tr.full_name,
+        tr.email,
+        tr.phone,
+        tr.organisation,
+        tr.heard_from,
+        tr.registered_at,
+        t.title as training_title,
+        t.date as training_date,
+        t.type as training_type
+      FROM training_registrations tr
+      JOIN trainings t ON t.id = tr.training_id
+      ORDER BY tr.registered_at DESC
+    `);
+    res.json(result.rows || []);
+  } catch (error) {
+    console.error('Error fetching training registrations:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Delete event (admin only)
 app.delete('/api/events/:id', verifyJWT, async (req, res) => {
   try {

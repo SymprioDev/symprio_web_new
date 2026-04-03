@@ -4,7 +4,7 @@ import ServicePageTemplate from './ServicePageTemplate';
 export default function RPA() {
   return (
     <ServicePageTemplate
-      title="Robotic Process"
+      title="Robotic Process Automation"
       titleAccent="Automation"
       subtitle="Intelligent bots created to automate high-volume, repetitive tasks—enhancing accuracy and scaling your digital workforce."
       heroImage="/assets/service%20images/rpa.jpg"

@@ -116,7 +116,15 @@ function LogoSphere({ size = 420 }) {
           onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.1)'; }}
         >
           {item.logo ? (
-            <img src={item.logo} alt={item.name} style={{ width: '42px', height: '42px', objectFit: 'contain' }} />
+            <img
+              src={item.logo}
+              alt={item.name}
+              style={{
+                width: item.name === 'UiPath' ? '54px' : '42px',
+                height: item.name === 'UiPath' ? '54px' : '42px',
+                objectFit: 'contain'
+              }}
+            />
           ) : (
             <span style={{ fontSize: '13px', fontWeight: '800', color: '#185ADB' }}>{item.text}</span>
           )}

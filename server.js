@@ -1722,10 +1722,26 @@ const cvUpload = multer({
 // POST job application
 app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
   try {
-    const { firstName, lastName, mobileNumber, coverLetter, jobTitle, email } = req.body;
+    const rawFirstName = (req.body.firstName || '').trim();
+    const rawLastName = (req.body.lastName || '').trim();
+    const fullName = (req.body.name || '').trim();
 
-    if (!firstName || !lastName || !mobileNumber || !email) {
-      return res.status(400).json({ error: 'First name, last name, mobile number, and email are required' });
+    let firstName = rawFirstName;
+    let lastName = rawLastName;
+
+    if (!firstName && fullName) {
+      const [firstPart = '', ...restParts] = fullName.split(/\s+/);
+      firstName = firstPart.trim();
+      lastName = restParts.join(' ').trim();
+    }
+
+    const mobileNumber = (req.body.mobileNumber || req.body.phone || '').trim();
+    const coverLetter = (req.body.coverLetter || req.body.cover || '').trim();
+    const jobTitle = (req.body.jobTitle || '').trim();
+    const email = (req.body.email || '').trim();
+
+    if (!firstName || !email) {
+      return res.status(400).json({ error: 'Name and email are required' });
     }
 
     // Validate email format
@@ -1741,7 +1757,7 @@ app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
 
     const result = await pool.query(
       'INSERT INTO job_applications (first_name, last_name, mobile_number, email, cover_letter, cv_file_path, job_title) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
-      [firstName, lastName, mobileNumber, email, coverLetter || '', cvFilePath, jobTitle || '']
+      [firstName, lastName || '', mobileNumber || '', email, coverLetter || '', cvFilePath, jobTitle || '']
     );
 
     const applicationId = result.rows[0].id;
@@ -1751,7 +1767,7 @@ app.post('/api/job-applications', cvUpload.single('cv'), async (req, res) => {
     try {
       const { rows: mailRows } = await pool.query('SELECT mailersend_api_key, mailersend_domain, company_email FROM mail_config ORDER BY id DESC LIMIT 1');
       const mailConfig = mailRows[0];
-      const application = { firstName, lastName, mobileNumber, coverLetter, jobTitle, cvFilePath };
+      const application = { firstName, lastName: lastName || '', mobileNumber: mobileNumber || '', coverLetter, jobTitle, cvFilePath };
       const config = mailConfig ? {
         apiKey: mailConfig.mailersend_api_key,
         domain: mailConfig.mailersend_domain

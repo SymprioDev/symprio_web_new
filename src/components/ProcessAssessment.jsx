@@ -4,7 +4,7 @@ import ServicePageTemplate from './ServicePageTemplate';
 export default function ProcessAssessment() {
   return (
     <ServicePageTemplate
-      title="Process Assessment &"
+      title="Process Assessment & Consultancy"
       titleAccent="Consultancy"
       subtitle="Understand your processes before you automate them."
       heroImage="/assets/service%20images/process-assessment.jpg"

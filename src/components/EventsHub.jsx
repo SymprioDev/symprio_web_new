@@ -113,7 +113,7 @@ export default function EventsHub() {
               <h1 className="mt-6 text-5xl md:text-6xl font-semibold leading-[1.05] text-white">
                 Community Events
               </h1>
-              <p className="mt-6 max-w-3xl text-lg md:text-xl leading-8 text-white/72">
+              <p className="mt-6 max-w-3xl text-lg md:text-xl leading-8 text-white">
                 UiPath Malaysia Chapter · Claude Malaysia Chapter · Students & Kids Workshops
               </p>
               <p className="mt-6 max-w-3xl text-base md:text-lg leading-8 text-white/70">

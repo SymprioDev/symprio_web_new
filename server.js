@@ -77,9 +77,14 @@ async function initializeDatabase() {
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       name TEXT NOT NULL,
+      role TEXT DEFAULT 'Admin',
+      last_login TIMESTAMP,
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'Admin'`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP`);
+  await pool.query(`UPDATE users SET role = 'Admin' WHERE role IS NULL`);
   console.log('Users table ready');
 
   await pool.query(`
@@ -412,21 +417,22 @@ app.post('/api/auth/register', async (req, res) => {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+    const role = 'Admin';
 
     // Insert user
     const result = await pool.query(
-      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id',
-      [email, hashedPassword, name]
+      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id',
+      [email, hashedPassword, name, role]
     );
 
     const userId = result.rows[0].id;
 
     // Generate JWT
-    const token = jwt.sign({ id: userId, email }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: userId, email, role }, JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({
       success: true,
       token,
-      user: { id: userId, email, name }
+      user: { id: userId, email, name, role }
     });
   } catch (error) {
     if (error.code === '23505') { // unique_violation
@@ -458,12 +464,15 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    await pool.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
+    const normalizedRole = normalizeUserRole(user.role);
+
     // Generate JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: user.id, email: user.email, role: normalizedRole }, JWT_SECRET, { expiresIn: '7d' });
     res.json({
       success: true,
       token,
-      user: { id: user.id, email: user.email, name: user.name }
+      user: { id: user.id, email: user.email, name: user.name, role: normalizedRole, last_login: new Date().toISOString() }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -472,17 +481,35 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Verify token endpoint
 app.post('/api/auth/verify', (req, res) => {
-  try {
+  (async () => {
+    try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       return res.status(401).json({ error: 'No token provided' });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    res.json({ valid: true, user: decoded });
-  } catch (error) {
-    res.status(401).json({ valid: false, error: 'Invalid token' });
-  }
+      const { rows } = await pool.query(
+        'SELECT id, email, name, role, last_login, created_at FROM users WHERE id = $1 LIMIT 1',
+        [decoded.id]
+      );
+      const user = rows[0];
+
+      if (!user) {
+        return res.status(404).json({ valid: false, error: 'User not found' });
+      }
+
+      res.json({
+        valid: true,
+        user: {
+          ...user,
+          role: normalizeUserRole(user.role)
+        }
+      });
+    } catch (error) {
+      res.status(401).json({ valid: false, error: 'Invalid token' });
+    }
+  })();
 });
 
 // Get user profile
@@ -494,13 +521,19 @@ app.get('/api/auth/profile', async (req, res) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const { rows } = await pool.query('SELECT id, email, name, created_at FROM users WHERE id = $1', [decoded.id]);
+    const { rows } = await pool.query(
+      'SELECT id, email, name, role, last_login, created_at FROM users WHERE id = $1',
+      [decoded.id]
+    );
     const user = rows[0];
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(user);
+    res.json({
+      ...user,
+      role: normalizeUserRole(user.role)
+    });
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }
@@ -525,6 +558,165 @@ const verifyJWT = (req, res, next) => {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
+
+const VALID_USER_ROLES = ['Admin', 'User', 'Guest'];
+
+function normalizeUserRole(role = '') {
+  const matchedRole = VALID_USER_ROLES.find(
+    (allowedRole) => allowedRole.toLowerCase() === String(role).toLowerCase()
+  );
+  return matchedRole || 'User';
+}
+
+function generateTemporaryPassword(length = 12) {
+  const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+  return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+}
+
+const verifyAdmin = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { rows } = await pool.query(
+      'SELECT id, email, name, role FROM users WHERE id = $1 LIMIT 1',
+      [decoded.id]
+    );
+    const adminUser = rows[0];
+
+    if (!adminUser) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    if (normalizeUserRole(adminUser.role) !== 'Admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    req.user = {
+      id: adminUser.id,
+      email: adminUser.email,
+      name: adminUser.name,
+      role: normalizeUserRole(adminUser.role)
+    };
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+app.get('/api/admin/users', verifyAdmin, async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        id,
+        email,
+        name,
+        COALESCE(role, 'Admin') as role,
+        created_at,
+        last_login
+      FROM users
+      ORDER BY created_at DESC
+    `);
+
+    res.json(rows || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/users', verifyAdmin, async (req, res) => {
+  try {
+    const { email, name, role, password } = req.body;
+
+    if (!email || !name) {
+      return res.status(400).json({ error: 'Email and display name are required' });
+    }
+
+    const finalRole = normalizeUserRole(role || 'User');
+    const finalPassword = password || generateTemporaryPassword();
+
+    if (finalPassword.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    const hashedPassword = await bcrypt.hash(finalPassword, 10);
+
+    const result = await pool.query(
+      `
+        INSERT INTO users (email, password, name, role)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, email, name, role, created_at, last_login
+      `,
+      [email.trim().toLowerCase(), hashedPassword, name.trim(), finalRole]
+    );
+
+    res.status(201).json({
+      success: true,
+      user: result.rows[0],
+      temporaryPassword: password ? null : finalPassword
+    });
+  } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/admin/users/:id/role', verifyAdmin, async (req, res) => {
+  try {
+    const targetUserId = Number(req.params.id);
+    const nextRole = normalizeUserRole(req.body.role);
+
+    if (!targetUserId) {
+      return res.status(400).json({ error: 'Invalid user id' });
+    }
+
+    if (req.user.id === targetUserId && nextRole !== 'Admin') {
+      return res.status(400).json({ error: 'You cannot remove your own admin access' });
+    }
+
+    const result = await pool.query(
+      'UPDATE users SET role = $1 WHERE id = $2 RETURNING id, email, name, role, created_at, last_login',
+      [nextRole, targetUserId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ success: true, user: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/admin/users/:id', verifyAdmin, async (req, res) => {
+  try {
+    const targetUserId = Number(req.params.id);
+
+    if (!targetUserId) {
+      return res.status(400).json({ error: 'Invalid user id' });
+    }
+
+    if (req.user.id === targetUserId) {
+      return res.status(400).json({ error: 'You cannot delete your own account' });
+    }
+
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [targetUserId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // ========== EVENTS ENDPOINTS ==========
 

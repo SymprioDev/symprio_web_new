@@ -87,6 +87,18 @@ const AdminDashboard = () => {
   const [trainingRegistrations, setTrainingRegistrations] = useState([]);
   const [loadingRegistrations, setLoadingRegistrations] = useState(true);
   const [registrationFilter, setRegistrationFilter] = useState('all'); // 'all', 'events', 'trainings'
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [loadingAdminUsers, setLoadingAdminUsers] = useState(true);
+  const [userSearch, setUserSearch] = useState('');
+  const [userSort, setUserSort] = useState({ column: 'created_at', direction: 'desc' });
+  const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+  const [createUserForm, setCreateUserForm] = useState({
+    email: '',
+    name: '',
+    role: 'User',
+    passwordMode: 'temporary',
+    password: ''
+  });
 
   // Fetch event registrations
   const fetchEventRegistrations = async () => {
@@ -127,6 +139,29 @@ const AdminDashboard = () => {
     setLoadingRegistrations(true);
     await Promise.all([fetchEventRegistrations(), fetchTrainingRegistrations()]);
     setLoadingRegistrations(false);
+  };
+
+  const fetchAdminUsers = async () => {
+    if (!token) return;
+    setLoadingAdminUsers(true);
+    try {
+      const response = await fetch('/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json().catch(() => ([]));
+      if (response.ok) {
+        setAdminUsers(Array.isArray(data) ? data : []);
+      } else {
+        showNotification('error', data.error || 'Failed to load users');
+      }
+    } catch (error) {
+      console.error('Failed to fetch admin users:', error);
+      showNotification('error', 'Failed to load users');
+    } finally {
+      setLoadingAdminUsers(false);
+    }
   };
 
   // Show notification
@@ -223,6 +258,7 @@ const AdminDashboard = () => {
       fetchSubscriptionStatusTypes();
       fetchNewsletterSubscribers();
       fetchAllRegistrations();
+      fetchAdminUsers();
     }
   }, [token]);
 
@@ -1103,6 +1139,152 @@ const AdminDashboard = () => {
     });
   };
 
+  const handleUserSort = (column) => {
+    setUserSort((prev) => ({
+      column,
+      direction: prev.column === column && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        email: createUserForm.email,
+        name: createUserForm.name,
+        role: createUserForm.role,
+        password: createUserForm.passwordMode === 'custom' ? createUserForm.password : ''
+      };
+
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        showNotification('error', data.error || 'Failed to create user');
+        return;
+      }
+
+      setCreateUserForm({
+        email: '',
+        name: '',
+        role: 'User',
+        passwordMode: 'temporary',
+        password: ''
+      });
+      setShowCreateUserForm(false);
+      fetchAdminUsers();
+      showNotification(
+        'success',
+        data.temporaryPassword
+          ? `User created. Temporary password: ${data.temporaryPassword}`
+          : 'User created successfully'
+      );
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      showNotification('error', 'Failed to create user');
+    }
+  };
+
+  const handleRoleChange = async (selectedUser, nextRole) => {
+    if (!window.confirm(`Change ${selectedUser.name}'s role to ${nextRole}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${selectedUser.id}/role`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ role: nextRole })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        showNotification('error', data.error || 'Failed to update user role');
+        fetchAdminUsers();
+        return;
+      }
+
+      setAdminUsers((prev) => prev.map((item) => (item.id === selectedUser.id ? data.user : item)));
+      showNotification('success', 'User role updated successfully');
+    } catch (error) {
+      console.error('Failed to update user role:', error);
+      showNotification('error', 'Failed to update user role');
+      fetchAdminUsers();
+    }
+  };
+
+  const handleDeleteUser = async (selectedUser) => {
+    if (Number(selectedUser.id) === Number(user?.id)) {
+      showNotification('error', 'You cannot delete your own account');
+      return;
+    }
+
+    if (!window.confirm(`Delete user ${selectedUser.email}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${selectedUser.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        showNotification('error', data.error || 'Failed to delete user');
+        return;
+      }
+
+      setAdminUsers((prev) => prev.filter((item) => item.id !== selectedUser.id));
+      showNotification('success', 'User deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      showNotification('error', 'Failed to delete user');
+    }
+  };
+
+  const filteredAdminUsers = useMemo(() => {
+    const normalizedSearch = userSearch.trim().toLowerCase();
+    const filteredUsers = normalizedSearch
+      ? adminUsers.filter((userItem) =>
+          [userItem.email, userItem.name, userItem.role, String(userItem.id)]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(normalizedSearch))
+        )
+      : adminUsers;
+
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      const aValue = a[userSort.column];
+      const bValue = b[userSort.column];
+
+      if (userSort.column === 'created_at' || userSort.column === 'last_login') {
+        const aTime = aValue ? new Date(aValue).getTime() : 0;
+        const bTime = bValue ? new Date(bValue).getTime() : 0;
+        return userSort.direction === 'asc' ? aTime - bTime : bTime - aTime;
+      }
+
+      const aText = String(aValue || '').toLowerCase();
+      const bText = String(bValue || '').toLowerCase();
+      if (aText < bText) return userSort.direction === 'asc' ? -1 : 1;
+      if (aText > bText) return userSort.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sortedUsers;
+  }, [adminUsers, userSearch, userSort]);
+
   // Calculate dashboard stats (case-insensitive)
   const pendingEnquiries = enquiries.filter(e => (e.status || '').toLowerCase() === 'new').length;
   const pendingApplications = jobApplications.filter(a => !a.status || (a.status || '').toLowerCase() === 'pending').length;
@@ -1113,6 +1295,7 @@ const AdminDashboard = () => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'events', label: 'Events & Training', icon: Calendar },
+    { id: 'users', label: 'Users', icon: Settings, badge: adminUsers.length },
     { id: 'registrations', label: 'Registrations', icon: Users, badge: eventRegistrations.length + trainingRegistrations.length },
     { id: 'clientStories', label: 'Client Stories', icon: Quote },
     { id: 'jobs', label: 'Job Listings', icon: Briefcase },
@@ -1167,6 +1350,25 @@ const AdminDashboard = () => {
       </div>
     </div>
   );
+
+  if (user?.role && user.role !== 'Admin') {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <h1 className="text-2xl font-bold text-[#0a2d6e]">Admin Access Required</h1>
+          <p className="text-gray-600 mt-3">
+            Your current role is {user.role}. Only Admin users can access the admin dashboard.
+          </p>
+          <button
+            onClick={logout}
+            className="mt-6 bg-[#0a2d6e] text-white px-5 py-3 rounded-xl hover:bg-[#123e94]"
+          >
+            Log Out
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -2432,6 +2634,189 @@ const AdminDashboard = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Users Tab */}
+          {activeTab === 'users' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow overflow-hidden">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">User Management</h2>
+                    <p className="text-sm text-gray-500 mt-1">Manage admin, user, and guest access levels.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={fetchAdminUsers}
+                      className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+                    >
+                      Refresh
+                    </button>
+                    <button
+                      onClick={() => setShowCreateUserForm(!showCreateUserForm)}
+                      className="flex items-center gap-2 bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                    >
+                      {showCreateUserForm ? <X size={18} /> : <Plus size={18} />}
+                      {showCreateUserForm ? 'Cancel' : 'Create New User'}
+                    </button>
+                  </div>
+                </div>
+
+                {showCreateUserForm && (
+                  <form onSubmit={handleCreateUser} className="p-4 border-b border-gray-100 bg-gray-50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                        <input
+                          type="email"
+                          required
+                          value={createUserForm.email}
+                          onChange={(e) => setCreateUserForm({ ...createUserForm, email: e.target.value })}
+                          placeholder="user@example.com"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Display name</label>
+                        <input
+                          required
+                          value={createUserForm.name}
+                          onChange={(e) => setCreateUserForm({ ...createUserForm, name: e.target.value })}
+                          placeholder="Full name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Initial role</label>
+                        <select
+                          value={createUserForm.role}
+                          onChange={(e) => setCreateUserForm({ ...createUserForm, role: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="Admin">Admin</option>
+                          <option value="User">User</option>
+                          <option value="Guest">Guest</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password option</label>
+                        <select
+                          value={createUserForm.passwordMode}
+                          onChange={(e) => setCreateUserForm({ ...createUserForm, passwordMode: e.target.value, password: '' })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="temporary">Auto-generate temporary password</option>
+                          <option value="custom">Set custom password</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input
+                          type="text"
+                          value={createUserForm.password}
+                          onChange={(e) => setCreateUserForm({ ...createUserForm, password: e.target.value })}
+                          placeholder={createUserForm.passwordMode === 'custom' ? 'Minimum 6 characters' : 'Auto-generated on create'}
+                          disabled={createUserForm.passwordMode !== 'custom'}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
+                        />
+                      </div>
+                    </div>
+
+                    <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600">
+                      Create User
+                    </button>
+                  </form>
+                )}
+
+                <div className="p-4 border-b border-gray-100 bg-white">
+                  <input
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    placeholder="Search by ID, email, name, or role"
+                    className="w-full md:w-80 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                {loadingAdminUsers ? (
+                  <div className="p-8 text-center text-gray-500">Loading users...</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          {[
+                            ['id', 'User ID'],
+                            ['email', 'Email'],
+                            ['name', 'Name'],
+                            ['role', 'Role'],
+                            ['created_at', 'Created'],
+                            ['last_login', 'Last Login']
+                          ].map(([column, label]) => (
+                            <th
+                              key={column}
+                              onClick={() => handleUserSort(column)}
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer select-none"
+                            >
+                              <span className="inline-flex items-center gap-1">
+                                {label}
+                                {userSort.column === column && (
+                                  <span>{userSort.direction === 'asc' ? '↑' : '↓'}</span>
+                                )}
+                              </span>
+                            </th>
+                          ))}
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {filteredAdminUsers.map((userItem, idx) => (
+                          <tr key={userItem.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-4 py-3 text-sm text-gray-800">{userItem.id}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">{userItem.email}</td>
+                            <td className="px-4 py-3 text-sm text-gray-800 font-medium">{userItem.name}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              <select
+                                value={userItem.role || 'Admin'}
+                                onChange={(e) => handleRoleChange(userItem, e.target.value)}
+                                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                                <option value="Guest">Guest</option>
+                              </select>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              {userItem.created_at ? new Date(userItem.created_at).toLocaleString() : '-'}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              {userItem.last_login ? new Date(userItem.last_login).toLocaleString() : 'Never'}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              <button
+                                onClick={() => handleDeleteUser(userItem)}
+                                disabled={Number(userItem.id) === Number(user?.id)}
+                                className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {filteredAdminUsers.length === 0 && (
+                      <div className="p-8 text-center text-gray-500">
+                        No users found for the current search.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

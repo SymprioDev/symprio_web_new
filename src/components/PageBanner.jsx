@@ -6,7 +6,7 @@ const PageBanner = ({ title, breadcrumb = [], backgroundImage }) => {
   const bgImage = backgroundImage || "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600";
 
   return (
-    <section className="relative h-[500px] w-full overflow-hidden flex items-center">
+    <section className="relative min-h-[420px] md:min-h-[500px] w-full overflow-hidden flex items-center">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -19,7 +19,7 @@ const PageBanner = ({ title, breadcrumb = [], backgroundImage }) => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10 pt-20">
-        <h1 className="text-5xl font-semibold text-white mb-6">
+        <h1 className="max-w-5xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-white mb-6 break-words">
           {title}
         </h1>
       </div>
